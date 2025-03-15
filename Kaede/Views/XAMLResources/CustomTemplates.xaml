@@ -1,0 +1,32 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- I am setting these 2 twice we better find another way to share resources -->
+    <SolidColorBrush x:Key="KBackground" Color="Black" />
+    <SolidColorBrush x:Key="KForeground" Color="White" />
+    
+    <ControlTemplate x:Key="KTextBoxErrorTemplate" TargetType="Control">
+        <StackPanel>
+            <AdornedElementPlaceholder x:Name="_adornedElem" />
+            <TextBlock Grid.Row="1" Foreground="Red" Text="{Binding ElementName=_adornedElem, 
+                Path=AdornedElement.(Validation.Errors)[0].ErrorContent}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="KTextBoxControlTemplate" TargetType="TextBox">
+        <Border Background="{TemplateBinding Background}"
+             BorderThickness="2"
+             CornerRadius="4"
+             Margin="0,0,0,0"
+             BorderBrush="{StaticResource KForeground}"
+             >
+            <ScrollViewer
+             x:Name="PART_ContentHost"
+             Margin="4,4,4,4"
+             VerticalAlignment="Center" 
+             FontSize="{TemplateBinding FontSize}"
+             Foreground="{TemplateBinding Foreground}"></ScrollViewer>
+        </Border>
+    </ControlTemplate>
+    
+</ResourceDictionary>

@@ -10,27 +10,55 @@ using System.Windows.Input;
 using Kaede.Services;
 using Kaede.Services.UsersService;
 using System.Windows;
+using System.ComponentModel.DataAnnotations;
+using System.Windows.Controls;
+
 
 namespace Kaede.ViewModels
 {
     class UserRegistrationViewModel : ViewModelBase
     {
+
         private string _username = "";
+        [Required]
+        [MinLength(5, ErrorMessage = "Username must be at least 5 characters.")]
+        [MaxLength(20, ErrorMessage = "Username must not be longer than 20 characters.")]
         public string Username
         {
             get => _username;
-            set => SetProperty(ref _username, value);
+            set
+            {
+                ClearErrors(nameof(Username));
+                SetProperty(ref _username, value, true);
+                SubmitCommand.NotifyCanExecuteChanged();
+            }
         }
 
         private string _password = "";
         public string Password
         {
             get => _password;
-            set => SetProperty(ref _password, value);
+            set
+            {
+                ClearErrors(nameof(Password));
+                SetProperty(ref _password, value, true);
+                SubmitCommand.NotifyCanExecuteChanged();
+            }
         }
 
-        public ICommand SubmitCommand { get; }
-        public ICommand NavigateLoginCommand { get; }
+        private string _passwordConfirm = "";
+        public string PasswordConfirm
+        {
+            get => _passwordConfirm;
+            set
+            {
+                ClearErrors(nameof(PasswordConfirm));
+                SetProperty(ref _passwordConfirm, value, true);
+                SubmitCommand.NotifyCanExecuteChanged();
+            }
+        } 
+        public IRelayCommand SubmitCommand { get; }
+        public IRelayCommand NavigateLoginCommand { get; }
 
         private readonly IUserService _userService;
 
@@ -38,7 +66,6 @@ namespace Kaede.ViewModels
             (NavigationService<UserLoginViewModel> userLoginViewNavigationService, IUserService userService) 
         {
             _userService = userService;
-
             NavigateLoginCommand = Commands.NavigateCommand.Create(userLoginViewNavigationService);
             SubmitCommand = new AsyncRelayCommand(RegisterUser, CanRegisterUser);
         }
@@ -54,9 +81,12 @@ namespace Kaede.ViewModels
                 NavigateLoginCommand.Execute(null);
         }
 
-        private bool CanRegisterUser()
-        {
-            return true;
-        }
+        private bool CanRegisterUser() =>
+            !HasErrors &&
+            !string.IsNullOrEmpty(Username) &&
+            !string.IsNullOrEmpty(Password) &&
+            !string.IsNullOrEmpty(PasswordConfirm);
     }
+
+
 }
