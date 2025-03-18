@@ -16,7 +16,7 @@ using System.Windows.Controls;
 
 namespace Kaede.ViewModels
 {
-    class UserRegistrationViewModel : ViewModelBase
+    public class UserRegistrationViewModel : ViewModelBase
     {
 
         private string _username = "";
@@ -35,6 +35,9 @@ namespace Kaede.ViewModels
         }
 
         private string _password = "";
+        [Required]
+        [MinLength(6, ErrorMessage = "Password must be at least 5 characters.")]
+        [MaxLength(40, ErrorMessage = "Password must not be longer than 40 characters.")]
         public string Password
         {
             get => _password;

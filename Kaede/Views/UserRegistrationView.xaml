@@ -28,35 +28,30 @@
             <TextBlock FontSize="12">PASSWORD</TextBlock>
             <TextBox Template="{StaticResource KTextBoxControlTemplate}" 
                      Style="{StaticResource KTextBoxValidationStyle}"
-                     Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" />
+                     Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
+                     Validation.ErrorTemplate="{StaticResource KTextBoxErrorTemplate}" />
         </StackPanel>
 
         <StackPanel Grid.Row="3">
             <TextBlock FontSize="12">CONFIRM PASSWORD</TextBlock>
             <TextBox Template="{StaticResource KTextBoxControlTemplate}" 
                      Style="{StaticResource KTextBoxValidationStyle}"
-                     Text="{Binding PasswordConfirm, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"></TextBox>
+                     Text="{Binding PasswordConfirm, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                     Validation.ErrorTemplate="{StaticResource KTextBoxErrorTemplate}" />
         </StackPanel>
-        <Grid Grid.Row="4" HorizontalAlignment="Stretch" Margin="0,32,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="4" HorizontalAlignment="Center" Margin="0,32,0,0">
             <Button Style="{StaticResource KButtonStyle}"
-                    HorizontalAlignment="Left"
                     Command="{Binding SubmitCommand}">
                 Register
             </Button>
-            
-            <Button Grid.Column="2" Style="{StaticResource KButtonStyle}" 
-                    HorizontalAlignment="Right"
-                    Command="{Binding NavigateLoginCommand}">
-                Login Instead
-            </Button>
-        </Grid>
+            <TextBlock Margin="0,12,0,0">
+                <Hyperlink Command="{Binding NavigateLoginCommand}"
+                           FontSize="12"
+                           Style="{StaticResource KHyperLinkStyle}">
+                    ALREADY HAVE AN ACCOUNT?
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
       
     </Grid>
 </UserControl>

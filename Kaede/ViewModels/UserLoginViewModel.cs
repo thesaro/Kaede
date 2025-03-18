@@ -1,8 +1,10 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.Input;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Kaede.Services;
 
 namespace Kaede.ViewModels
 {
@@ -20,6 +22,13 @@ namespace Kaede.ViewModels
         {
             get => _password;
             set => SetProperty(ref _password, value);
+        }
+
+        public IRelayCommand NavigateRegisterCommand { get; }
+
+        public UserLoginViewModel(NavigationService<UserRegistrationViewModel> userRegisterNavigationService)
+        {
+            NavigateRegisterCommand = Commands.NavigateCommand.Create(userRegisterNavigationService);
         }
     }
 }

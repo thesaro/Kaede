@@ -1,8 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <SolidColorBrush x:Key="KBackground" Color="Black" />
-    <SolidColorBrush x:Key="KForeground" Color="White" />
-    
+    <SolidColorBrush x:Key="KBackground" Color="#121212" />
+    <SolidColorBrush x:Key="KForeground" Color="#F5F5F5" />
+    <SolidColorBrush x:Key="KColor1" Color="#BF2224" />
+    <SolidColorBrush x:Key="KColor2" Color="#737373" />
     <FontFamily x:Key="FFMarkProFont">/Resources/Fonts/FFMarkProMed.otf#Mark Pro</FontFamily>
     
  
@@ -22,16 +23,16 @@
 
     <Style x:Key="KButtonStyle" TargetType="{x:Type Button}">
         <Style.Setters>
-            <Setter Property="Background" Value="{StaticResource KBackground}" />
+            <Setter Property="Background" Value="{StaticResource KColor1}" />
             <Setter Property="Foreground" Value="{StaticResource KForeground}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="Border"
                         Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderBrush="Transparent"
                         BorderThickness="2"
-                        CornerRadius="3"
+                        CornerRadius="4"
                         Padding="10,5">
                             <ContentPresenter x:Name="_contentPresenter" HorizontalAlignment="Center"
                                   VerticalAlignment="Center"/>
@@ -62,5 +63,12 @@
                 <Setter Property="Margin" Value="0,6,0,24" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Hyperlink" x:Key="KHyperLinkStyle">
+        <Style.Setters>
+            <Setter Property="Foreground" Value="{StaticResource KColor2}" />
+            <Setter Property="TextDecorations" Value="None" />
+        </Style.Setters>
     </Style>
 </ResourceDictionary>
