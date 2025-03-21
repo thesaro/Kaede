@@ -12,6 +12,7 @@ using Kaede.Stores;
 using Kaede.Views;
 using Kaede.Services;
 using Kaede.Services.UsersService;
+using Microsoft.Extensions.Hosting;
 
 namespace Kaede;
 
@@ -21,42 +22,43 @@ namespace Kaede;
 public sealed partial class App : Application
 {
 
+    private readonly IHost _host;
 
-    private readonly ServiceProvider _serviceProvider;
+
     public App()
     {
         #if DEBUG
-        AllocConsole();
-        Console.WriteLine("Debug mode: Console attached.");
-#endif
+            AllocConsole();
+            Console.WriteLine("Debug mode: Console attached.");
+        #endif
 
         InitializeDb();
 
-        var services = new ServiceCollection();
+        _host = Host.CreateDefaultBuilder()
+            .ConfigureServices((hostContext, services) =>
+            {
+                services.AddDbContextFactory<KaedeDbContext>(options =>
+                    options.UseSqlite(Config.AppUtils.ConnectionString));
 
-       
-        services.AddDbContextFactory<KaedeDbContext>(options => 
-            options.UseSqlite(Config.AppUtils.ConnectionString));
+                services.AddSingleton<NavigationStore>();
+                services.AddSingleton<IUserService, DatabaseUserService>();
 
-        services.AddSingleton<NavigationStore>();
-        services.AddSingleton<IUserService, DatabaseUserService>();
+                services.AddTransient<UserLoginViewModel>();
+                services.AddSingleton<Func<UserLoginViewModel>>
+                    ((s) => () => s.GetRequiredService<UserLoginViewModel>());
+                services.AddSingleton<NavigationService<UserLoginViewModel>>();
 
-        services.AddTransient<UserLoginViewModel>();
-        services.AddSingleton<Func<UserLoginViewModel>>
-            ((s) => () => s.GetRequiredService<UserLoginViewModel>());
-        services.AddSingleton<NavigationService<UserLoginViewModel>>();
+                services.AddTransient<UserRegistrationViewModel>();
+                services.AddSingleton<Func<UserRegistrationViewModel>>
+                    ((s) => () => s.GetRequiredService<UserRegistrationViewModel>());
+                services.AddSingleton<NavigationService<UserRegistrationViewModel>>();
 
-        services.AddTransient<UserRegistrationViewModel>();
-        services.AddSingleton<Func<UserRegistrationViewModel>>
-            ((s) => () => s.GetRequiredService<UserRegistrationViewModel>());
-        services.AddSingleton<NavigationService<UserRegistrationViewModel>>();
-
-        services.AddSingleton(s => new MainWindow()
-        {
-            DataContext = new MainViewModel(s.GetRequiredService<NavigationStore>())
-        });
-
-        _serviceProvider = services.BuildServiceProvider();
+                services.AddSingleton(s => new MainWindow()
+                {
+                    DataContext = new MainViewModel(s.GetRequiredService<NavigationStore>())
+                });
+            })
+            .Build();
     }
 
     [DllImport("kernel32.dll")]
@@ -79,10 +81,10 @@ public sealed partial class App : Application
     {
         base.OnStartup(e);
 
-        NavigationService<UserRegistrationViewModel> navService = _serviceProvider.GetRequiredService<NavigationService<UserRegistrationViewModel>>();
+        NavigationService<UserRegistrationViewModel> navService = _host.Services.GetRequiredService<NavigationService<UserRegistrationViewModel>>();
         navService.Navigate();
 
-        MainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+        MainWindow = _host.Services.GetRequiredService<MainWindow>();
         MainWindow.Show();
     }
 }

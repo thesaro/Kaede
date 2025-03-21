@@ -26,9 +26,10 @@ namespace Kaede.Services.UsersService
             await context.SaveChangesAsync();
         }
 
-        public Task<User> GetUser(string username)
+        public async Task<User?> GetUser(string username)
         {
-            throw new NotImplementedException();
+            using var context = _dbContextFactory.CreateDbContext();
+            return await context.Users.SingleOrDefaultAsync(u => u.Username == username);
         }
     }
 }

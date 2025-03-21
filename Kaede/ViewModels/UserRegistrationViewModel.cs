@@ -13,16 +13,42 @@ using System.Windows;
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Controls;
 
+using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
+
 
 namespace Kaede.ViewModels
 {
     public class UserRegistrationViewModel : ViewModelBase
     {
+        public IRelayCommand SubmitCommand { get; }
+        public IRelayCommand NavigateLoginCommand { get; }
 
+        private readonly IUserService _userService;
+
+        public UserRegistrationViewModel
+            (NavigationService<UserLoginViewModel> userLoginViewNavigationService, IUserService userService)
+        {
+            _userService = userService;
+            NavigateLoginCommand = Commands.NavigateCommand.Create(userLoginViewNavigationService);
+            SubmitCommand = new AsyncRelayCommand(RegisterUser, CanRegisterUser);
+        }
+
+        public static ValidationResult? ValidateMatchingPassword(string _, ValidationContext context)
+        {
+            UserRegistrationViewModel instance = (UserRegistrationViewModel)context.ObjectInstance;
+            bool isValid = instance.Password == instance.PasswordConfirm;
+
+            if (isValid)
+                return ValidationResult.Success;
+
+            return new("Passwords do not match.");
+        }
+       
         private string _username = "";
         [Required]
         [MinLength(5, ErrorMessage = "Username must be at least 5 characters.")]
         [MaxLength(20, ErrorMessage = "Username must not be longer than 20 characters.")]
+        [UsernameValidation]
         public string Username
         {
             get => _username;
@@ -36,8 +62,9 @@ namespace Kaede.ViewModels
 
         private string _password = "";
         [Required]
-        [MinLength(6, ErrorMessage = "Password must be at least 5 characters.")]
+        [MinLength(6, ErrorMessage = "Password must be at least 6 characters.")]
         [MaxLength(40, ErrorMessage = "Password must not be longer than 40 characters.")]
+        [CustomValidation(typeof(UserRegistrationViewModel), nameof(ValidateMatchingPassword))]
         public string Password
         {
             get => _password;
@@ -50,6 +77,8 @@ namespace Kaede.ViewModels
         }
 
         private string _passwordConfirm = "";
+        [Required]
+        [CustomValidation(typeof(UserRegistrationViewModel), nameof(ValidateMatchingPassword))]
         public string PasswordConfirm
         {
             get => _passwordConfirm;
@@ -57,25 +86,15 @@ namespace Kaede.ViewModels
             {
                 ClearErrors(nameof(PasswordConfirm));
                 SetProperty(ref _passwordConfirm, value, true);
+                
                 SubmitCommand.NotifyCanExecuteChanged();
             }
         } 
-        public IRelayCommand SubmitCommand { get; }
-        public IRelayCommand NavigateLoginCommand { get; }
 
-        private readonly IUserService _userService;
-
-        public UserRegistrationViewModel
-            (NavigationService<UserLoginViewModel> userLoginViewNavigationService, IUserService userService) 
-        {
-            _userService = userService;
-            NavigateLoginCommand = Commands.NavigateCommand.Create(userLoginViewNavigationService);
-            SubmitCommand = new AsyncRelayCommand(RegisterUser, CanRegisterUser);
-        }
 
         private async Task RegisterUser()
         {
-            User user = new User() { Username = this.Username, PasswordHash = this.Password };
+            User user = new User() { Username = this.Username, PasswordHash = User.HashPassword(this.Password) };
             await _userService.CreateUser(user);
 
             var res = MessageBox.Show("User actaully got registered!\nRedirecting to login...", "NICE!!", 
@@ -89,6 +108,20 @@ namespace Kaede.ViewModels
             !string.IsNullOrEmpty(Username) &&
             !string.IsNullOrEmpty(Password) &&
             !string.IsNullOrEmpty(PasswordConfirm);
+
+
+        private sealed class UsernameValidationAttribute : ValidationAttribute
+        {
+            protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+            {
+                string uname = (string)value!;
+                if (uname.Any(Char.IsWhiteSpace))
+                    return new("Username must not contain whitespace.");
+                if (!uname.All(Char.IsAscii))
+                    return new("Username must only contain ASCII characters.");
+                return ValidationResult.Success;
+            }
+        }
     }
 
 

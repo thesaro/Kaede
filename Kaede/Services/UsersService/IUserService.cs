@@ -11,6 +11,6 @@ namespace Kaede.Services.UsersService
     public interface IUserService
     {
         Task CreateUser(User user);
-        Task<User> GetUser(string username);
+        Task<User?> GetUser(string username);
     }
 }
