@@ -31,5 +31,11 @@ namespace Kaede.Services.UsersService
             using var context = _dbContextFactory.CreateDbContext();
             return await context.Users.SingleOrDefaultAsync(u => u.Username == username);
         }
+
+        public async Task<bool> HasAdmin()
+        {
+            using var context = _dbContextFactory.CreateDbContext();
+            return await context.Users.SingleOrDefaultAsync(u => u.Role == UserRole.Admin) != null;
+        }
     }
 }

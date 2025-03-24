@@ -44,14 +44,6 @@
                     Command="{Binding SubmitCommand}">
                 Register
             </Button>
-            <TextBlock Margin="0,12,0,0">
-                <Hyperlink Command="{Binding NavigateLoginCommand}"
-                           FontSize="12"
-                           Style="{StaticResource KHyperLinkStyle}">
-                    ALREADY HAVE AN ACCOUNT?
-                </Hyperlink>
-            </TextBlock>
         </StackPanel>
-      
     </Grid>
 </UserControl>

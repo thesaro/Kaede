@@ -39,12 +39,6 @@
                     CAN'T SIGN IN?
                 </Hyperlink>
             </TextBlock>
-            <TextBlock FontSize="12">
-                <Hyperlink Style="{StaticResource KHyperLinkStyle}" 
-                           Command="{Binding NavigateRegisterCommand}">
-                    CREATE ACCOUNT
-                </Hyperlink>
-            </TextBlock>
         </StackPanel>
     </Grid>
 </UserControl>

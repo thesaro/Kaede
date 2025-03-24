@@ -16,7 +16,9 @@ namespace Kaede.ViewModels
     public class UserLoginViewModel : ViewModelBase
     {
         private readonly IUserService _userSerivce;
-        public IRelayCommand NavigateRegisterCommand { get; }
+        private readonly UserSession _userSession;
+
+        public IRelayCommand NavigateHomeCommand { get; }
         public IRelayCommand SubmitCommand { get; }
 
         private string _username = "";
@@ -51,10 +53,14 @@ namespace Kaede.ViewModels
         }
 
 
-        public UserLoginViewModel(NavigationService<UserRegistrationViewModel> userRegisterNavigationService, IUserService userService)
+        public UserLoginViewModel(
+            NavigationService<HomeViewModel> homeViewNavigationService, 
+            IUserService userService,
+            UserSession userSession)
         {
             _userSerivce = userService;
-            NavigateRegisterCommand = Commands.NavigateCommand.Create(userRegisterNavigationService);
+            _userSession = userSession;
+            NavigateHomeCommand = Commands.NavigateCommand.Create(homeViewNavigationService);
             SubmitCommand = new AsyncRelayCommand(LoginUser, CanLoginUser);
         }
 
@@ -73,8 +79,8 @@ namespace Kaede.ViewModels
                 return;
             }
 
-            // Here the user is logged in and we navigate 
-            // to the home window
+            _userSession.Login(user);
+            NavigateHomeCommand.Execute(null);
         }
 
         private bool CanLoginUser() =>

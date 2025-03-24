@@ -21,6 +21,7 @@ namespace Kaede.Models
         [Required]
         public required string PasswordHash { get; set; }
 
+        [Required]
         public UserRole Role { get; set; }
 
         public static string HashPassword(string password)

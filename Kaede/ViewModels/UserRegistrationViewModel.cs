@@ -14,6 +14,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Windows.Controls;
 
 using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
+using System.Diagnostics;
 
 
 namespace Kaede.ViewModels
@@ -21,15 +22,19 @@ namespace Kaede.ViewModels
     public class UserRegistrationViewModel : ViewModelBase
     {
         public IRelayCommand SubmitCommand { get; }
-        public IRelayCommand NavigateLoginCommand { get; }
+        public IRelayCommand NavigateHomeCommand { get; }
 
         private readonly IUserService _userService;
+        private readonly UserSession _userSession;
 
-        public UserRegistrationViewModel
-            (NavigationService<UserLoginViewModel> userLoginViewNavigationService, IUserService userService)
-        {
+        public UserRegistrationViewModel(
+            NavigationService<HomeViewModel> homeViewNavigationService, 
+            IUserService userService,
+            UserSession userSession
+        ) {
             _userService = userService;
-            NavigateLoginCommand = Commands.NavigateCommand.Create(userLoginViewNavigationService);
+            _userSession = userSession;
+            NavigateHomeCommand = Commands.NavigateCommand.Create(homeViewNavigationService);
             SubmitCommand = new AsyncRelayCommand(RegisterUser, CanRegisterUser);
         }
 
@@ -72,6 +77,8 @@ namespace Kaede.ViewModels
             {
                 ClearErrors(nameof(Password));
                 SetProperty(ref _password, value, true);
+                if (!string.IsNullOrEmpty(PasswordConfirm))
+                    ValidateProperty(PasswordConfirm, nameof(PasswordConfirm));
                 SubmitCommand.NotifyCanExecuteChanged();
             }
         }
@@ -86,7 +93,7 @@ namespace Kaede.ViewModels
             {
                 ClearErrors(nameof(PasswordConfirm));
                 SetProperty(ref _passwordConfirm, value, true);
-                
+                ValidateProperty(Password, nameof(Password));
                 SubmitCommand.NotifyCanExecuteChanged();
             }
         } 
@@ -94,13 +101,17 @@ namespace Kaede.ViewModels
 
         private async Task RegisterUser()
         {
-            User user = new User() { Username = this.Username, PasswordHash = User.HashPassword(this.Password) };
+            User user = new User() { 
+                Username = this.Username, 
+                PasswordHash = User.HashPassword(this.Password),
+                Role = UserRole.Admin
+            };
+            // TODO: need some major error handling right here
             await _userService.CreateUser(user);
+            _userSession.Login(user);
+            ClearErrors();
 
-            var res = MessageBox.Show("User actaully got registered!\nRedirecting to login...", "NICE!!", 
-                MessageBoxButton.OK, MessageBoxImage.Information);
-            if (res == MessageBoxResult.OK)
-                NavigateLoginCommand.Execute(null);
+            NavigateHomeCommand.Execute(null);
         }
 
         private bool CanRegisterUser() =>

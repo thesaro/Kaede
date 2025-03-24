@@ -13,6 +13,7 @@ using Kaede.Views;
 using Kaede.Services;
 using Kaede.Services.UsersService;
 using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 
 namespace Kaede;
 
@@ -53,6 +54,13 @@ public sealed partial class App : Application
                     ((s) => () => s.GetRequiredService<UserRegistrationViewModel>());
                 services.AddSingleton<NavigationService<UserRegistrationViewModel>>();
 
+                services.AddTransient<HomeViewModel>();
+                services.AddSingleton<Func<HomeViewModel>>
+                    ((s) => () => s.GetRequiredService<HomeViewModel>());
+                services.AddSingleton<NavigationService<HomeViewModel>>();
+
+                services.AddSingleton<UserSession>();
+
                 services.AddSingleton(s => new MainWindow()
                 {
                     DataContext = new MainViewModel(s.GetRequiredService<NavigationStore>())
@@ -81,8 +89,22 @@ public sealed partial class App : Application
     {
         base.OnStartup(e);
 
-        NavigationService<UserRegistrationViewModel> navService = _host.Services.GetRequiredService<NavigationService<UserRegistrationViewModel>>();
-        navService.Navigate();
+        IUserService userService = _host.Services.GetRequiredService<IUserService>();
+        bool hasAdmin = userService.HasAdmin().GetAwaiter().GetResult();
+
+        if (hasAdmin)
+        {
+            NavigationService<UserLoginViewModel> loginNavService =
+                _host.Services.GetRequiredService<NavigationService<UserLoginViewModel>>();
+            loginNavService.Navigate();
+        }
+        else
+        {
+            NavigationService<UserRegistrationViewModel> registerNavService = 
+                _host.Services.GetRequiredService<NavigationService<UserRegistrationViewModel>>();
+            registerNavService.Navigate();
+        }
+
 
         MainWindow = _host.Services.GetRequiredService<MainWindow>();
         MainWindow.Show();
