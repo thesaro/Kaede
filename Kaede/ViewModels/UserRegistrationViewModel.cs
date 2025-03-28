@@ -28,13 +28,13 @@ namespace Kaede.ViewModels
         private readonly UserSession _userSession;
 
         public UserRegistrationViewModel(
-            NavigationService<HomeViewModel> homeViewNavigationService, 
+            NavigationService<DashboardViewModel> dashboardViewNavService, 
             IUserService userService,
             UserSession userSession
         ) {
             _userService = userService;
             _userSession = userSession;
-            NavigateHomeCommand = Commands.NavigateCommand.Create(homeViewNavigationService);
+            NavigateHomeCommand = Commands.NavigateCommand.Create(dashboardViewNavService);
             SubmitCommand = new AsyncRelayCommand(RegisterUser, CanRegisterUser);
         }
 

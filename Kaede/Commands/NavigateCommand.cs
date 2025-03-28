@@ -11,7 +11,13 @@ namespace Kaede.Commands
 {
     public static class NavigateCommand
     {
-        public static RelayCommand Create<TViewModel>(NavigationService<TViewModel> _service)
-            where TViewModel : ViewModelBase => new RelayCommand(_service.Navigate);
+        public static RelayCommand Create<TViewModel>(NavigationService<TViewModel> service)
+            where TViewModel : ViewModelBase => new RelayCommand(service.Navigate);
+
+        public static RelayCommand CreateWithPredicate<TViewModel>(
+            NavigationService<TViewModel> service,
+            Func<bool> pred
+        ) where TViewModel : ViewModelBase =>
+            new RelayCommand(service.Navigate, pred);
     }
 }

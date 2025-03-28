@@ -16,26 +16,14 @@
         <DataTemplate DataType="{x:Type vms:UserLoginViewModel}">
             <views:UserLoginView />
         </DataTemplate>
-        <DataTemplate DataType="{x:Type vms:HomeViewModel}">
+        <DataTemplate DataType="{x:Type vms:DashboardViewModel}">
             <views:HomeView />
         </DataTemplate>
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <DataTemplate DataType="{x:Type vms:SettingsViewModel}">
+            <views:HomeView />
+        </DataTemplate>
     </Window.Resources>
-    <DockPanel>
-        <Grid DockPanel.Dock="Left"
-              Visibility="{Binding IsMainViews, Converter={StaticResource BoolToVis}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Button Content="Home" Background="Black" />
-            <Button Content="Settings" Grid.Row="1" Background="Black" />
-            <Button Content="Logout" Grid.Row="3" Background="Black" VerticalAlignment="Bottom" />
-        </Grid>
-        <Grid>
-            <ContentControl Content="{Binding CurrentViewModel}"/>
-        </Grid>
-    </DockPanel>
+    <Grid>
+        <ContentControl Content="{Binding CurrentViewModel}"/>
+    </Grid>
 </Window>

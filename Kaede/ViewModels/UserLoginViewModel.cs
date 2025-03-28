@@ -54,13 +54,13 @@ namespace Kaede.ViewModels
 
 
         public UserLoginViewModel(
-            NavigationService<HomeViewModel> homeViewNavigationService, 
+            NavigationService<DashboardViewModel> dashboardViewNavService, 
             IUserService userService,
             UserSession userSession)
         {
             _userSerivce = userService;
             _userSession = userSession;
-            NavigateHomeCommand = Commands.NavigateCommand.Create(homeViewNavigationService);
+            NavigateHomeCommand = Commands.NavigateCommand.Create(dashboardViewNavService);
             SubmitCommand = new AsyncRelayCommand(LoginUser, CanLoginUser);
         }
 

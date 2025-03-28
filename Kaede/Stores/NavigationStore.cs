@@ -15,6 +15,8 @@ namespace Kaede.Stores
             get => _currentViewModel;
             set
             {
+                if (_currentViewModel is IDisposable disposableVM)
+                    disposableVM.Dispose();
                 _currentViewModel = value;
                 OnCurrentViewModelChanged();
             }

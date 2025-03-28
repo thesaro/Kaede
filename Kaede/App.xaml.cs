@@ -54,10 +54,16 @@ public sealed partial class App : Application
                     ((s) => () => s.GetRequiredService<UserRegistrationViewModel>());
                 services.AddSingleton<NavigationService<UserRegistrationViewModel>>();
 
-                services.AddTransient<HomeViewModel>();
-                services.AddSingleton<Func<HomeViewModel>>
-                    ((s) => () => s.GetRequiredService<HomeViewModel>());
-                services.AddSingleton<NavigationService<HomeViewModel>>();
+                services.AddTransient<DashboardViewModel>();
+                services.AddSingleton<Func<DashboardViewModel>>
+                    ((s) => () => s.GetRequiredService<DashboardViewModel>());
+                services.AddSingleton<NavigationService<DashboardViewModel>>();
+
+                services.AddTransient<SettingsViewModel>();
+                services.AddSingleton<Func<SettingsViewModel>>
+                    ((s) => () => s.GetRequiredService<SettingsViewModel>());
+                services.AddSingleton<NavigationService<SettingsViewModel>>();
+
 
                 services.AddSingleton<UserSession>();
 

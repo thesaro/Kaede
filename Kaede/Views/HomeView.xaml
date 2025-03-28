@@ -6,9 +6,34 @@
              xmlns:local="clr-namespace:Kaede.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </UserControl.Resources>
+    <DockPanel>
+        <Grid DockPanel.Dock="Left">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Button Content="Dashboard" 
+                    Background="Black" 
+                    Command="{Binding NavigateDashboardCommand}"
+                    />
+            <Button Content="Settings" Grid.Row="1"
+                    Background="Black"
+                    Command="{Binding NavigateSettingsCommand}"/>
+            <Button Content="Logout" Grid.Row="3" 
+                    Command="{Binding LogoutCommand}"
+                    Background="Black" 
+                    VerticalAlignment="Bottom" />
+        </Grid>
         <Grid>
             <TextBlock FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center">
-          hey. wanna get bred :3
+                hey. wanna get bred :3
             </TextBlock>
         </Grid>
+    </DockPanel>
+          
 </UserControl>
