@@ -6,9 +6,9 @@
              xmlns:local="clr-namespace:Kaede.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <TextBlock FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center">
-            hey. wanna get bred :3
-        </TextBlock>
-    </Grid>
+        <Grid>
+            <TextBlock FontSize="48" HorizontalAlignment="Center" VerticalAlignment="Center">
+          hey. wanna get bred :3
+            </TextBlock>
+        </Grid>
 </UserControl>

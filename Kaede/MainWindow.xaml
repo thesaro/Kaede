@@ -9,18 +9,33 @@
         mc:Ignorable="d"
         Background="Black"
         Title="Kaede" Height="450" Width="800">
-    <Grid>
-        <Grid.Resources>
-            <DataTemplate DataType="{x:Type vms:UserRegistrationViewModel}">
-                <views:UserRegistrationView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vms:UserLoginViewModel}">
-                <views:UserLoginView />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type vms:HomeViewModel}">
-                <views:HomeView />
-            </DataTemplate>
-        </Grid.Resources>
-        <ContentControl Content="{Binding CurrentViewModel}"/>
-    </Grid>
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vms:UserRegistrationViewModel}">
+            <views:UserRegistrationView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:UserLoginViewModel}">
+            <views:UserLoginView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:HomeViewModel}">
+            <views:HomeView />
+        </DataTemplate>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+    <DockPanel>
+        <Grid DockPanel.Dock="Left"
+              Visibility="{Binding IsMainViews, Converter={StaticResource BoolToVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Button Content="Home" Background="Black" />
+            <Button Content="Settings" Grid.Row="1" Background="Black" />
+            <Button Content="Logout" Grid.Row="3" Background="Black" VerticalAlignment="Bottom" />
+        </Grid>
+        <Grid>
+            <ContentControl Content="{Binding CurrentViewModel}"/>
+        </Grid>
+    </DockPanel>
 </Window>

@@ -14,7 +14,12 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Margin="0 0 0 25">RegisterControl</TextBlock>
+        <TextBlock Margin="0 0 0 25"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center">
+            REGISTER
+        </TextBlock>
 
         <StackPanel Grid.Row="1">
             <TextBlock FontSize="12">USERNAME</TextBlock>

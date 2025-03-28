@@ -14,7 +14,10 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Margin="0 0 0 25">LoginControl (DOES NOT WORK FOR NOW!)</TextBlock>
+        <TextBlock Margin="0 0 0 25"
+                   FontSize="24"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center">LOGIN</TextBlock>
 
         <StackPanel Grid.Row="1">
             <TextBlock FontSize="12">USERNAME</TextBlock>
@@ -22,7 +25,7 @@
                      Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"></TextBox>
         </StackPanel>
 
-        <StackPanel Grid.Row="2">
+        <StackPanel Grid.Row="2" Margin="0,12,0,0">
             <TextBlock FontSize="12">PASSWORD</TextBlock>
             <TextBox Template="{StaticResource KTextBoxControlTemplate}"
                      Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"></TextBox>

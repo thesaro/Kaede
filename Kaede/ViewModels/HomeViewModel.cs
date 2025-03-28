@@ -1,4 +1,5 @@
-﻿using Kaede.Services;
+﻿using CommunityToolkit.Mvvm.Input;
+using Kaede.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Kaede.ViewModels
     public class HomeViewModel : ViewModelBase
     {
         private readonly UserSession _userSession;
+ 
         public HomeViewModel(UserSession userSession)
         {
             _userSession = userSession;
