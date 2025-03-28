@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35825.156 d17.13
+VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaede", "Kaede\Kaede.csproj", "{5E097D15-76A6-4909-ABAD-EB5980A6CAEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaede.Test", "Kaede.Test\Kaede.Test.csproj", "{C2353B88-7937-49C4-9A92-7F2DBCA3E942}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{5E097D15-76A6-4909-ABAD-EB5980A6CAEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E097D15-76A6-4909-ABAD-EB5980A6CAEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E097D15-76A6-4909-ABAD-EB5980A6CAEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2353B88-7937-49C4-9A92-7F2DBCA3E942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2353B88-7937-49C4-9A92-7F2DBCA3E942}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2353B88-7937-49C4-9A92-7F2DBCA3E942}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2353B88-7937-49C4-9A92-7F2DBCA3E942}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

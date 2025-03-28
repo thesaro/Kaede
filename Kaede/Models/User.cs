@@ -15,7 +15,7 @@ namespace Kaede.Models
         public Guid UserId { get; set; }
 
         [Required]
-        [MinLength(5, ErrorMessage = "Username must be at least 5 characters long.")]
+        [StringLength(50, MinimumLength = 5, ErrorMessage = "Username must have min length of 5 and max length of 50.")]
         public required string Username { get; init; }
 
         [Required]

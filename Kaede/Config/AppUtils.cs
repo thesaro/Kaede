@@ -10,6 +10,7 @@ namespace Kaede.Config
     {
         const string AppName = "KaedeApp";
         const string DbFileName = "kdbase.db";
+
         public static readonly string LocalFolder =
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         public static readonly string DbPath =
