@@ -8,17 +8,8 @@ using System.Threading.Tasks;
 
 namespace Kaede.ViewModels
 {
-    public class SettingsViewModel : HomeViewModelBase
+    public class SettingsViewModel : ViewModelBase
     {
-        public SettingsViewModel(
-            NavigationStore navigationStore, 
-            UserSession userSession, 
-            NavigationService<UserLoginViewModel> userLoginNavService, 
-            NavigationService<DashboardViewModel> dashboardNavService,
-            NavigationService<SettingsViewModel> settingsNavService
-        ) : base(navigationStore, userSession, userLoginNavService, dashboardNavService, settingsNavService)
-        {
 
-        }
     }
 }

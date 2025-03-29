@@ -69,7 +69,12 @@ public sealed partial class App : Application
 
                 services.AddSingleton(s => new MainWindow()
                 {
-                    DataContext = new MainViewModel(s.GetRequiredService<NavigationStore>())
+                    DataContext = new MainViewModel(
+                        s.GetRequiredService<NavigationStore>(),
+                        s.GetRequiredService<UserSession>(),
+                        s.GetRequiredService<NavigationService<DashboardViewModel>>(),
+                        s.GetRequiredService<NavigationService<SettingsViewModel>>()
+                    )
                 });
             })
             .Build();

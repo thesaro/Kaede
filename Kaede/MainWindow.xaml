@@ -10,6 +10,8 @@
         Background="Black"
         Title="Kaede" Height="450" Width="800">
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
         <DataTemplate DataType="{x:Type vms:UserRegistrationViewModel}">
             <views:UserRegistrationView />
         </DataTemplate>
@@ -17,13 +19,31 @@
             <views:UserLoginView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type vms:DashboardViewModel}">
-            <views:HomeView />
+            <views:DashboardView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type vms:SettingsViewModel}">
-            <views:HomeView />
+            <views:SettingsView />
         </DataTemplate>
     </Window.Resources>
-    <Grid>
+    <DockPanel>
+        <Grid DockPanel.Dock="Left" 
+              Visibility="{Binding IsHomeView, Converter={StaticResource BoolToVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Button Content="Dashboard" 
+                    Background="Black" 
+                    Command="{Binding NavigateDashboardCommand}"
+                    />
+            <Button Content="Settings" Grid.Row="1"
+                    Background="Black"
+                    Command="{Binding NavigateSettingsCommand}"/>
+            <Button Content="Admin Panel" Grid.Row="2"
+                    Background="Black"
+                    Visibility="{Binding IsAdminLogged, Converter={StaticResource BoolToVis}}" />
+        </Grid>
         <ContentControl Content="{Binding CurrentViewModel}"/>
-    </Grid>
+    </DockPanel>
 </Window>

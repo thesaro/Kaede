@@ -14,19 +14,45 @@ namespace Kaede.ViewModels
     public class MainViewModel : ViewModelBase
     {
         private readonly NavigationStore _navigationStore;
+        private readonly UserSession _userSession;
+
         public ViewModelBase CurrentViewModel => _navigationStore.CurrentViewModel;
 
+        public IRelayCommand NavigateDashboardCommand { get; }
+        public IRelayCommand NavigateSettingsCommand { get; }
 
-        public MainViewModel(NavigationStore navigationStore)
+        public bool IsHomeView =>
+            CurrentViewModel 
+            is DashboardViewModel 
+            or SettingsViewModel;
+
+        public bool IsAdminLogged =>
+            _userSession.CurrentUser?.Role == Models.UserRole.Admin;
+
+        public MainViewModel(
+            NavigationStore navigationStore,
+            UserSession userSession,
+            NavigationService<DashboardViewModel> dashboardNavService,
+            NavigationService<SettingsViewModel> settingsNavService)
         {
+            _userSession = userSession;
             _navigationStore = navigationStore;
             _navigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
+
+            NavigateDashboardCommand = Commands.NavigateCommand.CreateWithPredicate(dashboardNavService, 
+                () => CurrentViewModel is not DashboardViewModel);
+            NavigateSettingsCommand = Commands.NavigateCommand.CreateWithPredicate(settingsNavService,
+                () => CurrentViewModel is not SettingsViewModel);
+
         }
 
         private void OnCurrentViewModelChanged()
         {
             OnPropertyChanged(nameof(CurrentViewModel));
-            Console.WriteLine($"Current VM is {CurrentViewModel}");
+            OnPropertyChanged(nameof(IsHomeView));
+            OnPropertyChanged(nameof(IsAdminLogged));
+
+            Console.WriteLine($"Current VM is {CurrentViewModel} and ADMIN is {IsAdminLogged}");
         }
     }
 }
