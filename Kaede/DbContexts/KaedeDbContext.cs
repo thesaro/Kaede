@@ -1,5 +1,6 @@
 ﻿using Kaede.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -25,12 +26,14 @@ namespace Kaede.DbContexts
         public override int SaveChanges()
         {
             ValidateEntities();
+            User.OnDataSaving(ChangeTracker.Entries());
             return base.SaveChanges();
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             ValidateEntities();
+            User.OnDataSaving(ChangeTracker.Entries());
             return await base.SaveChangesAsync(cancellationToken);
         }
 

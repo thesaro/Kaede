@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,6 +14,9 @@ namespace Kaede.Models
     {
         [Key]
         public Guid UserId { get; set; }
+
+        public DateTime CreationDate { get; set; }
+        public DateTime LastPasswordChanged { get; set; }
 
         [Required]
         [StringLength(50, MinimumLength = 5, ErrorMessage = "Username must have min length of 5 and max length of 50.")]
@@ -32,6 +36,23 @@ namespace Kaede.Models
             foreach (byte b in hashedBytes)
                 sb.Append(b.ToString("X2"));
             return sb.ToString();
+        }
+
+        public static void OnDataSaving(IEnumerable<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry>? entityEntries)
+        {
+            if (entityEntries is null) return;
+
+            foreach (var userAddedEntry in entityEntries.Where(e => e.Entity is User && e.State == EntityState.Added))
+            {
+                var u = (User)userAddedEntry.Entity;
+                u.CreationDate = u.LastPasswordChanged = DateTime.Now;
+            }
+           
+            foreach (var userModifiedEntry in entityEntries.Where(e => e.Entity is User && e.State == EntityState.Modified))
+            {
+                var u = (User)userModifiedEntry.Entity;
+                u.LastPasswordChanged = DateTime.Now;
+            }
         }
     }
     public enum UserRole
