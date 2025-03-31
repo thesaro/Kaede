@@ -49,6 +49,37 @@
             </Setter>
         </Style.Setters>
     </Style>
+
+    <Style x:Key="KDropdownButtonStyle" TargetType="{x:Type ToggleButton}">
+        <Style.Setters>
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Background" Value="{StaticResource KBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource KForeground}" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,-4,0,0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Grid>
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                VerticalAlignment="Top" />
+                            <TextBlock x:Name="Arrow" 
+                                   Text="&#x2304;"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,5,0"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Arrow" Property="Text" Value="&#x2C4;"/>
+                                <Setter Property="Margin" Value="1,2,0,0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
     
     
     <Style TargetType="TextBox" x:Key="KTextBoxValidationStyle">

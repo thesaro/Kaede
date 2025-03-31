@@ -7,7 +7,8 @@
         xmlns:views="clr-namespace:Kaede.Views"
         xmlns:vms="clr-namespace:Kaede.ViewModels"
         mc:Ignorable="d"
-        Background="Black"
+        Background="{StaticResource KBackground}"
+        Foreground="{StaticResource KForeground}"
         Title="Kaede" Height="450" Width="800">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
@@ -23,6 +24,9 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type vms:SettingsViewModel}">
             <views:SettingsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vms:AdminPanelViewModel}">
+            <views:AdminPanelView />
         </DataTemplate>
     </Window.Resources>
     <DockPanel>
@@ -42,7 +46,8 @@
                     Command="{Binding NavigateSettingsCommand}"/>
             <Button Content="Admin Panel" Grid.Row="2"
                     Background="Black"
-                    Visibility="{Binding IsAdminLogged, Converter={StaticResource BoolToVis}}" />
+                    Visibility="{Binding IsAdminLogged, Converter={StaticResource BoolToVis}}" 
+                    Command="{Binding NavigateAdminPanelCommand}"/>
         </Grid>
         <ContentControl Content="{Binding CurrentViewModel}"/>
     </DockPanel>

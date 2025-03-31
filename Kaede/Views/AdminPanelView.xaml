@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="Kaede.Views.AdminPanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Kaede.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="{StaticResource KBackground}"
+             Foreground="{StaticResource KForeground}">
+    <Grid Margin="18,12,18,12">
+        <StackPanel>
+            <TextBlock FontSize="24" Text="Barber Management" />
+            <Separator Height="1" Width="400" HorizontalAlignment="Left"
+                       Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontSize="18" Text="Barber List" Padding="0,0,6,0" />
+                <ToggleButton Style="{StaticResource KDropdownButtonStyle}"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

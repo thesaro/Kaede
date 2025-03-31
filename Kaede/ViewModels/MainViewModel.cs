@@ -20,11 +20,13 @@ namespace Kaede.ViewModels
 
         public IRelayCommand NavigateDashboardCommand { get; }
         public IRelayCommand NavigateSettingsCommand { get; }
+        public IRelayCommand NavigateAdminPanelCommand { get; }
 
         public bool IsHomeView =>
             CurrentViewModel 
             is DashboardViewModel 
-            or SettingsViewModel;
+            or SettingsViewModel
+            or AdminPanelViewModel;
 
         public bool IsAdminLogged =>
             _userSession.CurrentUser?.Role == Models.UserRole.Admin;
@@ -33,7 +35,8 @@ namespace Kaede.ViewModels
             NavigationStore navigationStore,
             UserSession userSession,
             NavigationService<DashboardViewModel> dashboardNavService,
-            NavigationService<SettingsViewModel> settingsNavService)
+            NavigationService<SettingsViewModel> settingsNavService,
+            NavigationService<AdminPanelViewModel> adminPanelNavService)
         {
             _userSession = userSession;
             _navigationStore = navigationStore;
@@ -43,7 +46,8 @@ namespace Kaede.ViewModels
                 () => CurrentViewModel is not DashboardViewModel);
             NavigateSettingsCommand = Commands.NavigateCommand.CreateWithPredicate(settingsNavService,
                 () => CurrentViewModel is not SettingsViewModel);
-
+            NavigateAdminPanelCommand = Commands.NavigateCommand.CreateWithPredicate(adminPanelNavService,
+                () => CurrentViewModel is not AdminPanelViewModel);
         }
 
         private void OnCurrentViewModelChanged()

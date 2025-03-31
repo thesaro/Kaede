@@ -64,6 +64,10 @@ public sealed partial class App : Application
                     ((s) => () => s.GetRequiredService<SettingsViewModel>());
                 services.AddSingleton<NavigationService<SettingsViewModel>>();
 
+                services.AddTransient<AdminPanelViewModel>();
+                services.AddSingleton<Func<AdminPanelViewModel>>
+                    ((s) => () => s.GetRequiredService<AdminPanelViewModel>());
+                services.AddSingleton<NavigationService<AdminPanelViewModel>>();
 
                 services.AddSingleton<UserSession>();
 
@@ -73,7 +77,8 @@ public sealed partial class App : Application
                         s.GetRequiredService<NavigationStore>(),
                         s.GetRequiredService<UserSession>(),
                         s.GetRequiredService<NavigationService<DashboardViewModel>>(),
-                        s.GetRequiredService<NavigationService<SettingsViewModel>>()
+                        s.GetRequiredService<NavigationService<SettingsViewModel>>(),
+                        s.GetRequiredService<NavigationService<AdminPanelViewModel>>()
                     )
                 });
             })
