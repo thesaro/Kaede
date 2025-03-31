@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 
 namespace Kaede.ViewModels
 {
@@ -31,22 +32,22 @@ namespace Kaede.ViewModels
         public bool IsAdminLogged =>
             _userSession.CurrentUser?.Role == Models.UserRole.Admin;
 
-        public MainViewModel(
-            NavigationStore navigationStore,
-            UserSession userSession,
-            NavigationService<DashboardViewModel> dashboardNavService,
-            NavigationService<SettingsViewModel> settingsNavService,
-            NavigationService<AdminPanelViewModel> adminPanelNavService)
+        public MainViewModel(NavigationStore navigationStore, UserSession userSession)
         {
             _userSession = userSession;
             _navigationStore = navigationStore;
             _navigationStore.CurrentViewModelChanged += OnCurrentViewModelChanged;
 
-            NavigateDashboardCommand = Commands.NavigateCommand.CreateWithPredicate(dashboardNavService, 
+            // we guarantee non-nullness here cos how did we even 
+            // get here if we don't have a running app instance?
+            NavigateDashboardCommand = Commands.NavigateCommand.CreateWithPredicate(
+                App.RunningInstance().FetchProviderService<NavigationService<DashboardViewModel>>()!, 
                 () => CurrentViewModel is not DashboardViewModel);
-            NavigateSettingsCommand = Commands.NavigateCommand.CreateWithPredicate(settingsNavService,
+            NavigateSettingsCommand = Commands.NavigateCommand.CreateWithPredicate(
+                App.RunningInstance().FetchProviderService<NavigationService<SettingsViewModel>>()!,
                 () => CurrentViewModel is not SettingsViewModel);
-            NavigateAdminPanelCommand = Commands.NavigateCommand.CreateWithPredicate(adminPanelNavService,
+            NavigateAdminPanelCommand = Commands.NavigateCommand.CreateWithPredicate(
+                App.RunningInstance().FetchProviderService<NavigationService<AdminPanelViewModel>>()!,
                 () => CurrentViewModel is not AdminPanelViewModel);
         }
 

@@ -14,6 +14,7 @@ using Kaede.Services;
 using Kaede.Services.UsersService;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
+using Kaede.HostBuilderExt;
 
 namespace Kaede;
 
@@ -25,7 +26,8 @@ public sealed partial class App : Application
 
     private readonly IHost _host;
 
-
+    public static App RunningInstance() => Application.Current as App;
+    public S? FetchProviderService<S>() => _host.Services.GetService<S>();
     public App()
     {
         #if DEBUG
@@ -36,6 +38,7 @@ public sealed partial class App : Application
         InitializeDb();
 
         _host = Host.CreateDefaultBuilder()
+            .AddViewModels()
             .ConfigureServices((hostContext, services) =>
             {
                 services.AddDbContextFactory<KaedeDbContext>(options =>
@@ -44,41 +47,13 @@ public sealed partial class App : Application
                 services.AddSingleton<NavigationStore>();
                 services.AddSingleton<IUserService, DatabaseUserService>();
 
-                services.AddTransient<UserLoginViewModel>();
-                services.AddSingleton<Func<UserLoginViewModel>>
-                    ((s) => () => s.GetRequiredService<UserLoginViewModel>());
-                services.AddSingleton<NavigationService<UserLoginViewModel>>();
-
-                services.AddTransient<UserRegistrationViewModel>();
-                services.AddSingleton<Func<UserRegistrationViewModel>>
-                    ((s) => () => s.GetRequiredService<UserRegistrationViewModel>());
-                services.AddSingleton<NavigationService<UserRegistrationViewModel>>();
-
-                services.AddTransient<DashboardViewModel>();
-                services.AddSingleton<Func<DashboardViewModel>>
-                    ((s) => () => s.GetRequiredService<DashboardViewModel>());
-                services.AddSingleton<NavigationService<DashboardViewModel>>();
-
-                services.AddTransient<SettingsViewModel>();
-                services.AddSingleton<Func<SettingsViewModel>>
-                    ((s) => () => s.GetRequiredService<SettingsViewModel>());
-                services.AddSingleton<NavigationService<SettingsViewModel>>();
-
-                services.AddTransient<AdminPanelViewModel>();
-                services.AddSingleton<Func<AdminPanelViewModel>>
-                    ((s) => () => s.GetRequiredService<AdminPanelViewModel>());
-                services.AddSingleton<NavigationService<AdminPanelViewModel>>();
-
                 services.AddSingleton<UserSession>();
 
                 services.AddSingleton(s => new MainWindow()
                 {
                     DataContext = new MainViewModel(
                         s.GetRequiredService<NavigationStore>(),
-                        s.GetRequiredService<UserSession>(),
-                        s.GetRequiredService<NavigationService<DashboardViewModel>>(),
-                        s.GetRequiredService<NavigationService<SettingsViewModel>>(),
-                        s.GetRequiredService<NavigationService<AdminPanelViewModel>>()
+                        s.GetRequiredService<UserSession>()
                     )
                 });
             })

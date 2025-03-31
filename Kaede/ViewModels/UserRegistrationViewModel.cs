@@ -121,7 +121,7 @@ namespace Kaede.ViewModels
             !string.IsNullOrEmpty(PasswordConfirm);
 
 
-        private sealed class UsernameValidationAttribute : ValidationAttribute
+        internal sealed class UsernameValidationAttribute : ValidationAttribute
         {
             protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
             {

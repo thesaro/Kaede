@@ -17,6 +17,58 @@
                 <TextBlock FontSize="18" Text="Barber List" Padding="0,0,6,0" />
                 <ToggleButton Style="{StaticResource KDropdownButtonStyle}"/>
             </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontSize="18" Text="Recruit Barber" Padding="0,0,6,0"/>
+                <ToggleButton x:Name="RecruitBarberTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
+            </StackPanel>
+            <Grid x:Name="RecruitBarberGrid" 
+                  HorizontalAlignment="Left" 
+                  Margin="0,12,0,8"
+                  Visibility="Hidden">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel>
+                    <TextBlock FontSize="12">
+                        USERNAME
+                    </TextBlock>
+                    <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                         Width="200"
+                         Style="{StaticResource KTextBoxValidationStyle}"
+                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
+                         Validation.ErrorTemplate="{StaticResource KTextBoxErrorTemplate}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1">
+                    <TextBlock FontSize="12">
+                        PASSWORD
+                    </TextBlock>
+                    <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                         Width="200"
+                         Style="{StaticResource KTextBoxValidationStyle}"
+                         Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
+                         Validation.ErrorTemplate="{StaticResource KTextBoxErrorTemplate}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2">
+                    <TextBlock FontSize="12">
+                        CONFIRM PASSWORD
+                    </TextBlock>
+                    <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                         Width="200"
+                         Style="{StaticResource KTextBoxValidationStyle}"
+                         Text="{Binding PasswordConfirm, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
+                         Validation.ErrorTemplate="{StaticResource KTextBoxErrorTemplate}"/>
+                </StackPanel>
+                <Button Grid.Row="3"
+                    Margin="0,12,0,0"
+                    Style="{StaticResource KButtonStyle}"
+                    Command="{Binding SubmitCommand}">
+                    Register Barber
+                </Button>
+            </Grid>
         </StackPanel>
     </Grid>
 </UserControl>
