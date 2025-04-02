@@ -15,8 +15,46 @@
                        Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
             <StackPanel Orientation="Horizontal">
                 <TextBlock FontSize="18" Text="Barber List" Padding="0,0,6,0" />
-                <ToggleButton Style="{StaticResource KDropdownButtonStyle}"/>
+                <ToggleButton x:Name="BarberListTB" Style="{StaticResource KDropdownButtonStyle}"/>
             </StackPanel>
+            <Grid x:Name="BarberListGrid"
+                  HorizontalAlignment="Left"
+                  Margin="0,12,0,8"
+                  Visibility="Visible">
+                <Grid.Resources>
+                    <local:PwdHashTruncationConverter x:Key="PwdHashTC" />
+                </Grid.Resources>
+                <ListView ItemsSource="{Binding Barbers}" ItemContainerStyle="{StaticResource KListViewItemStyle}">
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource KGridViewColumnHeaderStyle}">
+                            <GridView.Columns>
+                                <GridViewColumn Header="Username">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" Text="{Binding Username}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="PasswordHash">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" 
+                                                       Text="{Binding PasswordHash, Converter={StaticResource PwdHashTC}}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Register Date">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" Text="{Binding CreationDate}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
             <StackPanel Orientation="Horizontal">
                 <TextBlock FontSize="18" Text="Recruit Barber" Padding="0,0,6,0"/>
                 <ToggleButton x:Name="RecruitBarberTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>

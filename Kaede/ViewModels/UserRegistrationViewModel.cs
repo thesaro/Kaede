@@ -15,6 +15,7 @@ using System.Windows.Controls;
 
 using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 using System.Diagnostics;
+using System.Threading;
 
 
 namespace Kaede.ViewModels
@@ -101,14 +102,28 @@ namespace Kaede.ViewModels
 
         private async Task RegisterUser()
         {
-            User user = new User() { 
+            // No need to check for duplicate user here cos
+            // admin is the first one to register
+            User admin = new User() { 
                 Username = this.Username, 
                 PasswordHash = User.HashPassword(this.Password),
                 Role = UserRole.Admin
             };
-            // TODO: need some major error handling right here
-            await _userService.CreateUser(user);
-            _userSession.Login(user);
+
+            try
+            {
+                await _userService.CreateUser(admin);
+                MessageBox.Show($"Barber \"{admin.Username}\" successfully registered", "Info",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to register admin.\nReason: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            _userSession.Login(admin);
             ClearErrors();
 
             NavigateHomeCommand.Execute(null);

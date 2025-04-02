@@ -21,21 +21,27 @@ namespace Kaede.Services.UsersService
 
         public async Task CreateUser(User user)
         {
-            using var context = _dbContextFactory.CreateDbContext();
+            using var context = await _dbContextFactory.CreateDbContextAsync();
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
         }
 
         public async Task<User?> GetUser(string username)
         {
-            using var context = _dbContextFactory.CreateDbContext();
+            using var context = await _dbContextFactory.CreateDbContextAsync();
             return await context.Users.SingleOrDefaultAsync(u => u.Username == username);
         }
 
         public async Task<bool> HasAdmin()
         {
-            using var context = _dbContextFactory.CreateDbContext();
+            using var context = await _dbContextFactory.CreateDbContextAsync();
             return await context.Users.SingleOrDefaultAsync(u => u.Role == UserRole.Admin) != null;
+        }
+
+        public async Task<List<User>> GetBarbers()
+        {
+            using var context = await _dbContextFactory.CreateDbContextAsync();
+            return context.Users.Where(u => u.Role == UserRole.Barber).ToList();
         }
     }
 }

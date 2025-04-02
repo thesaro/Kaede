@@ -4,10 +4,14 @@ using Kaede.Services;
 using Kaede.Services.UsersService;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Data;
 
 namespace Kaede.ViewModels
 {
@@ -74,15 +78,34 @@ namespace Kaede.ViewModels
         }
         private async Task RegisterBarber()
         {
-            User user = new User()
+
+            if (await _userService.GetUser(Username) != null)
+            {
+                MessageBox.Show($"Username \"{Username}\" already exists.", "Error",
+                    MessageBoxButton.OK);
+            }
+            User barber = new User()
             {
                 Username = this.Username,
                 PasswordHash = User.HashPassword(this.Password),
                 Role = UserRole.Barber
             };
-            await _userService.CreateUser(user);
-            // TODO: Show some message box for like confirmation or other stuff
+            
+            try
+            {
+                await _userService.CreateUser(barber);
+                MessageBox.Show($"Barber \"{barber.Username}\" successfully registered", "Info",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to register barber.\nReason: {ex.Message}", "Error", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
             ClearErrors();
+            Username = Password = PasswordConfirm = string.Empty;
+            SubmitCommand.NotifyCanExecuteChanged();
         }
 
         private bool CanRegisterBarber() =>
@@ -106,6 +129,22 @@ namespace Kaede.ViewModels
         }
 
     }
+
+    public class BarberListingView : ViewModelBase
+    {
+        private readonly ObservableCollection<User> _barbers;
+        public IEnumerable<User> Barbers => _barbers;
+
+
+        public BarberListingView(IUserService userService)
+        {
+            List<User> res = userService.GetBarbers().GetAwaiter().GetResult();
+            _barbers = new ObservableCollection<User>(res);
+        }
+
+
+    }
+
     public class AdminPanelViewModel : ViewModelBase
     {
     }

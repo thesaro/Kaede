@@ -1,6 +1,7 @@
 ﻿using Kaede.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,8 @@ namespace Kaede.Views
 
             RecruitBarberGrid.DataContext = App.RunningInstance()
                 .FetchProviderService<BarberRegistrationViewModel>();
+            BarberListGrid.DataContext = App.RunningInstance()
+                .FetchProviderService<BarberListingView>();
         }
 
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
@@ -40,6 +43,26 @@ namespace Kaede.Views
             {
                 RecruitBarberGrid.Visibility = Visibility.Collapsed;
             }
+        }
+
+       
+    }
+
+    public class PwdHashTruncationConverter : IValueConverter
+    {
+        public int MaxLength { get; set; } = 10;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) return string.Empty;
+
+            string? text = value.ToString();
+            return string.Concat(text.AsSpan(0, MaxLength), "...");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }
