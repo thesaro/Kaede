@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Background="{StaticResource KBackground}"
         Foreground="{StaticResource KForeground}"
-        Title="Kaede" Height="450" Width="800">
+        Title="Kaede" Width="1280" Height="720" FontSize="20">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
 

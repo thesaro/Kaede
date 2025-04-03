@@ -35,17 +35,27 @@ namespace Kaede.Views
 
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is ToggleButton tb && (tb.IsChecked ?? false))
+            if (sender is ToggleButton tb)
             {
-                RecruitBarberGrid.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                RecruitBarberGrid.Visibility = Visibility.Collapsed;
+                var vis = (tb.IsChecked ?? false) ? Visibility.Visible : Visibility.Collapsed;
+                switch (tb.Name)
+                {
+                    case "BarberListTB":
+                        BarberListGrid.Visibility = vis;
+                        break;
+                    case "RecruitBarberTB":
+                        RecruitBarberGrid.Visibility = vis;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
-       
+        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 
     public class PwdHashTruncationConverter : IValueConverter

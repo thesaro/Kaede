@@ -91,7 +91,7 @@
         
         <Style.Triggers>
             <Trigger Property="Validation.HasError" Value="True">
-                <Setter Property="Margin" Value="0,6,0,24" />
+                <Setter Property="Margin" Value="0,6,0,32" />
             </Trigger>
         </Style.Triggers>
     </Style>
