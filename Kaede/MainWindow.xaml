@@ -38,13 +38,16 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Button Content="Dashboard" 
+                    Style="{StaticResource KButtonStyleMinimal}"
                     Background="Black" 
                     Command="{Binding NavigateDashboardCommand}"
                     />
             <Button Content="Settings" Grid.Row="1"
+                    Style="{StaticResource KButtonStyleMinimal}"
                     Background="Black"
                     Command="{Binding NavigateSettingsCommand}"/>
             <Button Content="Admin Panel" Grid.Row="2"
+                    Style="{StaticResource KButtonStyleMinimal}"
                     Background="Black"
                     Visibility="{Binding IsAdminLogged, Converter={StaticResource BoolToVis}}" 
                     Command="{Binding NavigateAdminPanelCommand}"/>

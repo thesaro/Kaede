@@ -12,7 +12,7 @@
     <Grid Margin="18,12,18,12">
         <StackPanel>
             <TextBlock FontSize="40" Text="Barber Management" />
-            <Separator Height="1" Width="640" HorizontalAlignment="Left"
+            <Separator Height="2" Width="640" HorizontalAlignment="Left"
                        Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
             <StackPanel Orientation="Horizontal">
                 <TextBlock FontSize="30" Text="Barber List" Padding="0,0,6,0" />
@@ -54,14 +54,33 @@
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="Remove" Foreground="{StaticResource KColor1}"/>
+                                            <TextBlock>
+                                                <Hyperlink 
+                                                    Foreground="{StaticResource KColor1}"
+                                                    TextDecorations="Underline"
+                                                    CommandParameter="{Binding}"
+                                                    Command="{Binding DataContext.RemoveCommand, 
+                                                        RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                    Style="{StaticResource KHyperLinkStyle}">
+                                                    Remove
+                                                </Hyperlink>
+                                            </TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="Change PWD" />
+                                            <TextBlock>
+                                                <Hyperlink 
+                                                    TextDecorations="Underline"
+                                                    Style="{StaticResource KHyperLinkStyle}"
+                                                    CommandParameter="{Binding}"
+                                                    Command="{Binding DataContext.ChangePassCommand, 
+                                                        RelativeSource={RelativeSource AncestorType=ListView}}">
+                                                    Change PWD
+                                                </Hyperlink>
+                                            </TextBlock>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -122,6 +141,19 @@
                     Register Barber
                 </Button>
             </Grid>
+            <TextBlock FontSize="40" Text="Backup &amp; Restore" />
+            <Separator Height="2" Width="640" HorizontalAlignment="Left"
+                       Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Style="{StaticResource KButtonStyleMinimal}" 
+                    Command="{Binding BackupCommand}"
+                    Content="Backup data" />
+                <TextBlock FontSize="24" VerticalAlignment="Center" Margin="12,0,12,0">OR</TextBlock>
+                <Button Style="{StaticResource KButtonStyleMinimal}"
+                    Command="{Binding RestoreCommand}"
+                    Content="Restore a previous backup" />
+            </StackPanel>
+
         </StackPanel>
     </Grid>
 </UserControl>

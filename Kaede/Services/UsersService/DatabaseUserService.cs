@@ -43,5 +43,19 @@ namespace Kaede.Services.UsersService
             using var context = await _dbContextFactory.CreateDbContextAsync();
             return context.Users.Where(u => u.Role == UserRole.Barber).ToList();
         }
+
+        public async Task RemoveUser(User user)
+        {
+            using var context = await _dbContextFactory.CreateDbContextAsync();
+            context.Users.Remove(user);
+            context.SaveChanges();
+        }
+
+        public async Task ChangePassword(User user, string newPassword)
+        {
+            using var context = await _dbContextFactory.CreateDbContextAsync();
+            user.PasswordHash = User.HashPassword(newPassword);
+            context.SaveChanges();
+        }
     }
 }

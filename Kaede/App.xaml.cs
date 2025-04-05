@@ -15,6 +15,7 @@ using Kaede.Services.UsersService;
 using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 using Kaede.HostBuilderExt;
+using Kaede.Services.RestorePointService;
 
 namespace Kaede;
 
@@ -46,6 +47,7 @@ public sealed partial class App : Application
 
                 services.AddSingleton<NavigationStore>();
                 services.AddSingleton<IUserService, DatabaseUserService>();
+                services.AddSingleton<IRestorePointService, DatabaseRestorePointService>();
 
                 services.AddSingleton<UserSession>();
 

@@ -12,6 +12,9 @@ namespace Kaede.Services.UsersService
     {
         Task CreateUser(User user);
         Task<User?> GetUser(string username);
+
+        Task RemoveUser(User user);
+        Task ChangePassword(User user, string newPassword);
         Task<List<User>> GetBarbers();
         Task<bool> HasAdmin();
     }

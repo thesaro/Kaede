@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Kaede.Models;
 using Kaede.Services;
+using Kaede.Services.RestorePointService;
 using Kaede.Services.UsersService;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Kaede.ViewModels
 {
@@ -132,20 +135,90 @@ namespace Kaede.ViewModels
 
     public class BarberListingView : ViewModelBase
     {
+        private readonly IUserService _userService;
         private readonly ObservableCollection<User> _barbers;
         public IEnumerable<User> Barbers => _barbers;
 
+        public ICommand RemoveCommand { get; }
+        public ICommand ChangePassCommand { get; }
 
         public BarberListingView(IUserService userService)
         {
+            _userService = userService;
+
             List<User> res = userService.GetBarbers().GetAwaiter().GetResult();
             _barbers = new ObservableCollection<User>(res);
+
+            RemoveCommand = new RelayCommand<object?>(_removeBarber);
+            ChangePassCommand = new RelayCommand<object?>(_changeBarberPassword);
         }
 
+        private void _removeBarber(object? item)
+        {
+            if (item != null && item is User barber)
+            {
+                try
+                {
+                    _userService.RemoveUser(barber);
+                    _barbers.Remove(barber);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error occured while removing barber:\n{ex.Message}",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
 
+        private void _changeBarberPassword(object? item)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class AdminPanelViewModel : ViewModelBase
     {
+        private readonly IRestorePointService _restorePointService;
+        public ICommand BackupCommand { get; }
+        public ICommand RestoreCommand { get; }
+
+
+        public AdminPanelViewModel(IRestorePointService restorePointService)
+        {
+            _restorePointService = restorePointService;
+
+            BackupCommand = new RelayCommand(_createBackup);
+            RestoreCommand = new RelayCommand(_restoreBackup);
+        }
+
+        private void _createBackup()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Title = "Save backup as",
+                Filter = "SQLite Database Files (*.db)|*.db|All Files (*.*)|*.*",
+                FileName = "kdbasere.db"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    _restorePointService.Backup(saveFileDialog.FileName);
+                    MessageBox.Show("Successfully created backup.", "Info",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Could not create backup due to:\n{ex.Message}", "Error",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void _restoreBackup()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

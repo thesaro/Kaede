@@ -50,6 +50,33 @@
         </Style.Setters>
     </Style>
 
+    <Style x:Key="KButtonStyleMinimal" TargetType="{x:Type Button}">
+        <Style.Setters>
+            <Setter Property="Background" Value="{StaticResource KBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource KForeground}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{StaticResource KForeground}"
+                        BorderThickness="2"
+                        CornerRadius="4"
+                        Padding="10,5">
+                            <ContentPresenter x:Name="_contentPresenter" HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style.Setters>
+    </Style>
+
     <Style x:Key="KDropdownButtonStyle" TargetType="{x:Type ToggleButton}">
         <Style.Setters>
             <Setter Property="OverridesDefaultStyle" Value="True" />
