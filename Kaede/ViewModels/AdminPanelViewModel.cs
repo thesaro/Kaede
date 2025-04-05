@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using Kaede.DTOs;
 using Kaede.Models;
 using Kaede.Services;
 using Kaede.Services.RestorePointService;
@@ -87,17 +88,17 @@ namespace Kaede.ViewModels
                 MessageBox.Show($"Username \"{Username}\" already exists.", "Error",
                     MessageBoxButton.OK);
             }
-            User barber = new User()
+            UserDTO barberDTO = new UserDTO()
             {
                 Username = this.Username,
-                PasswordHash = User.HashPassword(this.Password),
+                Password = this.Password,
                 Role = UserRole.Barber
             };
             
             try
             {
-                await _userService.CreateUser(barber);
-                MessageBox.Show($"Barber \"{barber.Username}\" successfully registered", "Info",
+                await _userService.CreateUser(barberDTO);
+                MessageBox.Show($"Barber \"{barberDTO.Username}\" successfully registered", "Info",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
@@ -136,8 +137,8 @@ namespace Kaede.ViewModels
     public class BarberListingView : ViewModelBase
     {
         private readonly IUserService _userService;
-        private readonly ObservableCollection<User> _barbers;
-        public IEnumerable<User> Barbers => _barbers;
+        private readonly ObservableCollection<UserDTO> _barbers;
+        public IEnumerable<UserDTO> Barbers => _barbers;
 
         public ICommand RemoveCommand { get; }
         public ICommand ChangePassCommand { get; }
@@ -146,8 +147,8 @@ namespace Kaede.ViewModels
         {
             _userService = userService;
 
-            List<User> res = userService.GetBarbers().GetAwaiter().GetResult();
-            _barbers = new ObservableCollection<User>(res);
+            List<UserDTO> res = userService.GetBarbers().GetAwaiter().GetResult();
+            _barbers = new ObservableCollection<UserDTO>(res);
 
             RemoveCommand = new RelayCommand<object?>(_removeBarber);
             ChangePassCommand = new RelayCommand<object?>(_changeBarberPassword);
@@ -155,12 +156,12 @@ namespace Kaede.ViewModels
 
         private void _removeBarber(object? item)
         {
-            if (item != null && item is User barber)
+            if (item != null && item is UserDTO barberDTO)
             {
                 try
                 {
-                    _userService.RemoveUser(barber);
-                    _barbers.Remove(barber);
+                    _userService.RemoveUser(barberDTO.Username);
+                    _barbers.Remove(barberDTO);
                 }
                 catch (Exception ex)
                 {

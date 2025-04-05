@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Kaede.DTOs;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Kaede.Models
 {
-    public class User
+    public class User : IFromDTO<UserDTO, User>
     {
         [Key]
         public Guid UserId { get; set; }
@@ -27,6 +28,13 @@ namespace Kaede.Models
 
         [Required]
         public UserRole Role { get; set; }
+
+        public static User FromDTO(UserDTO dto) => new User
+        {
+            Username = dto.Username,
+            PasswordHash = dto.Password,
+            Role = dto.Role,
+        };
 
         public static string HashPassword(string password)
         {
@@ -54,6 +62,8 @@ namespace Kaede.Models
                 u.LastPasswordChanged = DateTime.Now;
             }
         }
+
+
     }
     public enum UserRole
     {

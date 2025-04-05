@@ -36,14 +36,6 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="PasswordHash">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock HorizontalAlignment="Center" 
-                                                       Text="{Binding PasswordHash, Converter={StaticResource PwdHashTC}}" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
                                 <GridViewColumn Header="Register Date">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>

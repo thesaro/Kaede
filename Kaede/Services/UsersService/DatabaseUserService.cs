@@ -1,4 +1,6 @@
 ﻿using Kaede.DbContexts;
+using Kaede.DTOs;
+using Kaede.Extensions;
 using Kaede.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,17 +21,19 @@ namespace Kaede.Services.UsersService
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task CreateUser(User user)
+        public async Task CreateUser(UserDTO userDTO)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            await context.Users.AddAsync(user);
+            User newUser = User.FromDTO(userDTO);
+            await context.Users.AddAsync(newUser);
             await context.SaveChangesAsync();
         }
 
-        public async Task<User?> GetUser(string username)
+        public async Task<UserDTO?> GetUser(string username)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            return await context.Users.SingleOrDefaultAsync(u => u.Username == username);
+            User? user = await context.Users.SingleOrDefaultAsync(u => u.Username == username);
+            return user?.MapToDTO();
         }
 
         public async Task<bool> HasAdmin()
@@ -38,24 +42,37 @@ namespace Kaede.Services.UsersService
             return await context.Users.SingleOrDefaultAsync(u => u.Role == UserRole.Admin) != null;
         }
 
-        public async Task<List<User>> GetBarbers()
+        public async Task<List<UserDTO>> GetBarbers()
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            return context.Users.Where(u => u.Role == UserRole.Barber).ToList();
+            return context.Users.Where(u => u.Role == UserRole.Barber)
+                .Select(u => u.MapToDTO()).ToList();
         }
 
-        public async Task RemoveUser(User user)
+        public async Task RemoveUser(string username)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            context.Users.Remove(user);
-            context.SaveChanges();
+            var user = await context.Users.SingleOrDefaultAsync(u => u.Username == username);
+            if (user != null)
+            {
+                context.Users.Remove(user);
+                await context.SaveChangesAsync();
+            }
         }
 
-        public async Task ChangePassword(User user, string newPassword)
+        public async Task ChangePassword(string username, string newPassword)
+        {
+            // TODO: fkn implement this
+            using var context = await _dbContextFactory.CreateDbContextAsync();
+        }
+
+        public async Task<bool> ValidatePassword(string username, string password)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            user.PasswordHash = User.HashPassword(newPassword);
-            context.SaveChanges();
+            var user = context.Users.FirstOrDefault(u => u.Username == username);
+            if (user == null) return false;
+            // we interconnect logics here which is unclean but whatever
+            return User.HashPassword(password) == user.PasswordHash;
         }
     }
 }

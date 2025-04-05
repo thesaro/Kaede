@@ -10,6 +10,7 @@ using Kaede.Services.UsersService;
 using System.Security.Permissions;
 using System.Security.Cryptography;
 using System.Printing.IndexedProperties;
+using Kaede.DTOs;
 
 namespace Kaede.ViewModels
 {
@@ -66,20 +67,20 @@ namespace Kaede.ViewModels
 
         private async Task LoginUser()
         {
-            User? user = await _userSerivce.GetUser(Username);
-            if (user is null)
+            UserDTO? userDTO = await _userSerivce.GetUser(Username);
+            if (userDTO is null)
             {
                 _loginError = "Username does not exist";
                 return;
             }
 
-            if (user.PasswordHash != User.HashPassword(this.Password))
+            if (!await _userSerivce.ValidatePassword(Username, Password))
             {
                 _loginError = "Invalid password";
                 return;
             }
 
-            _userSession.Login(user);
+            _userSession.Login(userDTO);
             NavigateHomeCommand.Execute(null);
         }
 

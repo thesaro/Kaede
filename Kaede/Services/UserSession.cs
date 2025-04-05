@@ -1,4 +1,4 @@
-﻿using Kaede.Models;
+﻿using Kaede.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +11,8 @@ namespace Kaede.Services
     {
         private readonly ReaderWriterLockSlim _lock = new();
 
-        private User? _currentUser;
-        public User? CurrentUser {
+        private UserDTO? _currentUser;
+        public UserDTO? CurrentUser {
             get 
             {
                 _lock.EnterReadLock();
@@ -39,7 +39,7 @@ namespace Kaede.Services
             }
         }
         public bool IsLoggedIn => CurrentUser != null;
-        public void Login(User user)
+        public void Login(UserDTO user)
         {
             if (IsLoggedIn)
                 throw new InvalidOperationException("A logged in user is already present in the user service.");

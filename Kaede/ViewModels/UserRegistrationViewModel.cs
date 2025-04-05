@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 using System.Diagnostics;
 using System.Threading;
+using Kaede.DTOs;
 
 
 namespace Kaede.ViewModels
@@ -104,9 +105,10 @@ namespace Kaede.ViewModels
         {
             // No need to check for duplicate user here cos
             // admin is the first one to register
-            User admin = new User() { 
-                Username = this.Username, 
-                PasswordHash = User.HashPassword(this.Password),
+            UserDTO admin = new UserDTO()
+            {
+                Username = this.Username,
+                Password = this.Password,
                 Role = UserRole.Admin
             };
 
