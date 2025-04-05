@@ -34,9 +34,9 @@ public sealed partial class App : Application
         #if DEBUG
             AllocConsole();
             Console.WriteLine("Debug mode: Console attached.");
-        #endif
+#endif
 
-        InitializeDb();
+        Config.AppUtils.LoadAppData();
 
         _host = Host.CreateDefaultBuilder()
             .AddViewModels()
@@ -64,19 +64,6 @@ public sealed partial class App : Application
 
     [DllImport("kernel32.dll")]
     private static extern bool AllocConsole();
-
-
-    private void InitializeDb()
-    {
-        AppUtils.CreateLocalAppDir();
-        var options = new DbContextOptionsBuilder<KaedeDbContext>()
-            .UseSqlite(Config.AppUtils.ConnectionString).Options;
-        using var context = new KaedeDbContext(options);
-
-        context.Database.EnsureCreated();
-        context.Database.Migrate();
-    }
-    
 
     protected override void OnStartup(StartupEventArgs e)
     {

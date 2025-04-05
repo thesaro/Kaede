@@ -76,7 +76,8 @@
             </Setter>
         </Style.Setters>
     </Style>
-
+    
+    
     <Style x:Key="KDropdownButtonStyle" TargetType="{x:Type ToggleButton}">
         <Style.Setters>
             <Setter Property="OverridesDefaultStyle" Value="True" />

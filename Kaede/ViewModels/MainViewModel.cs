@@ -27,7 +27,8 @@ namespace Kaede.ViewModels
             CurrentViewModel 
             is DashboardViewModel 
             or SettingsViewModel
-            or AdminPanelViewModel;
+            or AdminPanelViewModel
+            or ChangePasswordViewModel;
 
         public bool IsAdminLogged =>
             _userSession.CurrentUser?.Role == Models.UserRole.Admin;

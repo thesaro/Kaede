@@ -33,11 +33,18 @@
                     <TextBlock Width="480">Last Password Changed</TextBlock>
                     <TextBlock Text="{Binding USession.CurrentUser.LastPasswordChanged}"/>
                 </StackPanel>
-                <Button Grid.Row="3" Width="Auto" Margin="0,12,0,0"
+                <StackPanel Orientation="Horizontal" Grid.Row="3">
+                    <Button Width="Auto" Margin="0,12,0,0"
+                        Command="{Binding NavigateChangePasswordCommand}"
+                        Style="{StaticResource KButtonStyleMinimal}"
+                        Content="Change Password"/>
+                    <Button Width="Auto" Margin="24,12,0,0"
                         HorizontalAlignment="Left"
                         Command="{Binding LogoutCommand}"
                         Style="{StaticResource KButtonStyle}" 
                         Content="Logout" />
+                </StackPanel>
+
             </Grid>
         </StackPanel>
 

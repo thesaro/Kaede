@@ -218,7 +218,31 @@ namespace Kaede.ViewModels
 
         private void _restoreBackup()
         {
-            throw new NotImplementedException();
+            // confirm app data overwrite
+            MessageBoxResult result = MessageBox.Show("Restoring another app data instance will REMOVE the current data.\nAre you sure you want to proceed?",
+                "Confirm", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+            if (result != MessageBoxResult.OK) return;
+
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Title = "Open backup file",
+                Filter = "SQLite Database Files (*.db)|*.db|All Files (*.*)|*.*"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    _restorePointService.Restore(openFileDialog.FileName);
+                    MessageBox.Show("Restore success.\nRelaunch the app for changes to take effect.",
+                        "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Could not restore backup due to:\n{ex.Message}", 
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 }

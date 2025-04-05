@@ -13,15 +13,18 @@ namespace Kaede.ViewModels
     {
         private readonly NavigationService<UserLoginViewModel> _userLoginNavService;
         public UserSession USession { get; }
+        public IRelayCommand NavigateChangePasswordCommand { get; }
         public IRelayCommand LogoutCommand { get; }
         public SettingsViewModel(
             UserSession userSession,
-            NavigationService<UserLoginViewModel> userLoginNavService)
+            NavigationService<UserLoginViewModel> userLoginNavService,
+            NavigationService<ChangePasswordViewModel> changePasswordNavService)
         {
             USession = userSession;
             _userLoginNavService = userLoginNavService;
 
             LogoutCommand = new RelayCommand(_logout);
+            NavigateChangePasswordCommand = Commands.NavigateCommand.Create(changePasswordNavService);
         }
 
         private void _logout()
@@ -29,5 +32,6 @@ namespace Kaede.ViewModels
             USession.Logout();
             _userLoginNavService.Navigate();
         }
+
     }
 }
