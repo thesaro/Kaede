@@ -64,6 +64,16 @@ namespace Kaede.Services.UsersService
         {
             // TODO: fkn implement this
             using var context = await _dbContextFactory.CreateDbContextAsync();
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            if (user == null)
+            {
+                throw new InvalidOperationException();
+            }
+            else
+            {
+                user.PasswordHash = User.HashPassword(newPassword);
+                await context.SaveChangesAsync();
+            }
         }
 
         public async Task<bool> ValidatePassword(string username, string password)

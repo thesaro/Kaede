@@ -12,10 +12,15 @@ namespace Kaede.DbContexts
 {
     public class KaedeDbContext : DbContext
     {
+        #region Tables
         public DbSet<User> Users { get; set; }
+        #endregion
 
+        #region Constructor
         public KaedeDbContext(DbContextOptions options) : base(options) { }
+        #endregion
 
+        #region Methods
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
@@ -54,5 +59,7 @@ namespace Kaede.DbContexts
                 }
             }
         }
+
+        #endregion
     }
 }

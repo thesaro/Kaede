@@ -27,14 +27,14 @@ public sealed partial class App : Application
 
     private readonly IHost _host;
 
-    public static App RunningInstance() => Application.Current as App;
+    public static App? RunningInstance() => Application.Current as App;
     public S? FetchProviderService<S>() => _host.Services.GetService<S>();
     public App()
     {
         #if DEBUG
             AllocConsole();
             Console.WriteLine("Debug mode: Console attached.");
-#endif
+        #endif
 
         Config.AppUtils.LoadAppData();
 

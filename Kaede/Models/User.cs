@@ -13,6 +13,7 @@ namespace Kaede.Models
 {
     public class User : IFromDTO<UserDTO, User>
     {
+        #region Properties
         [Key]
         public Guid UserId { get; set; }
 
@@ -28,7 +29,9 @@ namespace Kaede.Models
 
         [Required]
         public UserRole Role { get; set; }
+        #endregion
 
+        #region Static Methods
         public static User FromDTO(UserDTO dto) => new User
         {
             Username = dto.Username,
@@ -62,7 +65,7 @@ namespace Kaede.Models
                 u.LastPasswordChanged = DateTime.Now;
             }
         }
-
+        #endregion
 
     }
     public enum UserRole

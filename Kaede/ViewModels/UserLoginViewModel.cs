@@ -11,17 +11,23 @@ using System.Security.Permissions;
 using System.Security.Cryptography;
 using System.Printing.IndexedProperties;
 using Kaede.DTOs;
+using System.Windows;
 
 namespace Kaede.ViewModels
 {
     public class UserLoginViewModel : ViewModelBase
     {
+        #region Services and Dependencies
         private readonly IUserService _userSerivce;
         private readonly UserSession _userSession;
+        #endregion
 
+        #region Commands
         public IRelayCommand NavigateHomeCommand { get; }
-        public IRelayCommand SubmitCommand { get; }
+        public IRelayCommand LoginCommand { get; }
+        #endregion
 
+        #region Properties
         private string _username = "";
         public string Username
         {
@@ -30,7 +36,7 @@ namespace Kaede.ViewModels
             {
                 ClearErrors(nameof(Username));
                 SetProperty(ref _username, value);
-                SubmitCommand.NotifyCanExecuteChanged();
+                LoginCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -42,18 +48,12 @@ namespace Kaede.ViewModels
             {
                 ClearErrors(nameof(Password));
                 SetProperty(ref _password, value);
-                SubmitCommand.NotifyCanExecuteChanged();
+                LoginCommand.NotifyCanExecuteChanged();
             }
         }
+        #endregion
 
-        private string _loginError = "";
-        public string LoginError
-        {
-            get => _loginError;
-            set => SetProperty(ref _loginError, value);
-        }
-
-
+        #region Constructor
         public UserLoginViewModel(
             NavigationService<DashboardViewModel> dashboardViewNavService, 
             IUserService userService,
@@ -62,30 +62,31 @@ namespace Kaede.ViewModels
             _userSerivce = userService;
             _userSession = userSession;
             NavigateHomeCommand = Commands.NavigateCommand.Create(dashboardViewNavService);
-            SubmitCommand = new AsyncRelayCommand(LoginUser, CanLoginUser);
+            LoginCommand = new AsyncRelayCommand(LoginUser, CanLoginUser);
         }
+        #endregion
 
+        #region LoginCommand Methods
         private async Task LoginUser()
         {
             UserDTO? userDTO = await _userSerivce.GetUser(Username);
-            if (userDTO is null)
-            {
-                _loginError = "Username does not exist";
-                return;
-            }
 
-            if (!await _userSerivce.ValidatePassword(Username, Password))
-            {
-                _loginError = "Invalid password";
-                return;
-            }
 
-            _userSession.Login(userDTO);
-            NavigateHomeCommand.Execute(null);
+            if (userDTO != null && !await _userSerivce.ValidatePassword(Username, Password))
+            {
+                _userSession.Assign(userDTO);
+                NavigateHomeCommand.Execute(null);
+            }
+            else
+            {
+                MessageBox.Show("Invalid username or password.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private bool CanLoginUser() =>
             !string.IsNullOrEmpty(Username) &&
             !string.IsNullOrEmpty(Password);
+        #endregion
     }
 }

@@ -20,17 +20,16 @@ using System.Windows.Input;
 namespace Kaede.ViewModels
 {
     public class BarberRegistrationViewModel : ViewModelBase
-    { 
+    {
+        #region Services and Dependencies
         private readonly IUserService _userService;
+        #endregion
+
+        #region Commands
         public IRelayCommand SubmitCommand { get; }
+        #endregion
 
-        public BarberRegistrationViewModel(IUserService userService)
-        {
-            _userService = userService;
-
-            SubmitCommand = new AsyncRelayCommand(RegisterBarber, CanRegisterBarber);
-        }
-
+        #region Properties
         private string _username = "";
         [Required]
         [MinLength(5, ErrorMessage = "Username must be at least 5 characters.")]
@@ -80,6 +79,18 @@ namespace Kaede.ViewModels
             }
 
         }
+        #endregion
+
+        #region Constructor
+        public BarberRegistrationViewModel(IUserService userService)
+        {
+            _userService = userService;
+
+            SubmitCommand = new AsyncRelayCommand(RegisterBarber, CanRegisterBarber);
+        }
+        #endregion
+
+        #region RegisterBarberCommand Methods
         private async Task RegisterBarber()
         {
 
@@ -117,8 +128,9 @@ namespace Kaede.ViewModels
             !string.IsNullOrEmpty(Username) &&
             !string.IsNullOrEmpty(Password) &&
             !string.IsNullOrEmpty(PasswordConfirm);
+        #endregion
 
-
+        #region Validation Methods
         // This is uhh a bit replicated from the UserRegistrationViewModel maybe
         // find a way to abstract it later.
         public static ValidationResult? ValidateMatchingPassword(string _, ValidationContext context)
@@ -131,18 +143,27 @@ namespace Kaede.ViewModels
 
             return new("Passwords do not match.");
         }
-
+        #endregion
     }
 
     public class BarberListingView : ViewModelBase
     {
+        #region Services and Dependencies
         private readonly IUserService _userService;
-        private readonly ObservableCollection<UserDTO> _barbers;
-        public IEnumerable<UserDTO> Barbers => _barbers;
+        #endregion
 
+        #region Commands
         public ICommand RemoveCommand { get; }
         public ICommand ChangePassCommand { get; }
+        #endregion
 
+        #region Properties
+        private readonly ObservableCollection<UserDTO> _barbers;
+        public IEnumerable<UserDTO> Barbers => _barbers;
+        #endregion
+
+
+        #region Constructor
         public BarberListingView(IUserService userService)
         {
             _userService = userService;
@@ -150,11 +171,13 @@ namespace Kaede.ViewModels
             List<UserDTO> res = userService.GetBarbers().GetAwaiter().GetResult();
             _barbers = new ObservableCollection<UserDTO>(res);
 
-            RemoveCommand = new RelayCommand<object?>(_removeBarber);
-            ChangePassCommand = new RelayCommand<object?>(_changeBarberPassword);
+            RemoveCommand = new RelayCommand<object?>(RemoveBarber);
+            ChangePassCommand = new RelayCommand<object?>(ChangeBarberPassword);
         }
+        #endregion
 
-        private void _removeBarber(object? item)
+        #region RemoveBarberCommand Methods
+        private void RemoveBarber(object? item)
         {
             if (item != null && item is UserDTO barberDTO)
             {
@@ -170,29 +193,39 @@ namespace Kaede.ViewModels
                 }
             }
         }
+        #endregion
 
-        private void _changeBarberPassword(object? item)
+        #region ChangeBarberPasswordCommand Methods
+        private void ChangeBarberPassword(object? item)
         {
             throw new NotImplementedException();
         }
+        #endregion
     }
 
     public class AdminPanelViewModel : ViewModelBase
     {
+        #region Services and Dependencies
         private readonly IRestorePointService _restorePointService;
-        public ICommand BackupCommand { get; }
-        public ICommand RestoreCommand { get; }
+        #endregion
 
+        #region Commands
+        public IRelayCommand BackupCommand { get; }
+        public IRelayCommand RestoreCommand { get; }
+        #endregion
 
+        #region Constructor
         public AdminPanelViewModel(IRestorePointService restorePointService)
         {
             _restorePointService = restorePointService;
 
-            BackupCommand = new RelayCommand(_createBackup);
-            RestoreCommand = new RelayCommand(_restoreBackup);
+            BackupCommand = new RelayCommand(CreateBackup);
+            RestoreCommand = new RelayCommand(RestoreBackup);
         }
+        #endregion
 
-        private void _createBackup()
+        #region Methods
+        private void CreateBackup()
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
@@ -217,7 +250,7 @@ namespace Kaede.ViewModels
             }
         }
 
-        private void _restoreBackup()
+        private void RestoreBackup()
         {
             // confirm app data overwrite
             MessageBoxResult result = MessageBox.Show("Restoring another app data instance will REMOVE the current data.\nAre you sure you want to proceed?",
@@ -245,5 +278,6 @@ namespace Kaede.ViewModels
                 }
             }
         }
+        #endregion
     }
 }

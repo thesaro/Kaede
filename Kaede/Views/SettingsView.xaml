@@ -20,20 +20,25 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Width="480">Username</TextBlock>
                     <TextBlock Text="{Binding USession.CurrentUser.Username}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Grid.Row="1">
+                    <TextBlock Width="480">Role</TextBlock>
+                    <TextBlock Text="{Binding USession.CurrentUser.Role}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Grid.Row="2">
                     <TextBlock Width="480">Creation Date</TextBlock>
                     <TextBlock Text="{Binding USession.CurrentUser.CreationDate}"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Row="2">
+                <StackPanel Orientation="Horizontal" Grid.Row="3">
                     <TextBlock Width="480">Last Password Changed</TextBlock>
                     <TextBlock Text="{Binding USession.CurrentUser.LastPasswordChanged}"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Row="3">
+                <StackPanel Orientation="Horizontal" Grid.Row="4">
                     <Button Width="Auto" Margin="0,12,0,0"
                         Command="{Binding NavigateChangePasswordCommand}"
                         Style="{StaticResource KButtonStyleMinimal}"

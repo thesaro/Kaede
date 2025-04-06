@@ -11,6 +11,7 @@ namespace Kaede.Config
 {
     public static class AppUtils
     {
+        #region Appplication Paths
         const string AppName = "KaedeApp";
         const string DbFileName = "kdbase.db";
         const string DbTempFileName = "kdbasetemp.db";
@@ -21,7 +22,9 @@ namespace Kaede.Config
             Path.Join(LocalFolder, AppName, DbFileName);
         public static readonly string DbPathTemp =
             Path.Join(LocalFolder, AppName, DbTempFileName);
+        #endregion
 
+        #region Static DB Utility Methods
         public static void LoadAppData()
         {
             CreateLocalAppDir();
@@ -43,5 +46,6 @@ namespace Kaede.Config
         public static string ConnectionString => $"Data Source={Config.AppUtils.DbPath}";
         public static void CreateLocalAppDir() =>
             Directory.CreateDirectory(Path.Join(LocalFolder, AppName));
+        #endregion
     }
 }

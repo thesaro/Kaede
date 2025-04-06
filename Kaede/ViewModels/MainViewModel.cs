@@ -14,25 +14,30 @@ namespace Kaede.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+        #region Services and Dependencies
         private readonly NavigationStore _navigationStore;
         private readonly UserSession _userSession;
+        #endregion
 
-        public ViewModelBase CurrentViewModel => _navigationStore.CurrentViewModel;
-
+        #region Commands
         public IRelayCommand NavigateDashboardCommand { get; }
         public IRelayCommand NavigateSettingsCommand { get; }
         public IRelayCommand NavigateAdminPanelCommand { get; }
+        #endregion
 
+        #region Properties
+        public ViewModelBase CurrentViewModel => _navigationStore.CurrentViewModel;
         public bool IsHomeView =>
             CurrentViewModel 
             is DashboardViewModel 
             or SettingsViewModel
             or AdminPanelViewModel
             or ChangePasswordViewModel;
-
         public bool IsAdminLogged =>
             _userSession.CurrentUser?.Role == Models.UserRole.Admin;
+        #endregion
 
+        #region Constructor
         public MainViewModel(NavigationStore navigationStore, UserSession userSession)
         {
             _userSession = userSession;
@@ -51,7 +56,9 @@ namespace Kaede.ViewModels
                 App.RunningInstance().FetchProviderService<NavigationService<AdminPanelViewModel>>()!,
                 () => CurrentViewModel is not AdminPanelViewModel);
         }
+        #endregion
 
+        #region Event Listeners
         private void OnCurrentViewModelChanged()
         {
             OnPropertyChanged(nameof(CurrentViewModel));
@@ -60,5 +67,6 @@ namespace Kaede.ViewModels
 
             Console.WriteLine($"Current VM is {CurrentViewModel} and ADMIN is {IsAdminLogged}");
         }
+        #endregion
     }
 }

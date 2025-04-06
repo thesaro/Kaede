@@ -11,10 +11,17 @@ namespace Kaede.ViewModels
 {
     public class SettingsViewModel : ViewModelBase
     {
+        #region Properties and Dependencies
         private readonly NavigationService<UserLoginViewModel> _userLoginNavService;
         public UserSession USession { get; }
+        #endregion
+
+        #region Commands
         public IRelayCommand NavigateChangePasswordCommand { get; }
         public IRelayCommand LogoutCommand { get; }
+        #endregion
+
+        #region Constructor
         public SettingsViewModel(
             UserSession userSession,
             NavigationService<UserLoginViewModel> userLoginNavService,
@@ -23,15 +30,17 @@ namespace Kaede.ViewModels
             USession = userSession;
             _userLoginNavService = userLoginNavService;
 
-            LogoutCommand = new RelayCommand(_logout);
+            LogoutCommand = new RelayCommand(Logout);
             NavigateChangePasswordCommand = Commands.NavigateCommand.Create(changePasswordNavService);
         }
+        #endregion
 
-        private void _logout()
+        #region LogoutCommand Methods
+        private void Logout()
         {
-            USession.Logout();
+            USession.Remove();
             _userLoginNavService.Navigate();
         }
-
+        #endregion
     }
 }

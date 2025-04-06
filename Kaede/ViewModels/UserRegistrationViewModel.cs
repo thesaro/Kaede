@@ -23,34 +23,17 @@ namespace Kaede.ViewModels
 {
     public class UserRegistrationViewModel : ViewModelBase
     {
-        public IRelayCommand SubmitCommand { get; }
+        #region Commands 
+        public IRelayCommand RegisterCommand { get; }
         public IRelayCommand NavigateHomeCommand { get; }
+        #endregion
 
+        #region Services and Dependencies
         private readonly IUserService _userService;
         private readonly UserSession _userSession;
+        #endregion
+        #region Properties
 
-        public UserRegistrationViewModel(
-            NavigationService<DashboardViewModel> dashboardViewNavService, 
-            IUserService userService,
-            UserSession userSession
-        ) {
-            _userService = userService;
-            _userSession = userSession;
-            NavigateHomeCommand = Commands.NavigateCommand.Create(dashboardViewNavService);
-            SubmitCommand = new AsyncRelayCommand(RegisterUser, CanRegisterUser);
-        }
-
-        public static ValidationResult? ValidateMatchingPassword(string _, ValidationContext context)
-        {
-            UserRegistrationViewModel instance = (UserRegistrationViewModel)context.ObjectInstance;
-            bool isValid = instance.Password == instance.PasswordConfirm;
-
-            if (isValid)
-                return ValidationResult.Success;
-
-            return new("Passwords do not match.");
-        }
-       
         private string _username = "";
         [Required]
         [MinLength(5, ErrorMessage = "Username must be at least 5 characters.")]
@@ -63,7 +46,7 @@ namespace Kaede.ViewModels
             {
                 ClearErrors(nameof(Username));
                 SetProperty(ref _username, value, true);
-                SubmitCommand.NotifyCanExecuteChanged();
+                RegisterCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -81,7 +64,7 @@ namespace Kaede.ViewModels
                 SetProperty(ref _password, value, true);
                 if (!string.IsNullOrEmpty(PasswordConfirm))
                     ValidateProperty(PasswordConfirm, nameof(PasswordConfirm));
-                SubmitCommand.NotifyCanExecuteChanged();
+                RegisterCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -96,12 +79,27 @@ namespace Kaede.ViewModels
                 ClearErrors(nameof(PasswordConfirm));
                 SetProperty(ref _passwordConfirm, value, true);
                 ValidateProperty(Password, nameof(Password));
-                SubmitCommand.NotifyCanExecuteChanged();
+                RegisterCommand.NotifyCanExecuteChanged();
             }
-        } 
+        }
+        #endregion
 
+        #region Constructor
+        public UserRegistrationViewModel(
+            NavigationService<DashboardViewModel> dashboardViewNavService, 
+            IUserService userService,
+            UserSession userSession
+        ) {
+            _userService = userService;
+            _userSession = userSession;
+            NavigateHomeCommand = Commands.NavigateCommand.Create(dashboardViewNavService);
+            RegisterCommand = new AsyncRelayCommand(_registerUser, _canRegisterUser);
+        }
+        #endregion
 
-        private async Task RegisterUser()
+        #region RegisterCommand Methods
+
+        private async Task _registerUser()
         {
             // No need to check for duplicate user here cos
             // admin is the first one to register
@@ -125,18 +123,30 @@ namespace Kaede.ViewModels
                 return;
             }
 
-            _userSession.Login(admin);
+            _userSession.Assign(admin);
             ClearErrors();
 
             NavigateHomeCommand.Execute(null);
         }
 
-        private bool CanRegisterUser() =>
+        private bool _canRegisterUser() =>
             !HasErrors &&
             !string.IsNullOrEmpty(Username) &&
             !string.IsNullOrEmpty(Password) &&
             !string.IsNullOrEmpty(PasswordConfirm);
+        #endregion
 
+        #region Validation Methods and Attributes
+        public static ValidationResult? ValidateMatchingPassword(string _, ValidationContext context)
+        {
+            UserRegistrationViewModel instance = (UserRegistrationViewModel)context.ObjectInstance;
+            bool isValid = instance.Password == instance.PasswordConfirm;
+
+            if (isValid)
+                return ValidationResult.Success;
+
+            return new("Passwords do not match.");
+        }
 
         internal sealed class UsernameValidationAttribute : ValidationAttribute
         {
@@ -150,6 +160,8 @@ namespace Kaede.ViewModels
                 return ValidationResult.Success;
             }
         }
+        #endregion
+
     }
 
 
