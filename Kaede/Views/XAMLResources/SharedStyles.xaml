@@ -111,12 +111,17 @@
             </Setter>
         </Style.Setters>
     </Style>
-    
-    
-    <Style TargetType="TextBox" x:Key="KTextBoxValidationStyle">
+
+    <Style TargetType="TextBox" x:Key="KTextBoxGenericStyle">
         <Style.Setters>
             <Setter Property="Background" Value="{StaticResource KBackground}" />
             <Setter Property="Foreground" Value="{StaticResource KForeground}" />
+            <Setter Property="MaxLength" Value="30" />
+        </Style.Setters>
+    </Style>
+    
+    <Style TargetType="TextBox" x:Key="KTextBoxValidationStyle" BasedOn="{StaticResource KTextBoxGenericStyle}">
+        <Style.Setters>
             <Setter Property="Margin" Value="0,6,0,6" />
         </Style.Setters>
         
@@ -126,6 +131,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
 
     <Style TargetType="Hyperlink" x:Key="KHyperLinkStyle">
         <Style.Setters>
