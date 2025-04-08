@@ -35,7 +35,7 @@ namespace Kaede.Models
         public static User FromDTO(UserDTO dto) => new User
         {
             Username = dto.Username,
-            PasswordHash = dto.Password,
+            PasswordHash = HashPassword(dto.Password),
             Role = dto.Role,
         };
 
