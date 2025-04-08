@@ -17,6 +17,8 @@ using ValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;
 using System.Diagnostics;
 using System.Threading;
 using Kaede.DTOs;
+using Kaede.Services.RestorePointService;
+using Microsoft.Win32;
 
 
 namespace Kaede.ViewModels
@@ -25,11 +27,14 @@ namespace Kaede.ViewModels
     {
         #region Commands 
         public IRelayCommand RegisterCommand { get; }
+        public IRelayCommand RestoreCommand { get; }
         public IRelayCommand NavigateHomeCommand { get; }
+
         #endregion
 
         #region Services and Dependencies
         private readonly IUserService _userService;
+        private readonly IRestorePointService _restorePointService;
         private readonly UserSession _userSession;
         #endregion
         #region Properties
@@ -88,18 +93,21 @@ namespace Kaede.ViewModels
         public UserRegistrationViewModel(
             NavigationService<DashboardViewModel> dashboardViewNavService, 
             IUserService userService,
+            IRestorePointService restorePointService,
             UserSession userSession
         ) {
             _userService = userService;
+            _restorePointService = restorePointService;
             _userSession = userSession;
             NavigateHomeCommand = Commands.NavigateCommand.Create(dashboardViewNavService);
-            RegisterCommand = new AsyncRelayCommand(_registerUser, _canRegisterUser);
+            RestoreCommand = new RelayCommand(RestorePrevBackup);
+            RegisterCommand = new AsyncRelayCommand(RegisterUser, CanRegisterUser);
         }
         #endregion
 
         #region RegisterCommand Methods
 
-        private async Task _registerUser()
+        private async Task RegisterUser()
         {
             // No need to check for duplicate user here cos
             // admin is the first one to register
@@ -129,13 +137,39 @@ namespace Kaede.ViewModels
             NavigateHomeCommand.Execute(null);
         }
 
-        private bool _canRegisterUser() =>
+        private bool CanRegisterUser() =>
             !HasErrors &&
             !string.IsNullOrEmpty(Username) &&
             !string.IsNullOrEmpty(Password) &&
             !string.IsNullOrEmpty(PasswordConfirm);
         #endregion
 
+        #region RestoreCommand Methods
+        private void RestorePrevBackup()
+        {
+
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Title = "Open backup file",
+                Filter = "SQLite Database Files (*.db)|*.db|All Files (*.*)|*.*"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    _restorePointService.Restore(openFileDialog.FileName);
+                    MessageBox.Show("Restore success.\nRelaunch the app for changes to take effect.",
+                        "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Could not restore backup due to:\n{ex.Message}",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+        #endregion
         #region Validation Methods and Attributes
         public static ValidationResult? ValidateMatchingPassword(string _, ValidationContext context)
         {

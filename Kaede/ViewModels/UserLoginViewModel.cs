@@ -72,7 +72,7 @@ namespace Kaede.ViewModels
             UserDTO? userDTO = await _userSerivce.GetUser(Username);
 
 
-            if (userDTO != null && !await _userSerivce.ValidatePassword(Username, Password))
+            if (userDTO != null && await _userSerivce.ValidatePassword(Username, Password))
             {
                 _userSession.Assign(userDTO);
                 NavigateHomeCommand.Execute(null);

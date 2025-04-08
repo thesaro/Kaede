@@ -98,7 +98,9 @@ namespace Kaede.ViewModels
             {
                 MessageBox.Show($"Username \"{Username}\" already exists.", "Error",
                     MessageBoxButton.OK);
+                return;
             }
+
             UserDTO barberDTO = new UserDTO()
             {
                 Username = this.Username,
@@ -119,7 +121,6 @@ namespace Kaede.ViewModels
             }
 
             ClearErrors();
-            Username = Password = PasswordConfirm = string.Empty;
             SubmitCommand.NotifyCanExecuteChanged();
         }
 

@@ -83,20 +83,26 @@ namespace Kaede.ViewModels
             _userService = userService;
             _settingsNavService = settingsNavService;
 
-            ChangePasswordCommand = new RelayCommand(ChangePWD, CanChangePWD);
+            ChangePasswordCommand = new AsyncRelayCommand(ChangePWD, CanChangePWD);
             NavigateBackCommand = Commands.NavigateCommand.Create(_settingsNavService);
         }
         #endregion
 
         #region ChangePasswordCommand Methods
-        private void ChangePWD()
+        private async Task ChangePWD()
         {
-            // do the change pwd stuff then relocate to settings
+            if (!await _userService
+                .ValidatePassword(_userSession.CurrentUser!.Username, CurrentPassword))
+            {
+                MessageBox.Show("Incorrect password", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             try
             {
                 if (_userSession.CurrentUser == null)
                     throw new ArgumentNullException();
-                _userService.ChangePassword(_userSession.CurrentUser.Username, NewPassword);
+                await _userService.ChangePassword(_userSession.CurrentUser.Username, NewPassword);
                 _userSession.ResolveChanges();
                 MessageBox.Show("Your password was changed successfully.", "Info",
                     MessageBoxButton.OK, MessageBoxImage.Information);
