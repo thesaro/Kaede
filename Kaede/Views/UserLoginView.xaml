@@ -23,12 +23,14 @@
         <StackPanel Grid.Row="1">
             <TextBlock>USERNAME</TextBlock>
             <TextBox Template="{StaticResource KTextBoxControlTemplate}" 
+                     Style="{StaticResource KTextBoxGenericStyle}"
                      Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"></TextBox>
         </StackPanel>
 
         <StackPanel Grid.Row="2" Margin="0,32,0,0">
             <TextBlock>PASSWORD</TextBlock>
             <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                     Style="{StaticResource KTextBoxGenericStyle}"
                      Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"></TextBox>
         </StackPanel>
 
