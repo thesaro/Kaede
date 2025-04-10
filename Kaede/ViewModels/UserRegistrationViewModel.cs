@@ -121,7 +121,7 @@ namespace Kaede.ViewModels
             try
             {
                 await _userService.CreateUser(admin);
-                MessageBox.Show($"Barber \"{admin.Username}\" successfully registered", "Info",
+                MessageBox.Show($"Admin \"{admin.Username}\" successfully registered", "Info",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
@@ -132,6 +132,9 @@ namespace Kaede.ViewModels
             }
 
             _userSession.Assign(admin);
+            // need to resolve initially because of
+            // creation date submition
+            _userSession.ResolveChanges();
             ClearErrors();
 
             NavigateHomeCommand.Execute(null);

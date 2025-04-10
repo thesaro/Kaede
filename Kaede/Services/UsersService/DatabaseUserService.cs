@@ -13,7 +13,6 @@ namespace Kaede.Services.UsersService
 {
     public class DatabaseUserService : IUserService
     {
-
         IDbContextFactory<KaedeDbContext> _dbContextFactory;
 
         public DatabaseUserService(IDbContextFactory<KaedeDbContext> dbContextFactory)
@@ -24,16 +23,34 @@ namespace Kaede.Services.UsersService
         public async Task CreateUser(UserDTO userDTO)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            User newUser = User.FromDTO(userDTO);
-            await context.Users.AddAsync(newUser);
-            await context.SaveChangesAsync();
+            if (User.TryFromDTO(userDTO, out User? newUser))
+            {
+                await context.Users.AddAsync(newUser!);
+                await context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new InvalidDTOException("Invalid UserDTO");
+            }
+        }
+
+        // needs to take the DbContext parameter as well so mutating the returned model
+        // results in changes with respect to the calling/saving context
+        private async Task<User?> GetUserModel(string username, KaedeDbContext context)
+        {
+            if (User.TryEncodeUsername(username, out string? uHash))
+            {
+                User? user = await context.Users.SingleOrDefaultAsync(u => u.UsernameHash == uHash);
+                return user;
+            }
+            else 
+                return null;
         }
 
         public async Task<UserDTO?> GetUser(string username)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            User? user = await context.Users.SingleOrDefaultAsync(u => u.Username == username);
-            return user?.MapToDTO();
+            return (await GetUserModel(username, context))?.MapToDTO();
         }
 
         public async Task<bool> HasAdmin()
@@ -52,7 +69,7 @@ namespace Kaede.Services.UsersService
         public async Task RemoveUser(string username)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            var user = await context.Users.SingleOrDefaultAsync(u => u.Username == username);
+            var user = await GetUserModel(username, context);
             if (user != null)
             {
                 context.Users.Remove(user);
@@ -62,15 +79,17 @@ namespace Kaede.Services.UsersService
 
         public async Task ChangePassword(string username, string newPassword)
         {
-            // TODO: fkn implement this
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            var user = await GetUserModel(username, context);
             if (user == null)
             {
+                // TODO: do some actual error handlings
                 throw new InvalidOperationException();
             }
             else
             {
+                // this can be a SetPassword() method on user instead but this
+                // is clearly a oneshot operation in the whole app so whatever
                 user.PasswordHash = User.HashPassword(newPassword);
                 await context.SaveChangesAsync();
             }
@@ -79,9 +98,9 @@ namespace Kaede.Services.UsersService
         public async Task<bool> ValidatePassword(string username, string password)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            var user = context.Users.FirstOrDefault(u => u.Username == username);
+            var user = await GetUserModel(username, context);
             if (user == null) return false;
-            // we interconnect logics here which is unclean but whatever
+            // we interconnect logics here which is unclean
             return User.HashPassword(password) == user.PasswordHash;
         }
     }

@@ -22,7 +22,7 @@ namespace Kaede.HostBuilderExt
                 RegisterVMService<SettingsViewModel>(services);
                 RegisterVMService<AdminPanelViewModel>(services);
                 RegisterVMService<BarberRegistrationViewModel>(services);
-                RegisterVMService<BarberListingView>(services);
+                RegisterVMService<BarberListingViewModel>(services);
                 RegisterVMService<ChangePasswordViewModel>(services);
             });
 

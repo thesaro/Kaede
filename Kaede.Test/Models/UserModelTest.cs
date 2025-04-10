@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Kaede;
 using Kaede.DbContexts;
 using Kaede.Models;
+using Kaede.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kaede.Test.Models
@@ -20,19 +21,25 @@ namespace Kaede.Test.Models
             using var context = new KaedeDbContext(Shared.CreateSqliteOptions<KaedeDbContext>());
             context.Database.EnsureCreated();
 
-            User u1 = new User
+            UserDTO u1DTO = new UserDTO
             {
                 Username = "uname1",
-                PasswordHash = "XXXXXXXX",
+                Password = "XXXXXXXX",
                 Role = UserRole.Admin
             };
 
-            User u2 = new User
+            UserDTO u2DTO = new UserDTO
             {
                 Username = "uname2",
-                PasswordHash = "XXXXXXXX",
+                Password = "XXXXXXXX",
                 Role = UserRole.Barber
             };
+
+            User.TryFromDTO(u1DTO, out User? u1);
+            User.TryFromDTO(u2DTO, out User? u2);
+
+            Assert.NotNull(u1);
+            Assert.NotNull(u2);
 
             context.Users.Add(u1);
             context.Users.Add(u2);
@@ -44,30 +51,25 @@ namespace Kaede.Test.Models
         [Fact]
         public void CreateUser_WhenUsernameBadLength_ShouldFail()
         {
-            using var context = new KaedeDbContext(Shared.CreateSqliteOptions<KaedeDbContext>());
-            context.Database.EnsureCreated();
-
-            User shortUser = new User
+            UserDTO shortUserDTO = new UserDTO
             {
                 Username = "u",
-                PasswordHash = "XXXXXXXX",
+                Password = "XXXXXXXX",
                 Role = UserRole.Admin
             };
 
-            context.Users.Add(shortUser);
+            bool res = User.TryFromDTO(shortUserDTO, out User? shortUser);
+            Assert.False(res);
 
-            Assert.Throws<ValidationException>(() => context.SaveChanges());
-
-            User longUser = new User
+            UserDTO longUserDTO = new UserDTO
             {
                 Username = new string('u', 60),
-                PasswordHash = "XXXXXXXX",
+                Password = "XXXXXXXX",
                 Role = UserRole.Barber
             };
 
-            context.Users.Add(longUser);
-
-            Assert.Throws<ValidationException>(() => context.SaveChanges());
+            res = User.TryFromDTO(longUserDTO, out User? longUser);
+            Assert.False(res);
         }
 
 
@@ -77,19 +79,25 @@ namespace Kaede.Test.Models
             using var context = new KaedeDbContext(Shared.CreateSqliteOptions<KaedeDbContext>());
             context.Database.EnsureCreated();
 
-            User u1 = new User
+            UserDTO u1DTO = new UserDTO
             {
                 Username = "same_uname",
-                PasswordHash = "X1",
+                Password = "XXXXXXXX",
                 Role = UserRole.Admin
             };
 
-            User u2 = new User
+            UserDTO u2DTO = new UserDTO
             {
                 Username = "same_uname",
-                PasswordHash = "X2",
+                Password = "XXXXXXXX",
                 Role = UserRole.Barber
             };
+
+            User.TryFromDTO(u1DTO, out User? u1);
+            User.TryFromDTO(u2DTO, out User? u2);
+
+            Assert.NotNull(u1);
+            Assert.NotNull(u2);
 
             context.Users.Add(u1);
             context.Users.Add(u2);

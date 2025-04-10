@@ -111,6 +111,8 @@ namespace Kaede.ViewModels
             try
             {
                 await _userService.CreateUser(barberDTO);
+                // need to resolve the barber immediately because of creation dates
+                OnBarberAdded((await _userService.GetUser(barberDTO.Username))!);
                 MessageBox.Show($"Barber \"{barberDTO.Username}\" successfully registered", "Info",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -131,6 +133,15 @@ namespace Kaede.ViewModels
             !string.IsNullOrEmpty(PasswordConfirm);
         #endregion
 
+        #region Events
+        public Action<UserDTO>? BarberAdded;
+
+        private void OnBarberAdded(UserDTO barberDTO)
+        {
+            BarberAdded?.Invoke(barberDTO);
+        }
+        #endregion
+
         #region Validation Methods
         // This is uhh a bit replicated from the UserRegistrationViewModel maybe
         // find a way to abstract it later.
@@ -147,14 +158,14 @@ namespace Kaede.ViewModels
         #endregion
     }
 
-    public class BarberListingView : ViewModelBase
+    public class BarberListingViewModel : ViewModelBase
     {
         #region Services and Dependencies
         private readonly IUserService _userService;
         #endregion
 
         #region Commands
-        public ICommand RemoveCommand { get; }
+        public ICommand RemoveBarberCommand { get; }
         public ICommand ChangePassCommand { get; }
         #endregion
 
@@ -165,23 +176,34 @@ namespace Kaede.ViewModels
 
 
         #region Constructor
-        public BarberListingView(IUserService userService)
+        public BarberListingViewModel(IUserService userService)
         {
             _userService = userService;
 
             List<UserDTO> res = userService.GetBarbers().GetAwaiter().GetResult();
             _barbers = new ObservableCollection<UserDTO>(res);
 
-            RemoveCommand = new RelayCommand<object?>(RemoveBarber);
+            RemoveBarberCommand = new RelayCommand<object?>(RemoveBarber);
             ChangePassCommand = new RelayCommand<object?>(ChangeBarberPassword);
         }
         #endregion
 
-        #region RemoveBarberCommand Methods
+        #region Methods
+        public void AddBarber(UserDTO barberDTO)
+        {
+            _barbers.Add(barberDTO);
+        }
         private void RemoveBarber(object? item)
         {
+            // This check 100% succeds in runtime if the xaml setup is correct.
             if (item != null && item is UserDTO barberDTO)
             {
+                MessageBoxResult removeRes = MessageBox.Show($"Do you really want to remove \"{barberDTO.Username}\"?",
+                    "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (removeRes != MessageBoxResult.Yes) 
+                    return;
+
                 try
                 {
                     _userService.RemoveUser(barberDTO.Username);
@@ -194,12 +216,11 @@ namespace Kaede.ViewModels
                 }
             }
         }
-        #endregion
 
-        #region ChangeBarberPasswordCommand Methods
         private void ChangeBarberPassword(object? item)
         {
-            throw new NotImplementedException();
+            MessageBox.Show("devs were busy so they left me out :3", "Not Implemented",
+                MessageBoxButton.OK, MessageBoxImage.None);
         }
         #endregion
     }
@@ -215,13 +236,28 @@ namespace Kaede.ViewModels
         public IRelayCommand RestoreCommand { get; }
         #endregion
 
+        #region Child ViewModels
+        public BarberListingViewModel BarberListingVM { get; }
+        public BarberRegistrationViewModel BarberRegistrationVM { get; }
+        #endregion
+
         #region Constructor
-        public AdminPanelViewModel(IRestorePointService restorePointService)
+        public AdminPanelViewModel(
+            IRestorePointService restorePointService,
+            BarberListingViewModel barberListingVM,
+            BarberRegistrationViewModel barberRegistrationVM)
         {
             _restorePointService = restorePointService;
 
             BackupCommand = new RelayCommand(CreateBackup);
             RestoreCommand = new RelayCommand(RestoreBackup);
+
+            BarberListingVM = barberListingVM;
+            BarberRegistrationVM = barberRegistrationVM;
+
+            // maybe abstract this eventing stuff into a IWhateverService if it proves to 
+            // be recurring in the program structure.
+            BarberRegistrationVM.BarberAdded += BarberListingVM.AddBarber;
         }
         #endregion
 

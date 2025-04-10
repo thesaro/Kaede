@@ -10,13 +10,23 @@ namespace Kaede.Extensions
 {
     public static class DTOMappers
     {
-        public static UserDTO MapToDTO(this User user) =>
-            new UserDTO
+        public static UserDTO MapToDTO(this User user)
+        {
+            bool unameDecodeRes = User.TryDecodeUsername(user.UsernameHash, out string? uname);
+
+            if (!unameDecodeRes)
             {
-                Username = user.Username,
+                throw new InvalidOperationException("Database table Users is corrupted!");
+            }
+            
+            return new UserDTO
+            {
+                Username = uname!,
                 Role = user.Role,
                 CreationDate = user.CreationDate,
-                LastPasswordChanged = user.LastPasswordChanged,
+                LastPasswordChanged = user.LastPasswordChanged
             };
+        }
+
     }
 }

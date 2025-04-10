@@ -21,6 +21,7 @@
             <Grid x:Name="BarberListGrid"
                   HorizontalAlignment="Left"
                   Margin="0,12,0,8"
+                  DataContext="{Binding BarberListingVM}"
                   Visibility="Collapsed">
                 <Grid.Resources>
                     <local:PwdHashTruncationConverter x:Key="PwdHashTC" />
@@ -51,7 +52,7 @@
                                                     Foreground="{StaticResource KColor1}"
                                                     TextDecorations="Underline"
                                                     CommandParameter="{Binding}"
-                                                    Command="{Binding DataContext.RemoveCommand, 
+                                                    Command="{Binding DataContext.RemoveBarberCommand, 
                                                         RelativeSource={RelativeSource AncestorType=ListView}}"
                                                     Style="{StaticResource KHyperLinkStyle}">
                                                     Remove
@@ -88,6 +89,7 @@
             <Grid x:Name="RecruitBarberGrid" 
                   HorizontalAlignment="Left" 
                   Margin="0,12,0,8"
+                  DataContext="{Binding BarberRegistrationVM}"
                   Visibility="Collapsed">
                 <Grid.RowDefinitions>
                     <RowDefinition />

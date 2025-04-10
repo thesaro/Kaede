@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Kaede.Models
 {
-    public class User : IFromDTO<UserDTO, User>
+    public class User : ITryFromDTO<UserDTO, User>
     {
         #region Properties
         [Key]
@@ -21,8 +21,7 @@ namespace Kaede.Models
         public DateTime LastPasswordChanged { get; set; }
 
         [Required]
-        [StringLength(50, MinimumLength = 5, ErrorMessage = "Username must have min length of 5 and max length of 50.")]
-        public required string Username { get; init; }
+        public required string UsernameHash { get; init; }
 
         [Required]
         public required string PasswordHash { get; set; }
@@ -32,12 +31,56 @@ namespace Kaede.Models
         #endregion
 
         #region Static Methods
-        public static User FromDTO(UserDTO dto) => new User
+        public static bool TryFromDTO(UserDTO dto, out User? user)
         {
-            Username = dto.Username,
-            PasswordHash = HashPassword(dto.Password),
-            Role = dto.Role,
-        };
+            if (TryEncodeUsername(dto.Username, out string? uHash) &&
+                dto.Password.Length >= 6 && dto.Password.Length <= 50)
+            {
+                user = new User
+                {
+                    // visual studio can't realize uHash is not null here lol
+                    UsernameHash = uHash!,
+                    PasswordHash = HashPassword(dto.Password),
+                    Role = dto.Role
+                };
+                return true;
+            }
+            else
+            {
+                user = null;
+                return false;
+            }
+        }
+  
+        public static bool TryEncodeUsername(string username, out string? encodedUsername)
+        {
+            if (username.Length < 5 || username.Length > 50)
+            {
+                encodedUsername = null;
+                return false;
+            }
+
+            byte[] bytes = Encoding.UTF8.GetBytes(username);
+            encodedUsername = Convert.ToBase64String(bytes);
+            return true;
+
+        }
+
+        public static bool TryDecodeUsername(string encodedUsername, out string? decodedUsername)
+        {
+            try
+            {
+                byte[] bytes = Convert.FromBase64String(encodedUsername);
+                decodedUsername = Encoding.UTF8.GetString(bytes);
+                return true;
+            }
+            catch (FormatException)
+            {
+                decodedUsername = null;
+                return false;
+            }
+
+        }
 
         public static string HashPassword(string password)
         {

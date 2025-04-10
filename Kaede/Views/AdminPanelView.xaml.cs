@@ -27,10 +27,10 @@ namespace Kaede.Views
         {
             InitializeComponent();
 
-            RecruitBarberGrid.DataContext = App.RunningInstance()
-                .FetchProviderService<BarberRegistrationViewModel>();
-            BarberListGrid.DataContext = App.RunningInstance()
-                .FetchProviderService<BarberListingView>();
+            //RecruitBarberGrid.DataContext = App.RunningInstance()
+                //.FetchProviderService<BarberRegistrationViewModel>();
+            //BarberListGrid.DataContext = App.RunningInstance()
+                //.FetchProviderService<BarberListingViewModel>();
         }
 
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
