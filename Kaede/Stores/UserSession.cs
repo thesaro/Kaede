@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kaede.Services
+namespace Kaede.Stores
 {
     public class UserSession
     {

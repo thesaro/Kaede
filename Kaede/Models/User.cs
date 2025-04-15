@@ -1,5 +1,6 @@
 ﻿using Kaede.DTOs;
 using Microsoft.EntityFrameworkCore;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Kaede.Services;
 using Kaede.Services.UsersService;
+using Kaede.Stores;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

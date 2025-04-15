@@ -16,6 +16,8 @@ using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
 using Kaede.HostBuilderExt;
 using Kaede.Services.RestorePointService;
+using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Kaede;
 
@@ -34,16 +36,35 @@ public sealed partial class App : Application
         #if DEBUG
             AllocConsole();
             Console.WriteLine("Debug mode: Console attached.");
-        #endif
+#endif
+
+        Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .MinimumLevel.Debug()
+            .WriteTo.Console(outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj} {Properties}{NewLine}{Exception}")
+            .Filter.ByExcluding(logEvent => 
+                logEvent.Properties.ContainsKey("SourceContext") &&
+                logEvent.Properties["SourceContext"].ToString().Contains("Microsoft.EntityFrameworkCore") && 
+                logEvent.Level < Serilog.Events.LogEventLevel.Information
+            )
+            .WriteTo.File(Config.AppUtils.LogPath, rollingInterval: RollingInterval.Day)
+            .CreateLogger();
 
         Config.AppUtils.LoadAppData();
 
+
         _host = Host.CreateDefaultBuilder()
+            .UseSerilog()
             .AddViewModels()
             .ConfigureServices((hostContext, services) =>
             {
+                var loggerFactory = LoggerFactory.Create(builder =>
+                {
+                    builder.AddSerilog();
+                });
+
                 services.AddDbContextFactory<KaedeDbContext>(options =>
-                    options.UseSqlite(Config.AppUtils.ConnectionString));
+                    options.UseLoggerFactory(loggerFactory).UseSqlite(Config.AppUtils.ConnectionString));
 
                 services.AddSingleton<NavigationStore>();
                 services.AddSingleton<IUserService, DatabaseUserService>();
@@ -54,6 +75,7 @@ public sealed partial class App : Application
                 services.AddSingleton(s => new MainWindow()
                 {
                     DataContext = new MainViewModel(
+                        s.GetRequiredService<ILogger<MainViewModel>>(),
                         s.GetRequiredService<NavigationStore>(),
                         s.GetRequiredService<UserSession>()
                     )
