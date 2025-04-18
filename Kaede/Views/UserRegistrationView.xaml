@@ -3,60 +3,54 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Kaede.Views"
              mc:Ignorable="d" 
-             FontSize="20"
-             d:DesignHeight="500" d:DesignWidth="800"
-             Background="{StaticResource KBackground}"
-             Foreground="{StaticResource KForeground}">
-    <Grid HorizontalAlignment="Center" MinWidth="480">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <TextBlock Margin="0 0 0 25"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center">
-            REGISTER
-        </TextBlock>
+             d:DesignHeight="500" d:DesignWidth="800">
+    <Border Style="{StaticResource FormCardStyle}" Width="480" Padding="40">
+        <Grid HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="1">
-            <TextBlock>USERNAME</TextBlock>
-            <TextBox Template="{StaticResource KTextBoxControlTemplate}" 
-                     Style="{StaticResource KTextBoxValidationStyle}"
-                     Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                     Validation.ErrorTemplate="{StaticResource KTextBoxErrorTemplate}" />
-        </StackPanel>
+            <TextBlock Grid.Row="0" Style="{StaticResource FormTitleStyle}" Text="Create Account"/>
+            <TextBlock Grid.Row="0" Style="{StaticResource FormSubtitleStyle}" Text="Join our community" Margin="0,32,0,0"/>
 
-        <StackPanel Grid.Row="2" Margin="0,32,0,0">
-            <TextBlock>PASSWORD</TextBlock>
-            <TextBox Template="{StaticResource KTextBoxControlTemplate}" 
-                     Style="{StaticResource KTextBoxValidationStyle}"
-                     Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
-                     Validation.ErrorTemplate="{StaticResource KTextBoxErrorTemplate}" />
-        </StackPanel>
+            <StackPanel Grid.Row="1" Style="{StaticResource FormSectionStyle}">
+                <TextBlock Style="{StaticResource InputLabelStyle}">Username</TextBlock>
+                <TextBox Style="{StaticResource ModernTextBoxStyle}"
+                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+            </StackPanel>
 
-        <StackPanel Grid.Row="3" Margin="0,32,0,0">
-            <TextBlock>CONFIRM PASSWORD</TextBlock>
-            <TextBox Template="{StaticResource KTextBoxControlTemplate}" 
-                     Style="{StaticResource KTextBoxValidationStyle}"
-                     Text="{Binding PasswordConfirm, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                     Validation.ErrorTemplate="{StaticResource KTextBoxErrorTemplate}" />
-        </StackPanel>
-        <StackPanel Grid.Row="4" HorizontalAlignment="Center" Margin="0,32,0,0">
-            <Button FontSize="28"
-                    Style="{StaticResource KButtonStyle}"
-                    Command="{Binding RegisterCommand}">
-                Register
-            </Button>
-            <TextBlock HorizontalAlignment="Center" Margin="0,12,0,0">
-                <Hyperlink Style="{StaticResource KHyperLinkStyle}" Command="{Binding RestoreCommand}">
-                    RESTORE A PREVIOUS INSTANCE
-                </Hyperlink>
-            </TextBlock>
-        </StackPanel>
-    </Grid>
+            <StackPanel Grid.Row="2" Style="{StaticResource FormSectionStyle}">
+                <TextBlock Style="{StaticResource InputLabelStyle}">Password</TextBlock>
+                <TextBox Style="{StaticResource ModernTextBoxStyle}"
+                         Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Style="{StaticResource FormSectionStyle}">
+                <TextBlock Style="{StaticResource InputLabelStyle}">Confirm Password</TextBlock>
+                <TextBox Style="{StaticResource ModernTextBoxStyle}"
+                         Text="{Binding PasswordConfirm, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="4" HorizontalAlignment="Stretch">
+                <Button Style="{StaticResource KButtonStyleMinimal}" Height="48"
+                        Command="{Binding RegisterCommand}" Margin="0,16,0,0">
+                    <TextBlock FontSize="18" Text="Register" FontWeight="SemiBold"/>
+                </Button>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,24,0,0">
+                    <TextBlock Text="Already have an account?" Foreground="{StaticResource KColor2}"/>
+                    <TextBlock Margin="8,0,0,0">
+                        <Hyperlink Style="{StaticResource KHyperLinkStyle}" Command="{Binding RestoreCommand}">
+                            RESTORE INSTANCE
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Border>
 </UserControl>

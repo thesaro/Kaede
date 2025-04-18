@@ -46,7 +46,7 @@
                     <Button Width="Auto" Margin="24,12,0,0"
                         HorizontalAlignment="Left"
                         Command="{Binding LogoutCommand}"
-                        Style="{StaticResource KButtonStyle}" 
+                        Style="{StaticResource KButtonStyleMinimal}" 
                         Content="Logout" />
                 </StackPanel>
 
