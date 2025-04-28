@@ -8,7 +8,30 @@
              d:DesignHeight="450" d:DesignWidth="800"
              Background="{StaticResource KBackground}"
              Foreground="{StaticResource KForeground}">
-    <Grid>
-        <TextBlock>Dashboard uhhhh view</TextBlock>
+    <Grid Margin="18,12,18,12">
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontSize="32" Text="Appointments" />
+                <Button Style="{StaticResource KButtonStyle}"
+                    FontSize="24"
+                    Height="32"
+                    Content="+"
+                    Margin="20,0,0,0"
+                    Command="{Binding AddAppointmentCommand}"/>
+            </StackPanel>
+            <Separator Height="1" Width="640" HorizontalAlignment="Left"
+                       Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
+            <TextBlock FontSize="32" Text="ShopServices" />
+            <Separator Height="1" Width="640" HorizontalAlignment="Left"
+                       Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
+            <Button Width="Auto"
+                    HorizontalAlignment="Left"
+                    Height="32"
+                    Margin="0,12,0,0"
+                    Style="{StaticResource KButtonStyleMinimal}"
+                    Command="{Binding AddServiceCommand}">
+                Add Service
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>

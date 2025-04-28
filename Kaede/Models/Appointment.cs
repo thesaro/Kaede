@@ -25,8 +25,8 @@ namespace Kaede.Models
 
         [Required]
         [ForeignKey(nameof(ShopService))]
-        public Guid ShopServiceId { get; set; }
-        public required ShopService ShopService { get; set; }
+        public Guid ShopItemId { get; set; }
+        public required ShopItem ShopService { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }

@@ -14,6 +14,8 @@ namespace Kaede.DbContexts
     {
         #region Tables
         public DbSet<User> Users { get; set; }
+        public DbSet<ShopItem> ShopItems { get; set; }
+
         #endregion
 
         #region Constructor
@@ -25,6 +27,9 @@ namespace Kaede.DbContexts
         {
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.UsernameHash)
+                .IsUnique();
+            modelBuilder.Entity<ShopItem>()
+                .HasIndex(i => i.Name)
                 .IsUnique();
         }
 
