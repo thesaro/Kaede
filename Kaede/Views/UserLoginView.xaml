@@ -31,7 +31,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="0,24,0,0">
-                <Button Style="{StaticResource KButtonStyleMinimal}" Height="48"
+                <Button Style="{StaticResource KButtonStyle}" Height="48"
                         Command="{Binding LoginCommand}">
                     <TextBlock FontSize="18" Text="Login" FontWeight="SemiBold"/>
                 </Button>

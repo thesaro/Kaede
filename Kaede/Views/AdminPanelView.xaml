@@ -129,6 +129,7 @@
                          Validation.ErrorTemplate="{StaticResource KTextBoxErrorTemplate}"/>
                 </StackPanel>
                 <Button Grid.Row="3"
+                    Height="32"
                     Margin="0,12,0,0"
                     Style="{StaticResource KButtonStyle}"
                     Command="{Binding SubmitCommand}">

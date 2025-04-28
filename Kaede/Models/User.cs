@@ -29,6 +29,8 @@ namespace Kaede.Models
 
         [Required]
         public UserRole Role { get; set; }
+
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
         #endregion
 
         #region Static Methods
