@@ -33,5 +33,10 @@ namespace Kaede.Services.ShopItemService
         {
             throw new NotImplementedException();
         }
+
+        Task<ShopItemDTO?> IShopItemService.GetShopItemByName(string name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
