@@ -26,10 +26,15 @@ namespace Kaede.Services.ShopItemService
 
         public async Task GetShopItemByName(string name)
         {
-
+            throw new NotImplementedException();
         }
 
         public Task<List<ShopItemDTO>> GetAllShopItems()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<ShopItemDTO?> IShopItemService.GetShopItemByName(string name)
         {
             throw new NotImplementedException();
         }
