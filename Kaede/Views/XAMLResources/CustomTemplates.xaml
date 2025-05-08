@@ -15,6 +15,7 @@
             <AdornedElementPlaceholder x:Name="_adornedElem" />
             <TextBlock Grid.Row="1" 
                        Foreground="Red" 
+                       FontSize="14"
                        Visibility="{
                             Binding ElementName=_adornedElem, 
                             Path=AdornedElement.(Validation.HasError),
