@@ -18,6 +18,7 @@ using Kaede.HostBuilderExt;
 using Kaede.Services.RestorePointService;
 using Serilog;
 using Microsoft.Extensions.Logging;
+using Kaede.Services.ShopItemService;
 
 namespace Kaede;
 
@@ -68,6 +69,7 @@ public sealed partial class App : Application
 
                 services.AddSingleton<NavigationStore>();
                 services.AddSingleton<IUserService, DatabaseUserService>();
+                services.AddSingleton<IShopItemService, DatabaseShopItemService>();
                 services.AddSingleton<IRestorePointService, DatabaseRestorePointService>();
 
                 services.AddSingleton<UserSession>();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,5 +25,14 @@ namespace Kaede.Views
         {
             InitializeComponent();
         }
+
+        private void TextBox_NumberPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextNumeric(e.Text);
+            e.Handled |= e.Text == "";
+        }
+
+        private static bool IsTextNumeric(string text)
+            => Regex.IsMatch(text, "^[0-9]+$");
     }
 }

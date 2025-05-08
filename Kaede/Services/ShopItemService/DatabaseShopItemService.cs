@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Kaede.Models;
 
 namespace Kaede.Services.ShopItemService
 {
@@ -22,14 +23,21 @@ namespace Kaede.Services.ShopItemService
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
 
+            await context.ShopItems.AddAsync(ShopItem.FromDTO(shopItemDTO));
+            await context.SaveChangesAsync();
         }
 
         public async Task GetShopItemByName(string name)
         {
-
+            throw new NotImplementedException();
         }
 
         public Task<List<ShopItemDTO>> GetAllShopItems()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<ShopItemDTO?> IShopItemService.GetShopItemByName(string name)
         {
             throw new NotImplementedException();
         }

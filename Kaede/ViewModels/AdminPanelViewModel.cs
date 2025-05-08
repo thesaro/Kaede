@@ -134,6 +134,8 @@ namespace Kaede.ViewModels
         #endregion
 
         #region Events
+        // Other classes can bind to this event so that
+        // they realize when a barber is added
         public Action<UserDTO>? BarberAdded;
 
         private void OnBarberAdded(UserDTO barberDTO)
