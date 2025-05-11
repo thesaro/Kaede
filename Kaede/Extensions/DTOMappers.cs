@@ -30,5 +30,13 @@ namespace Kaede.Extensions
             };
         }
 
+        public static ShopItemDTO MapToDTO(this ShopItem item)
+            => new ShopItemDTO()
+            {
+                Name = item.Name,
+                Description = item.Description,
+                Price = item.Price,
+                Duration = item.Duration
+            };
     }
 }

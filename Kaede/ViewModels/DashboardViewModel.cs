@@ -5,9 +5,11 @@ using Kaede.Services.ShopItemService;
 using Kaede.Services.UsersService;
 using Kaede.Stores;
 using Microsoft.Extensions.Logging;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Kaede.ViewModels
 {
@@ -24,7 +26,7 @@ namespace Kaede.ViewModels
         #endregion
 
         #region Commands
-        IRelayCommand SubmitCommand { get; }
+        public IRelayCommand SubmitItemCommand { get; }
         #endregion
 
 
@@ -38,7 +40,7 @@ namespace Kaede.ViewModels
             set
             {
                 SetProperty(ref _name, value);
-                SubmitCommand.NotifyCanExecuteChanged();
+                SubmitItemCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -51,7 +53,7 @@ namespace Kaede.ViewModels
             set
             {
                 SetProperty(ref _description, value);
-                SubmitCommand.NotifyCanExecuteChanged();
+                SubmitItemCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -67,7 +69,7 @@ namespace Kaede.ViewModels
                 else if (decimal.TryParse(value, out decimal p))
                 {
                     SetProperty(ref _price, p);
-                    SubmitCommand.NotifyCanExecuteChanged();
+                    SubmitItemCommand.NotifyCanExecuteChanged();
                 }
             }
         }
@@ -84,7 +86,7 @@ namespace Kaede.ViewModels
                 else if (int.TryParse(value, out int h))
                 {
                     SetProperty(ref _hours, h);
-                    SubmitCommand.NotifyCanExecuteChanged();
+                    SubmitItemCommand.NotifyCanExecuteChanged();
                 }
             }
         }
@@ -101,7 +103,7 @@ namespace Kaede.ViewModels
                 else if (int.TryParse(value, out int m))
                 {
                     SetProperty(ref _minutes, m);
-                    SubmitCommand.NotifyCanExecuteChanged();
+                    SubmitItemCommand.NotifyCanExecuteChanged();
                 }
             }
         }
@@ -116,8 +118,8 @@ namespace Kaede.ViewModels
             _logger = logger;
             _shopItemService = shopItemService;
 
-            SubmitCommand = new AsyncRelayCommand(SubmitShopItem, CanSubmitShopItem);
-            SubmitCommand.NotifyCanExecuteChanged();
+            SubmitItemCommand = new AsyncRelayCommand(SubmitShopItem, CanSubmitShopItem);
+            SubmitItemCommand.NotifyCanExecuteChanged();
         }
         #endregion
 
@@ -125,7 +127,12 @@ namespace Kaede.ViewModels
 
         private async Task SubmitShopItem()
         {
-            // TODO: check if item already exists
+            if ((await _shopItemService.GetShopItemByName(Name)) != null)
+            {
+                MessageBox.Show($"Shop Item \"{Name}\" already exists.", "Error",
+                    MessageBoxButton.OK);
+                return;
+            }
 
             if (_price == null || _hours == null || _minutes == null)
             {
@@ -146,7 +153,7 @@ namespace Kaede.ViewModels
             try
             {
                 await _shopItemService.CreateShopItem(shopItemDTO);
-       
+                OnShopItemAdded((await _shopItemService.GetShopItemByName(shopItemDTO.Name))!);
                 MessageBox.Show($"Shop Item \"{shopItemDTO.Name}\" successfully registered", "Info",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -157,7 +164,7 @@ namespace Kaede.ViewModels
             }
 
             ClearErrors();
-            SubmitCommand.NotifyCanExecuteChanged();
+            SubmitItemCommand.NotifyCanExecuteChanged();
         }
 
         private bool CanSubmitShopItem() =>
@@ -166,19 +173,67 @@ namespace Kaede.ViewModels
             !string.IsNullOrEmpty(Description) &&
             _price > 0M && !(_hours == 0 && _minutes == 0);
         #endregion
+
+        #region Events
+
+        public Action<ShopItemDTO>? ShopItemAdded;
+
+        private void OnShopItemAdded(ShopItemDTO item)
+        {
+            ShopItemAdded?.Invoke(item);
+        }
+        #endregion
     }
 
+    public class ShopItemListingViewModel : ViewModelBase
+    {
+        #region Services & Dependencies
+        private readonly IShopItemService _shopItemService;
+        #endregion
+
+        #region Commands
+        public ICommand RemoveItemCommand { get; }
+        #endregion
+
+        #region Properties
+        private readonly ObservableCollection<ShopItemDTO> _shopItems;
+        public IEnumerable<ShopItemDTO> ShopItems => _shopItems;
+        #endregion
+
+        #region Constructor
+        public ShopItemListingViewModel(IShopItemService shopItemService)
+        {
+            // TODO: Remove shop item command
+            _shopItemService = shopItemService;
+            List<ShopItemDTO> res = _shopItemService.GetAllShopItems().GetAwaiter().GetResult();
+            _shopItems = new ObservableCollection<ShopItemDTO>(res);
+        }
+        #endregion
+
+        #region Methods
+        public void AddShopItem(ShopItemDTO dto)
+        {
+            _shopItems.Add(dto);
+        }
+        #endregion
+    }
 
     public class DashboardViewModel : ViewModelBase
     {
         #region Child ViewModels
         public ShopItemSubmitionViewModel ShopItemSubmitionVM { get; }
+        public ShopItemListingViewModel ShopItemListingVM { get; }
         #endregion
 
 
-        public DashboardViewModel(ShopItemSubmitionViewModel shopItemSubmitionVM)
+        public DashboardViewModel(
+            ShopItemSubmitionViewModel shopItemSubmitionVM, 
+            ShopItemListingViewModel shopItemListingVM)
         {
             ShopItemSubmitionVM = shopItemSubmitionVM;
+            ShopItemListingVM = shopItemListingVM;
+
+            ShopItemSubmitionVM.ShopItemAdded += ShopItemListingVM.AddShopItem;
         }
     }
 }

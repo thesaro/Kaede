@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Kaede.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
+             FontSize="20"
              Background="{StaticResource KBackground}"
              Foreground="{StaticResource KForeground}">
     <Grid Margin="18,12,18,12">
@@ -26,13 +27,13 @@
                        Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
             <StackPanel Orientation="Horizontal">
                 <TextBlock FontSize="30" Text="Add Shop Item" Padding="0,0,6,0" />
-                <ToggleButton x:Name="AddShopItemTB" Style="{StaticResource KDropdownButtonStyle}"/>
+                <ToggleButton x:Name="AddShopItemTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
             </StackPanel>
             <Grid x:Name="AddShopItemGrid" 
                   HorizontalAlignment="Left" 
                   Margin="0,12,0,8"
                   DataContext="{Binding ShopItemSubmitionVM}"
-                  Visibility="Visible">
+                  Visibility="Collapsed">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
@@ -93,14 +94,77 @@
                     Height="32"
                     Margin="0,12,0,0"
                     Style="{StaticResource KButtonStyle}"
-                    Command="{Binding SubmitCommand}">
+                    Command="{Binding SubmitItemCommand}">
                     Submit Item
                 </Button>
             </Grid>
             <StackPanel Orientation="Horizontal">
                 <TextBlock FontSize="30" Text="Shop Item List" Padding="0,0,6,0" />
-                <ToggleButton x:Name="ShopItemListTB" Style="{StaticResource KDropdownButtonStyle}"/>
+                <ToggleButton x:Name="ShopItemListTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
             </StackPanel>
+            <Grid x:Name="ShopItemListGrid"
+                HorizontalAlignment="Left"
+                Margin="0,12,0,8"
+                DataContext="{Binding ShopItemListingVM}"
+                Visibility="Collapsed">
+                <Grid.Resources>
+                    <local:TimeSpanToStringConverter x:Key="TimeSpanConverter" />
+                </Grid.Resources>
+                <ListView ItemsSource="{Binding ShopItems}" ItemContainerStyle="{StaticResource KListViewItemStyle}">
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource KGridViewColumnHeaderStyle}">
+                            <GridView.Columns>
+                                <GridViewColumn Header="Item Name">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Description">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" Text="{Binding Description}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Price">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" Text="{Binding Price}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Duration">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock HorizontalAlignment="Center" 
+                                                       Text="{Binding Duration, Converter={StaticResource TimeSpanConverter}}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Remove">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock>
+                                     <Hyperlink 
+                                         Foreground="{StaticResource KColor1}"
+                                         TextDecorations="Underline"
+                                         CommandParameter="{Binding}"
+                                         Command="{Binding DataContext.RemoveBarberCommand, 
+                                             RelativeSource={RelativeSource AncestorType=ListView}}"
+                                         Style="{StaticResource KHyperLinkStyle}">
+                                         Remove
+                                     </Hyperlink>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Grid>
         </StackPanel>
     </Grid>
 </UserControl>
