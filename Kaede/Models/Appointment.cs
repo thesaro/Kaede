@@ -24,9 +24,9 @@ namespace Kaede.Models
         public required User Barber { get; set; }
 
         [Required]
-        [ForeignKey(nameof(ShopService))]
+        [ForeignKey(nameof(ShopItem))]
         public Guid ShopItemId { get; set; }
-        public required ShopItem ShopService { get; set; }
+        public required ShopItem ShopItem { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }

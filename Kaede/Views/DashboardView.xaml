@@ -11,17 +11,83 @@
              Foreground="{StaticResource KForeground}">
     <Grid Margin="18,12,18,12">
         <StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock FontSize="32" Text="Appointments" />
-                <Button Style="{StaticResource KButtonStyle}"
-                    FontSize="24"
-                    Height="32"
-                    Content="+"
-                    Margin="20,0,0,0"
-                    Command="{Binding AddAppointmentCommand}"/>
-            </StackPanel>
-            <Separator Height="1" Width="640" HorizontalAlignment="Left"
+            <TextBlock FontSize="32" Text="Appointments" />
+            <Separator Height="2" Width="640" HorizontalAlignment="Left"
                        Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontSize="30" Text="Add Appointment" Padding="0,0,6,0" />
+                <ToggleButton x:Name="AddAppointmentTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
+            </StackPanel>
+            <Grid x:Name="AddShopItemGrid" 
+                HorizontalAlignment="Left" 
+                Margin="0,12,0,8"
+                DataContext="{Binding ShopItemSubmitionVM}"
+                Visibility="Visible">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Row="0" Grid.Column="0">
+                    <TextBlock>
+                        CUSTOMER
+                    </TextBlock>
+                    <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                        Width="280"
+                        Style="{StaticResource KTextBoxGenericStyle}"
+                        Text="{Binding Customer, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,6">
+                    <TextBlock>
+                        BARBER
+                    </TextBlock>
+                    <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                        Width="280"
+                        Style="{StaticResource KTextBoxGenericStyle}"
+                        Text="{Binding Barber, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,6">
+                    <TextBlock>
+                        SHOP SERVICE ITEM
+                    </TextBlock>
+                    <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                        Width="280"
+                        Style="{StaticResource KTextBoxGenericStyle}"
+                        Text="{Binding ShopItem, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="0">
+                    <TextBlock>
+                        START DATE
+                    </TextBlock>
+                    <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                        Width="280"
+                        Style="{StaticResource KTextBoxGenericStyle}"
+                        Text="{Binding StartDate, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="1">
+                    <TextBlock>
+                        END DATE
+                    </TextBlock>
+                    <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                        Width="280"
+                        Style="{StaticResource KTextBoxGenericStyle}"
+                        Text="{Binding EndDate, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                </StackPanel>
+                <Button Grid.Row="4"
+        Height="32"
+        Margin="0,12,0,0"
+        Style="{StaticResource KButtonStyle}"
+        Command="{Binding SubmitItemCommand}">
+                    Submit Item
+                </Button>
+            </Grid>
+
             <TextBlock FontSize="32" Text="Shop Items" />
             <Separator Height="1" Width="640" HorizontalAlignment="Left"
                        Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
@@ -29,7 +95,7 @@
                 <TextBlock FontSize="30" Text="Add Shop Item" Padding="0,0,6,0" />
                 <ToggleButton x:Name="AddShopItemTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
             </StackPanel>
-            <Grid x:Name="AddShopItemGrid" 
+            <Grid x:Name="AddAppointmentGrid" 
                   HorizontalAlignment="Left" 
                   Margin="0,12,0,8"
                   DataContext="{Binding ShopItemSubmitionVM}"

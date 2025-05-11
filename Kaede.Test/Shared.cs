@@ -7,7 +7,7 @@ namespace Kaede.Test
 {
     internal static class Shared
     {
-        internal static DbContextOptions<T> CreateSqliteOptions<T>() where T : DbContext
+        internal static DbContextOptions<T> CreateSqliteInMemOptions<T>() where T : DbContext
         {
             var connectionStringBuilder = new SqliteConnectionStringBuilder { DataSource = ":memory:" };
             var connectionString = connectionStringBuilder.ToString();

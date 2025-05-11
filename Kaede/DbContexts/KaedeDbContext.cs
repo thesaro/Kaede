@@ -15,6 +15,8 @@ namespace Kaede.DbContexts
         #region Tables
         public DbSet<User> Users { get; set; }
         public DbSet<ShopItem> ShopItems { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
 
         #endregion
 
