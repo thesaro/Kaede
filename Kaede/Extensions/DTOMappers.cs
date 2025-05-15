@@ -60,5 +60,12 @@ namespace Kaede.Extensions
             else
                 throw new InvalidDTOException("Appointment model should have foreign stuff included.");
         }
+
+        public static CustomerDTO MapToDTO(this Customer customer)
+            => new CustomerDTO
+            {
+                FullName = customer.FullName,
+                PhoneNumber = customer.PhoneNumber,
+            };
     }
 }

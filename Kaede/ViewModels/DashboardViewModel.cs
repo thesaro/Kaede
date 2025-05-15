@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using Kaede.DTOs;
 using Kaede.Services;
+using Kaede.Services.AppointmentsService;
 using Kaede.Services.ShopItemService;
 using Kaede.Services.UsersService;
 using Kaede.Stores;
@@ -9,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Kaede.ViewModels
@@ -19,7 +21,68 @@ namespace Kaede.ViewModels
         private readonly ILogger<AppointmentSubmitionViewModel> _logger;
         private readonly IUserService _userService;
         private readonly IShopItemService _shopItemService;
+        private readonly IAppointmentService _appointmentService;
         #endregion
+
+        #region Commands
+        public IRelayCommand SubmitAppointmentCommand { get; }
+        public IRelayCommand AddCustomerCommand { get; }
+        #endregion
+
+        #region Properties
+
+        private ObservableCollection<CustomerDTO> _customers;
+        public ListCollectionView FilteredCustomers { get; set; }
+
+        private CustomerDTO _selectedCustomer;
+        public CustomerDTO SelectedCustomer
+        {
+            get => _selectedCustomer;
+            set
+            {
+                SetProperty(ref _selectedCustomer, value);
+            }
+        }
+
+        private string _searchText = string.Empty;
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                SetProperty(ref _searchText, value);
+                FilteredCustomers.Refresh();
+            }
+        }
+        #endregion
+
+
+        #region Constructor
+        public AppointmentSubmitionViewModel(
+            ILogger<AppointmentSubmitionViewModel> logger,
+            IUserService userService,
+            IShopItemService shopItemService,
+            IAppointmentService appointmentService
+            )
+        {
+            _logger = logger;
+            _userService = userService;
+            _shopItemService = shopItemService;
+            _appointmentService = appointmentService;
+
+           _customers = new ObservableCollection<CustomerDTO>
+                (_appointmentService.GetAllCustomers()
+                    .GetAwaiter().GetResult());
+            
+            FilteredCustomers = new ListCollectionView(_customers);
+            FilteredCustomers.Filter = item =>
+            {
+                if (string.IsNullOrEmpty(SearchText)) return true;
+                return ((CustomerDTO)item).FullName.IndexOf(SearchText, StringComparison.Ordinal) >= 0;
+            };
+        }
+        #endregion
+
     }
     public class AppointmentListingViewModel : ViewModelBase
     {
@@ -231,15 +294,18 @@ namespace Kaede.ViewModels
         #region Child ViewModels
         public ShopItemSubmitionViewModel ShopItemSubmitionVM { get; }
         public ShopItemListingViewModel ShopItemListingVM { get; }
+        public AppointmentSubmitionViewModel AppointmentSubmitionVM { get; }
         #endregion
 
 
         public DashboardViewModel(
             ShopItemSubmitionViewModel shopItemSubmitionVM, 
-            ShopItemListingViewModel shopItemListingVM)
+            ShopItemListingViewModel shopItemListingVM,
+            AppointmentSubmitionViewModel appointmentSubmitionVM)
         {
             ShopItemSubmitionVM = shopItemSubmitionVM;
             ShopItemListingVM = shopItemListingVM;
+            AppointmentSubmitionVM = appointmentSubmitionVM;
 
             ShopItemSubmitionVM.ShopItemAdded += ShopItemListingVM.AddShopItem;
         }

@@ -18,11 +18,14 @@
                 <TextBlock FontSize="30" Text="Add Appointment" Padding="0,0,6,0" />
                 <ToggleButton x:Name="AddAppointmentTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
             </StackPanel>
-            <Grid x:Name="AddShopItemGrid" 
+            <Grid x:Name="AddAppointmentGrid" 
                 HorizontalAlignment="Left" 
                 Margin="0,12,0,8"
-                DataContext="{Binding ShopItemSubmitionVM}"
+                DataContext="{Binding ApppointmentSubmitionVM}"
                 Visibility="Visible">
+                <Grid.Resources>
+                    <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+                </Grid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition />
@@ -38,10 +41,19 @@
                     <TextBlock>
                         CUSTOMER
                     </TextBlock>
-                    <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                    <ComboBox
                         Width="280"
-                        Style="{StaticResource KTextBoxGenericStyle}"
-                        Text="{Binding Customer, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                        ItemsSource="{Binding FilteredPersons}"
+                        SelectedItem="{Binding SelectedPerson}"
+                        DisplayMemberPath="FullName"
+                        IsEditable="True"
+                        Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button
+                        Style="{StaticResource KButtonStyle}"
+                        ContentStringFormat="Add '{0}'..."
+                        Content="{Binding SearchText}"
+                        Command="{Binding AddCustomerCommand}"
+                        Visibility="{Binding ShowAddCustomerButton, Converter={StaticResource BoolToVisConverter}}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,6">
                     <TextBlock>
@@ -95,7 +107,7 @@
                 <TextBlock FontSize="30" Text="Add Shop Item" Padding="0,0,6,0" />
                 <ToggleButton x:Name="AddShopItemTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
             </StackPanel>
-            <Grid x:Name="AddAppointmentGrid" 
+            <Grid x:Name="AddShopItemGrid" 
                   HorizontalAlignment="Left" 
                   Margin="0,12,0,8"
                   DataContext="{Binding ShopItemSubmitionVM}"

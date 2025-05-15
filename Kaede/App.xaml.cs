@@ -19,6 +19,7 @@ using Kaede.Services.RestorePointService;
 using Serilog;
 using Microsoft.Extensions.Logging;
 using Kaede.Services.ShopItemService;
+using Kaede.Services.AppointmentsService;
 
 namespace Kaede;
 
@@ -68,8 +69,10 @@ public sealed partial class App : Application
                     options.UseLoggerFactory(loggerFactory).UseSqlite(Config.AppUtils.ConnectionString));
 
                 services.AddSingleton<NavigationStore>();
+
                 services.AddSingleton<IUserService, DatabaseUserService>();
                 services.AddSingleton<IShopItemService, DatabaseShopItemService>();
+                services.AddSingleton<IAppointmentService, DatabaseAppointmentService>();
                 services.AddSingleton<IRestorePointService, DatabaseRestorePointService>();
 
                 services.AddSingleton<UserSession>();
