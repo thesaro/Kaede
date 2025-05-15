@@ -13,6 +13,14 @@ using System.Windows.Input;
 
 namespace Kaede.ViewModels
 {
+    public class AppointmentSubmitionViewModel : ViewModelBase
+    {
+        #region Services & Dependencies
+        private readonly ILogger<AppointmentSubmitionViewModel> _logger;
+        private readonly IUserService _userService;
+        private readonly IShopItemService _shopItemService;
+        #endregion
+    }
     public class AppointmentListingViewModel : ViewModelBase
     {
 
