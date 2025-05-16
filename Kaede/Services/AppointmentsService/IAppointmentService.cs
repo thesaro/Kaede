@@ -10,5 +10,8 @@ namespace Kaede.Services.AppointmentsService
     public interface IAppointmentService
     {
         Task<List<CustomerDTO>> GetAllCustomers();
+        Task<CustomerDTO?> GetCustomerByName(string name);
+
+        Task CreateCustomer(CustomerDTO customerDTO);
     }
 }

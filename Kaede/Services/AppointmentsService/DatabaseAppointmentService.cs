@@ -1,6 +1,7 @@
 ﻿using Kaede.DbContexts;
 using Kaede.DTOs;
 using Kaede.Extensions;
+using Kaede.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,12 +23,25 @@ namespace Kaede.Services.AppointmentsService
         public async Task<List<CustomerDTO>> GetAllCustomers()
         {
             var context = await _dbContextFactory.CreateDbContextAsync();
-            var customers = await context.Appointments
-                .Include(a => a.Customer)
-                .Where(a => a.Customer != null)
-                .Select(a => a.Customer!.MapToDTO())
+            var customers = await context.Customers
+                .Select(c => c.MapToDTO())
                 .ToListAsync();
             return customers;
+        }
+
+        public async Task<CustomerDTO?> GetCustomerByName(string name)
+        {
+            var context = await _dbContextFactory.CreateDbContextAsync();
+            var customer = await context.Customers
+                .FirstOrDefaultAsync(c => c.FullName == name);
+            return customer?.MapToDTO();
+        }
+
+        public async Task CreateCustomer(CustomerDTO customerDTO)
+        {
+            var context = await _dbContextFactory.CreateDbContextAsync();
+            await context.Customers.AddAsync(Customer.FromDTO(customerDTO));
+            await context.SaveChangesAsync();
         }
     }
 }

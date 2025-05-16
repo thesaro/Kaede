@@ -21,7 +21,7 @@
             <Grid x:Name="AddAppointmentGrid" 
                 HorizontalAlignment="Left" 
                 Margin="0,12,0,8"
-                DataContext="{Binding ApppointmentSubmitionVM}"
+                DataContext="{Binding AppointmentSubmitionVM}"
                 Visibility="Visible">
                 <Grid.Resources>
                     <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
@@ -43,19 +43,22 @@
                     </TextBlock>
                     <ComboBox
                         Width="280"
-                        ItemsSource="{Binding FilteredPersons}"
-                        SelectedItem="{Binding SelectedPerson}"
+                        ItemsSource="{Binding FilteredCustomers}"
+                        SelectedItem="{Binding SelectedCustomer}"
                         DisplayMemberPath="FullName"
                         IsEditable="True"
-                        Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Button
+                        Text="{Binding CustomerSearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                    <Button Grid.Row="0" Grid.Column="1"
+                        Margin="10,0,0,0"
+                        Height="40"
+                        VerticalAlignment="Bottom"
                         Style="{StaticResource KButtonStyle}"
                         ContentStringFormat="Add '{0}'..."
-                        Content="{Binding SearchText}"
+                        Content="{Binding CustomerSearchText}"
                         Command="{Binding AddCustomerCommand}"
                         Visibility="{Binding ShowAddCustomerButton, Converter={StaticResource BoolToVisConverter}}"/>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,6">
+                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,6">
                     <TextBlock>
                         BARBER
                     </TextBlock>

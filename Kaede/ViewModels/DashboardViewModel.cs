@@ -44,16 +44,27 @@ namespace Kaede.ViewModels
             }
         }
 
-        private string _searchText = string.Empty;
-        public string SearchText
+        private string _customerSearchText = string.Empty;
+        public string CustomerSearchText
         {
-            get => _searchText;
+            get => _customerSearchText;
             set
             {
-                SetProperty(ref _searchText, value);
+                SetProperty(ref _customerSearchText, value);
                 FilteredCustomers.Refresh();
+                ShowAddCustomerButton = FilteredCustomers.IsEmpty 
+                    && !string.IsNullOrEmpty(value);
             }
         }
+
+        public bool _showAddCustomerButton = false; 
+        public bool ShowAddCustomerButton
+        {
+            get => _showAddCustomerButton;
+            set => SetProperty(ref _showAddCustomerButton, value);
+        }
+
+
         #endregion
 
 
@@ -70,19 +81,70 @@ namespace Kaede.ViewModels
             _shopItemService = shopItemService;
             _appointmentService = appointmentService;
 
-           _customers = new ObservableCollection<CustomerDTO>
-                (_appointmentService.GetAllCustomers()
-                    .GetAwaiter().GetResult());
+            FetchCustomers().GetAwaiter().GetResult();
             
             FilteredCustomers = new ListCollectionView(_customers);
             FilteredCustomers.Filter = item =>
             {
-                if (string.IsNullOrEmpty(SearchText)) return true;
-                return ((CustomerDTO)item).FullName.IndexOf(SearchText, StringComparison.Ordinal) >= 0;
+                if (string.IsNullOrEmpty(CustomerSearchText)) return true;
+                return ((CustomerDTO)item).FullName.IndexOf(CustomerSearchText, StringComparison.Ordinal) >= 0;
             };
+
+            AddCustomerCommand = new AsyncRelayCommand(SubmitCustomer);
         }
         #endregion
 
+
+        #region Methods
+
+        private async Task FetchCustomers()
+        {
+            _customers = new ObservableCollection<CustomerDTO>
+                (await _appointmentService.GetAllCustomers());
+            FilteredCustomers = new ListCollectionView (_customers);
+            FilteredCustomers.Filter = item =>
+            {
+                if (string.IsNullOrEmpty(CustomerSearchText)) return true;
+                return ((CustomerDTO)item).FullName.IndexOf(CustomerSearchText, StringComparison.Ordinal) >= 0;
+            };
+
+            _logger.LogDebug("Customers collection updated with values: {CustomersList}", _customers);
+        }
+
+        private async Task SubmitCustomer()
+        {
+            // Avoid quick textfield UI changes to affect this operation 
+            var customerName = new string (CustomerSearchText);
+
+            CustomerDTO customerDTO = new CustomerDTO
+            { 
+                FullName = customerName,
+                PhoneNumber = null
+            };
+
+            try
+            {
+                _logger.LogInformation("Attempting to register customer : {FullName}", customerDTO.FullName);
+
+                await _appointmentService.CreateCustomer(customerDTO);
+                MessageBox.Show($"Customer \"{customerDTO.FullName}\" successfully registered.", "Info",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                _logger.LogInformation("Customer {FullName} successfully registered", customerDTO.FullName);
+
+
+                CustomerSearchText = string.Empty;
+                ShowAddCustomerButton = false;
+                await FetchCustomers();
+                FilteredCustomers.Refresh();
+            }
+            catch
+            {
+                _logger.LogError("Unable to create new customer.");
+            }
+        }
+
+        #endregion
     }
     public class AppointmentListingViewModel : ViewModelBase
     {
