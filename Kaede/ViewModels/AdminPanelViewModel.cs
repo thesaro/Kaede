@@ -182,7 +182,7 @@ namespace Kaede.ViewModels
         {
             _userService = userService;
 
-            List<UserDTO> res = userService.GetBarbers().GetAwaiter().GetResult();
+            List<UserDTO> res = userService.GetAllBarbers().GetAwaiter().GetResult();
             _barbers = new ObservableCollection<UserDTO>(res);
 
             RemoveBarberCommand = new RelayCommand<object?>(RemoveBarber);

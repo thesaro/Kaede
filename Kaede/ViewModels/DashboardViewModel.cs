@@ -38,10 +38,7 @@ namespace Kaede.ViewModels
         public CustomerDTO SelectedCustomer
         {
             get => _selectedCustomer;
-            set
-            {
-                SetProperty(ref _selectedCustomer, value);
-            }
+            set => SetProperty(ref _selectedCustomer, value);
         }
 
         private string _customerSearchText = string.Empty;
@@ -64,9 +61,71 @@ namespace Kaede.ViewModels
             set => SetProperty(ref _showAddCustomerButton, value);
         }
 
+        private ObservableCollection<UserDTO> _barbers;
+        public ListCollectionView FilteredBarbers { get; set; }
 
+        private UserDTO _selectedBarber;
+        public UserDTO SelectedBarber
+        {
+            get => _selectedBarber;
+            set => SetProperty(ref _selectedBarber, value);
+        }
+
+        private string _barberSearchText = string.Empty;
+        public string BarberSearchText
+        {
+            get => _barberSearchText;
+            set
+            {
+                SetProperty(ref _barberSearchText, value);
+                FilteredBarbers.Refresh();
+            }
+        }
+
+        private ObservableCollection<ShopItemDTO> _shopItems;
+        public ListCollectionView FilteredShopItems { get; set; }
+
+        private ShopItemDTO _selectedShopItem;
+        public ShopItemDTO SelectedShopItem
+        {
+            get => _selectedShopItem;
+            set
+            {
+                SetProperty(ref _selectedShopItem, value);
+                // TODO: if the start date is not empty, auto set end date
+                // based on the selected shop item
+            }
+        }
+
+        private string _shopItemSearchText = string.Empty;
+        public string ShopItemSearchText
+        {
+            get => _shopItemSearchText;
+            set
+            {
+                SetProperty(ref _shopItemSearchText, value);
+                FilteredShopItems.Refresh();
+            }
+        }
         #endregion
 
+        private DateTime _startTime = DateTime.Now; 
+        public DateTime StartTime
+        {
+            get => _startTime;
+            set
+            {
+                // TODO: that uhh auto thingy
+                SetProperty(ref _startTime, value);
+            }
+        }
+
+        private DateTime _endTime;
+        public DateTime EndTime
+        {
+            get => _endTime;
+            set => SetProperty(ref _endTime, value);
+        }
 
         #region Constructor
         public AppointmentSubmitionViewModel(
@@ -81,8 +140,12 @@ namespace Kaede.ViewModels
             _shopItemService = shopItemService;
             _appointmentService = appointmentService;
 
-            FetchCustomers().GetAwaiter().GetResult();
-            
+            Task.WhenAll(
+                FetchCustomers(), 
+                FetchBarbers(),
+                FetchShopItems())
+                .GetAwaiter().GetResult();
+
             FilteredCustomers = new ListCollectionView(_customers);
             FilteredCustomers.Filter = item =>
             {
@@ -101,7 +164,7 @@ namespace Kaede.ViewModels
         {
             _customers = new ObservableCollection<CustomerDTO>
                 (await _appointmentService.GetAllCustomers());
-            FilteredCustomers = new ListCollectionView (_customers);
+            FilteredCustomers = new ListCollectionView(_customers);
             FilteredCustomers.Filter = item =>
             {
                 if (string.IsNullOrEmpty(CustomerSearchText)) return true;
@@ -109,6 +172,32 @@ namespace Kaede.ViewModels
             };
 
             _logger.LogDebug("Customers collection updated with values: {CustomersList}", _customers);
+        }
+
+        private async Task FetchBarbers()
+        {
+            _barbers = new ObservableCollection<UserDTO>
+                (await _userService.GetAllBarbers());
+            FilteredBarbers = new ListCollectionView(_barbers);
+            FilteredBarbers.Filter = item =>
+            {
+                if (string.IsNullOrEmpty(BarberSearchText)) return true;
+                return ((UserDTO)item).Username.IndexOf(BarberSearchText, StringComparison.Ordinal) >= 0;
+            };
+
+            _logger.LogDebug("Barbers collection updated with values {BarbersList}", _barbers);
+        }
+
+        private async Task FetchShopItems()
+        {
+            _shopItems = new ObservableCollection<ShopItemDTO>
+                (await _shopItemService.GetAllShopItems());
+            FilteredShopItems = new ListCollectionView(_shopItems);
+            FilteredShopItems.Filter = item =>
+            {
+                if (string.IsNullOrEmpty(ShopItemSearchText)) return true;
+                return ((ShopItemDTO)item).Name.IndexOf(ShopItemSearchText, StringComparison.Ordinal) >= 0;
+            };
         }
 
         private async Task SubmitCustomer()
@@ -144,6 +233,10 @@ namespace Kaede.ViewModels
             }
         }
 
+        private async Task SubmitAppointment()
+        {
+
+        }
         #endregion
     }
     public class AppointmentListingViewModel : ViewModelBase
