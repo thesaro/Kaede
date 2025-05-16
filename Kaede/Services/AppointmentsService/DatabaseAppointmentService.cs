@@ -3,6 +3,7 @@ using Kaede.DTOs;
 using Kaede.Extensions;
 using Kaede.Models;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,42 @@ namespace Kaede.Services.AppointmentsService
             var context = await _dbContextFactory.CreateDbContextAsync();
             await context.Customers.AddAsync(Customer.FromDTO(customerDTO));
             await context.SaveChangesAsync();
+        }
+
+        public async Task CreateAppointment(AppointmentDTO appointmentDTO)
+        {
+            var context = await _dbContextFactory.CreateDbContextAsync();
+
+            var customer = await context.Customers.FirstOrDefaultAsync
+                (c => c.FullName == appointmentDTO.CustomerDTO.FullName);
+
+            if (User.TryEncodeUsername(appointmentDTO.BarberDTO.Username, out string? uHash))
+            {
+                var barber = await context.Users.FirstOrDefaultAsync(u => u.UsernameHash == uHash);
+                var shopItem = await context.ShopItems.FirstOrDefaultAsync(i => i.Name == appointmentDTO.ShopItemDTO.Name);
+
+                if (barber == null || shopItem == null || customer == null)
+                {
+                    throw new InvalidDTOException("AppointmentDTO does not have valid foreign models defined.");
+                }
+                else
+                {
+                    var appointment = new Appointment()
+                    {
+                        Customer = customer,
+                        Barber = barber,
+                        ShopItem = shopItem,
+                        StartDate = appointmentDTO.StartDate,
+                        EndDate = appointmentDTO.EndDate
+                    };
+
+                    await context.AddAsync(appointment);
+                    await context.SaveChangesAsync();
+                  
+                }
+            }
+            else
+                Log.Logger.Error("Unable to encode DTO username hash.");
         }
     }
 }

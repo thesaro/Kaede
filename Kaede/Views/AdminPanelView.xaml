@@ -68,6 +68,7 @@
                                                 <Hyperlink 
                                                     TextDecorations="Underline"
                                                     Style="{StaticResource KHyperLinkStyle}"
+                                                    Foreground="{StaticResource KColor4}"
                                                     CommandParameter="{Binding}"
                                                     Command="{Binding DataContext.ChangePassCommand, 
                                                         RelativeSource={RelativeSource AncestorType=ListView}}">

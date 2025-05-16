@@ -6,6 +6,7 @@ using Kaede.Services.ShopItemService;
 using Kaede.Services.UsersService;
 using Kaede.Stores;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
@@ -92,8 +93,9 @@ namespace Kaede.ViewModels
             set
             {
                 SetProperty(ref _selectedShopItem, value);
-                // TODO: if the start date is not empty, auto set end date
+                // if the start date is not empty, auto set end date
                 // based on the selected shop item
+                EndTime = StartTime + _selectedShopItem.Duration;
             }
         }
 
@@ -107,16 +109,15 @@ namespace Kaede.ViewModels
                 FilteredShopItems.Refresh();
             }
         }
-        #endregion
 
-        private DateTime _startTime = DateTime.Now; 
+        private DateTime _startTime = DateTime.Now;
         public DateTime StartTime
         {
             get => _startTime;
             set
             {
-                // TODO: that uhh auto thingy
                 SetProperty(ref _startTime, value);
+                EndTime = _startTime + SelectedShopItem.Duration;
             }
         }
 
@@ -126,6 +127,9 @@ namespace Kaede.ViewModels
             get => _endTime;
             set => SetProperty(ref _endTime, value);
         }
+        #endregion
+
+
 
         #region Constructor
         public AppointmentSubmitionViewModel(
@@ -154,6 +158,7 @@ namespace Kaede.ViewModels
             };
 
             AddCustomerCommand = new AsyncRelayCommand(SubmitCustomer);
+            SubmitAppointmentCommand = new AsyncRelayCommand(SubmitAppointment, CanSubmitAppointment);
         }
         #endregion
 
@@ -235,8 +240,39 @@ namespace Kaede.ViewModels
 
         private async Task SubmitAppointment()
         {
+            AppointmentDTO appointmentDTO = new AppointmentDTO
+            {
+                CustomerDTO = SelectedCustomer,
+                BarberDTO = SelectedBarber,
+                ShopItemDTO = SelectedShopItem,
+                StartDate = StartTime,
+                EndDate = EndTime,
+            };
 
+            try
+            {
+                _logger.LogInformation("Attempting to submit appointment: {AppointmentDTO}", appointmentDTO.ToString());
+
+                await _appointmentService.CreateAppointment(appointmentDTO);
+
+                _logger.LogInformation("Appointment {AppointmentDTO} successfully registered", appointmentDTO.ToString());
+
+                MessageBox.Show($"Appointment successfully registered", "Info",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error("Failed to create appointment based on {AppointmentDTO}",
+                    appointmentDTO, ex);
+            }
         }
+
+        private bool CanSubmitAppointment()
+        {
+            // TODO: Actually implement this logic
+            return true;
+        }
+     
         #endregion
     }
     public class AppointmentListingViewModel : ViewModelBase

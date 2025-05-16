@@ -13,5 +13,8 @@ namespace Kaede.Services.AppointmentsService
         Task<CustomerDTO?> GetCustomerByName(string name);
 
         Task CreateCustomer(CustomerDTO customerDTO);
+
+        Task CreateAppointment(AppointmentDTO appointmentDTO);
+
     }
 }

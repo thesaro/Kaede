@@ -11,7 +11,7 @@ using System.Transactions;
 
 namespace Kaede.Models
 {
-    public class Appointment : ITryFromDTO<AppointmentDTO, Appointment>
+    public class Appointment
     {
         [Key]
         public Guid AppointmentId { get; set; }
@@ -36,29 +36,6 @@ namespace Kaede.Models
         [Required]
         public DateTime EndDate { get; set; }
 
-        public static bool TryFromDTO(AppointmentDTO dto, out Appointment? entity)
-        {
-            if (dto.StartDate >= dto.EndDate)
-            {
-                entity = null;
-                return false;
-            }
-
-            entity = new Appointment
-            {
-                AppointmentId = dto.AppointmentId,
-                CustomerId = dto.CustomerId,
-                BarberId = dto.BarberId,
-                ShopItemId = dto.ShopItemId,
-                StartDate = dto.StartDate,
-                EndDate = dto.EndDate,
-                Customer = null,
-                Barber = null,
-                ShopItem = null
-            };
-
-            return false;
-        }
     }
 }
 

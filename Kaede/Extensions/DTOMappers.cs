@@ -49,10 +49,9 @@ namespace Kaede.Extensions
             {
                 return new AppointmentDTO
                 {
-                    AppointmentId = appointment.AppointmentId,
-                    CustomerId = appointment.CustomerId,
-                    BarberId = appointment.BarberId,
-                    ShopItemId = appointment.ShopItemId,
+                    CustomerDTO = appointment.Customer.MapToDTO(),
+                    BarberDTO = appointment.Barber.MapToDTO(),
+                    ShopItemDTO = appointment.ShopItem.MapToDTO(),
                     StartDate = appointment.StartDate,
                     EndDate = appointment.EndDate
                 };
