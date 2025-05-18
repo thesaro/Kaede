@@ -51,6 +51,12 @@ namespace Kaede.Views
                     case "ShopItemListTB":
                         ShopItemListGrid.Visibility = vis;
                         break;
+                    case "AddAppointmentTB":
+                        AddAppointmentGrid.Visibility = vis;
+                        break;
+                    case "AppointmentListTB":
+                        AppointmentListGrid.Visibility = vis;
+                        break;
                     default:
                         break;
                 }

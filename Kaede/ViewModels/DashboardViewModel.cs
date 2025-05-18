@@ -277,7 +277,40 @@ namespace Kaede.ViewModels
     }
     public class AppointmentListingViewModel : ViewModelBase
     {
+        #region Services & Dependencies
+        private readonly ILogger<AppointmentListingViewModel> _logger;
+        private readonly IAppointmentService _appointmentService;
+        #endregion
 
+        #region Commands
+        public IRelayCommand CancelAppointmentCommand { get; }
+        public IRelayCommand MarkAppointmentDoneCommand { get; }
+        #endregion
+
+        #region Properties
+        private readonly ObservableCollection<AppointmentDTO> _appointments;
+        public IEnumerable<AppointmentDTO> Appointments => _appointments;
+        #endregion
+
+        #region Constructor
+        public AppointmentListingViewModel(
+            ILogger<AppointmentListingViewModel> logger,
+            IAppointmentService appointmentService)
+        {
+            _logger = logger;
+            _appointmentService = appointmentService;
+
+            List<AppointmentDTO> res = _appointmentService.GetAllAppointments()
+                .GetAwaiter().GetResult();
+            _appointments = new ObservableCollection<AppointmentDTO>(res);
+
+            _logger.LogDebug("Appointments loaded: {@AppointmentList}", _appointments);
+        }
+        #endregion
+
+        #region Methods
+        // TODO: setup appointment cancellation and mark done logic.
+        #endregion
     }
 
     public class ShopItemSubmitionViewModel : ViewModelBase
@@ -486,17 +519,20 @@ namespace Kaede.ViewModels
         public ShopItemSubmitionViewModel ShopItemSubmitionVM { get; }
         public ShopItemListingViewModel ShopItemListingVM { get; }
         public AppointmentSubmitionViewModel AppointmentSubmitionVM { get; }
+        public AppointmentListingViewModel AppointmentListingVM { get; }
         #endregion
 
 
         public DashboardViewModel(
             ShopItemSubmitionViewModel shopItemSubmitionVM, 
             ShopItemListingViewModel shopItemListingVM,
-            AppointmentSubmitionViewModel appointmentSubmitionVM)
+            AppointmentSubmitionViewModel appointmentSubmitionVM,
+            AppointmentListingViewModel appointmentListingVM)
         {
             ShopItemSubmitionVM = shopItemSubmitionVM;
             ShopItemListingVM = shopItemListingVM;
             AppointmentSubmitionVM = appointmentSubmitionVM;
+            AppointmentListingVM = appointmentListingVM;
 
             ShopItemSubmitionVM.ShopItemAdded += ShopItemListingVM.AddShopItem;
         }

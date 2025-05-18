@@ -11,10 +11,10 @@ namespace Kaede.Services.AppointmentsService
     {
         Task<List<CustomerDTO>> GetAllCustomers();
         Task<CustomerDTO?> GetCustomerByName(string name);
-
         Task CreateCustomer(CustomerDTO customerDTO);
-
         Task CreateAppointment(AppointmentDTO appointmentDTO);
+
+        Task<List<AppointmentDTO>> GetAllAppointments();
 
     }
 }

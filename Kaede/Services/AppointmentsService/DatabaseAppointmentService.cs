@@ -80,5 +80,18 @@ namespace Kaede.Services.AppointmentsService
             else
                 Log.Logger.Error("Unable to encode DTO username hash.");
         }
+
+        public async Task<List<AppointmentDTO>> GetAllAppointments()
+        {
+            var context = await _dbContextFactory.CreateDbContextAsync();
+            List<AppointmentDTO> appointments = await context.Appointments
+                .Include(a => a.Customer)
+                .Include(a => a.Barber)
+                .Include(a => a.ShopItem)
+                .Where(a => a != null)
+                .Select(a => a!.MapToDTO()) 
+                .ToListAsync();
+            return appointments;
+        }
     }
 }
