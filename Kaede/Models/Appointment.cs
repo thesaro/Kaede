@@ -36,6 +36,16 @@ namespace Kaede.Models
         [Required]
         public DateTime EndDate { get; set; }
 
+        [Required]
+        public AppointmentStatus Status { get; set; }
+
+    }
+
+    public enum AppointmentStatus
+    {
+        Pending,
+        Canceled,
+        Done
     }
 }
 

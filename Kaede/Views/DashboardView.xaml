@@ -115,59 +115,76 @@
                     <TextBlock FontSize="30" Text="Appointments List" Padding="0,0,6,0" />
                     <ToggleButton x:Name="AppointmentListTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
                 </StackPanel>
-                <Grid x:Name="AppointmentListGrid"
-                    HorizontalAlignment="Left"
-                    Margin="0,12,0,8"
+                <StackPanel 
+                    x:Name="AppointmentListPanel"
                     DataContext="{Binding AppointmentListingVM}"
                     Visibility="Visible">
-                    <Grid.Resources>
-                        <local:TimeSpanToStringConverter x:Key="TimeSpanConverter" />
-                    </Grid.Resources>
-                    <ListView ItemsSource="{Binding Appointments}" ItemContainerStyle="{StaticResource KListViewItemStyle}">
-                        <ListView.View>
-                            <GridView ColumnHeaderContainerStyle="{StaticResource KGridViewColumnHeaderStyle}">
-                                <GridView.Columns>
-                                    <GridViewColumn Header="Customer">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock HorizontalAlignment="Center" Text="{Binding CustomerDTO.FullName}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="Barber">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock HorizontalAlignment="Center" Text="{Binding BarberDTO.Username}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="Item">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock HorizontalAlignment="Center" Text="{Binding ShopItemDTO.Name}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="Start">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock HorizontalAlignment="Center" 
+                    <ToggleButton 
+                        Style="{StaticResource KToggleButtonStyle}"
+                        HorizontalAlignment="Left"
+                        Content="Show Inactive APs" 
+                        IsChecked="{Binding IsInactiveAPsToggled, Mode=TwoWay}" />
+                    <Grid
+                    HorizontalAlignment="Left"
+                    Margin="0,12,0,8"
+                    >
+                        <Grid.Resources>
+                            <local:TimeSpanToStringConverter x:Key="TimeSpanConverter" />
+                            <local:EnumToStringConverter x:Key="EnumConverter" />
+                        </Grid.Resources>
+                        <ListView ItemsSource="{Binding Appointments}" ItemContainerStyle="{StaticResource KListViewItemStyle}">
+                            <ListView.View>
+                                <GridView ColumnHeaderContainerStyle="{StaticResource KGridViewColumnHeaderStyle}">
+                                    <GridView.Columns>
+                                        <GridViewColumn Header="Customer">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock HorizontalAlignment="Center" Text="{Binding CustomerDTO.FullName}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Barber">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock HorizontalAlignment="Center" Text="{Binding BarberDTO.Username}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Item">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock HorizontalAlignment="Center" Text="{Binding ShopItemDTO.Name}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Start">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock HorizontalAlignment="Center" 
                                                        Text="{Binding StartDate, StringFormat='yyyy-MM-dd HH:mm:ss'}"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn Header="End">
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock HorizontalAlignment="Center"
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="End">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock HorizontalAlignment="Center"
                                                        Text="{Binding EndDate, StringFormat='yyyy-MM-dd HH:mm:ss'}" />
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Status">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock HorizontalAlignment="Center"
+                                                        Text="{Binding Status, Converter={StaticResource EnumConverter}}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn>
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock>
                                      <Hyperlink 
                                          Foreground="{StaticResource KColor1}"
                                          TextDecorations="Underline"
@@ -177,14 +194,14 @@
                                          Style="{StaticResource KHyperLinkStyle}">
                                          Cancel
                                      </Hyperlink>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                    <GridViewColumn>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <TextBlock>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn>
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock>
                                                 <Hyperlink 
                                                     TextDecorations="Underline"
                                                     Style="{StaticResource KHyperLinkStyle}"
@@ -194,16 +211,16 @@
                                                         RelativeSource={RelativeSource AncestorType=ListView}}">
                                                     Mark Done
                                                 </Hyperlink>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-                                </GridView.Columns>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </Grid>
-                
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Grid>
+                </StackPanel>
                 <TextBlock FontSize="32" Text="Shop Items"/>
                 <Separator Height="2" Width="640" HorizontalAlignment="Left"
                        Background="{StaticResource KForeground}" Margin="0,5,0,10"/>

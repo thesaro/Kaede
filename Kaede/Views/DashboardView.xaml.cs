@@ -55,7 +55,7 @@ namespace Kaede.Views
                         AddAppointmentGrid.Visibility = vis;
                         break;
                     case "AppointmentListTB":
-                        AppointmentListGrid.Visibility = vis;
+                        AppointmentListPanel.Visibility = vis;
                         break;
                     default:
                         break;
@@ -90,5 +90,18 @@ namespace Kaede.Views
             return TimeSpan.Zero;
         }
 
+    }
+
+    public class EnumToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value?.ToString() ?? string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Enum.Parse(targetType, value.ToString());
+        }
     }
 }

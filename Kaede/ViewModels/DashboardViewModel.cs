@@ -13,6 +13,11 @@ using System.Numerics;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using Kaede.Models;
+using System.Linq.Expressions;
+using Expression = System.Linq.Expressions.Expression;
+using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace Kaede.ViewModels
 {
@@ -247,6 +252,7 @@ namespace Kaede.ViewModels
                 ShopItemDTO = SelectedShopItem,
                 StartDate = StartTime,
                 EndDate = EndTime,
+                Status = AppointmentStatus.Pending
             };
 
             try
@@ -287,9 +293,97 @@ namespace Kaede.ViewModels
         public IRelayCommand MarkAppointmentDoneCommand { get; }
         #endregion
 
+        #region AppointmentFilterManager
+        private enum AppointmentFilter
+        {
+            StatusPending,
+            StatusConfirmed
+        }
+
+        private class AppointmentFilterManager
+        {
+            private Dictionary<AppointmentFilter, Expression<Func<AppointmentDTO, bool>>> _filterMap =
+                new()
+                {
+                    {AppointmentFilter.StatusConfirmed, a => a.Status == (AppointmentStatus.Done | AppointmentStatus.Canceled) },
+                    {AppointmentFilter.StatusPending, a => a.Status == AppointmentStatus.Pending },
+                };
+
+            private List<AppointmentFilter> _activeFilters = new();
+
+            public event EventHandler? ActiveFilterChanged;
+            public void RaiseActiveFiltersChanged()
+            {
+                ActiveFilterChanged?.Invoke(this, EventArgs.Empty);
+            }
+
+            public void ApplyFilter(AppointmentFilter filter, bool raiseUpdates = true)
+            {
+                if (!_activeFilters.Contains(filter))
+                    _activeFilters.Add(filter);
+                RaiseActiveFiltersChanged();
+            }
+
+            public void RemoveFilter(AppointmentFilter filter, bool raiseUpdates = true)
+            {
+                _activeFilters.Remove(filter);
+                RaiseActiveFiltersChanged();
+            }
+
+            public Expression<Func<AppointmentDTO, bool>> GetCombinedFilter()
+            {
+                if (!_activeFilters.Any()) return a => true; // No filters applied, return all
+
+                var parameter = Expression.Parameter(typeof(AppointmentDTO), "a");
+                Expression combinedExpression = Expression.Constant(true);
+
+                foreach (var filter in _activeFilters)
+                {
+                    var expression = _filterMap[filter].Body;
+                    combinedExpression = Expression.AndAlso(combinedExpression, Expression.Invoke(_filterMap[filter], parameter));
+                }
+
+                return Expression.Lambda<Func<AppointmentDTO, bool>>(combinedExpression, parameter);
+            }
+
+        }
+        #endregion
+
         #region Properties
-        private readonly ObservableCollection<AppointmentDTO> _appointments;
-        public IEnumerable<AppointmentDTO> Appointments => _appointments;
+        private readonly AppointmentFilterManager _appointmentFilterManager;
+        private ObservableCollection<AppointmentDTO> _appointments;
+        public ObservableCollection<AppointmentDTO> Appointments
+        {
+            get => _appointments;
+            set
+            {
+                SetProperty(ref _appointments, value);
+                _logger.LogDebug("Appointments loaded: {@AppointmentList}", _appointments);
+            }
+        }
+
+
+        private bool _isInactiveAPsToggled = false;
+        public bool IsInactiveAPsToggled
+        {
+            get => _isInactiveAPsToggled;
+            set
+            {
+                SetProperty(ref _isInactiveAPsToggled, value);
+
+                if (_isInactiveAPsToggled)
+                {
+                    _appointmentFilterManager.RemoveFilter(AppointmentFilter.StatusPending, raiseUpdates: false);
+                    _appointmentFilterManager.ApplyFilter(AppointmentFilter.StatusConfirmed);
+                }
+                else
+                {
+                    _appointmentFilterManager.RemoveFilter(AppointmentFilter.StatusConfirmed, raiseUpdates: false);
+                    _appointmentFilterManager.ApplyFilter(AppointmentFilter.StatusPending);
+                }
+            }
+        }
+
         #endregion
 
         #region Constructor
@@ -300,16 +394,23 @@ namespace Kaede.ViewModels
             _logger = logger;
             _appointmentService = appointmentService;
 
-            List<AppointmentDTO> res = _appointmentService.GetAllAppointments()
-                .GetAwaiter().GetResult();
-            _appointments = new ObservableCollection<AppointmentDTO>(res);
+            _appointmentFilterManager = new AppointmentFilterManager();
+            _appointmentFilterManager.ActiveFilterChanged += async (sender, e) => await FetchAppointments();
 
-            _logger.LogDebug("Appointments loaded: {@AppointmentList}", _appointments);
+            _appointmentFilterManager.ApplyFilter(AppointmentFilter.StatusPending);
         }
         #endregion
 
         #region Methods
         // TODO: setup appointment cancellation and mark done logic.
+
+        private async Task FetchAppointments()
+        {
+            var combinedFilter = _appointmentFilterManager.GetCombinedFilter();
+            var appointments = await _appointmentService.GetAllAppointments();
+            var filteredAppointments = appointments.AsQueryable().Where(combinedFilter).ToList();
+            Appointments = new ObservableCollection<AppointmentDTO>(filteredAppointments);
+        }
         #endregion
     }
 

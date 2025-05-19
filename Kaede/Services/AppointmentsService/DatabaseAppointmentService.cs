@@ -69,7 +69,8 @@ namespace Kaede.Services.AppointmentsService
                         Barber = barber,
                         ShopItem = shopItem,
                         StartDate = appointmentDTO.StartDate,
-                        EndDate = appointmentDTO.EndDate
+                        EndDate = appointmentDTO.EndDate,
+                        Status = appointmentDTO.Status,
                     };
 
                     await context.AddAsync(appointment);

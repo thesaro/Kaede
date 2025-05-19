@@ -49,11 +49,12 @@ namespace Kaede.Extensions
             {
                 return new AppointmentDTO
                 {
-                    CustomerDTO = appointment.Customer.MapToDTO(),
-                    BarberDTO = appointment.Barber.MapToDTO(),
-                    ShopItemDTO = appointment.ShopItem.MapToDTO(),
+                    CustomerDTO = appointment.Customer!.MapToDTO(),
+                    BarberDTO = appointment.Barber!.MapToDTO(),
+                    ShopItemDTO = appointment.ShopItem!.MapToDTO(),
                     StartDate = appointment.StartDate,
-                    EndDate = appointment.EndDate
+                    EndDate = appointment.EndDate,
+                    Status = appointment.Status,
                 };
             }
             else

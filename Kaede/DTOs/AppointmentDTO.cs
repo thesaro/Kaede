@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kaede.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,6 @@ namespace Kaede.DTOs
         public ShopItemDTO ShopItemDTO { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-
+        public AppointmentStatus Status { get; set; }
     }
 }
