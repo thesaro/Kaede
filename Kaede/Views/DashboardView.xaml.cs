@@ -104,4 +104,22 @@ namespace Kaede.Views
             return Enum.Parse(targetType, value.ToString());
         }
     }
+
+    public static class GridViewColumnExtensions
+    {
+        public static readonly DependencyProperty IsVisibleProperty =
+            DependencyProperty.RegisterAttached("IsVisible", typeof(bool), typeof(GridViewColumnExtensions), new PropertyMetadata(true, OnIsVisibleChanged));
+
+        public static bool GetIsVisible(DependencyObject obj) => (bool)obj.GetValue(IsVisibleProperty);
+        public static void SetIsVisible(DependencyObject obj, bool value) => obj.SetValue(IsVisibleProperty, value);
+
+        private static void OnIsVisibleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is GridViewColumn column)
+            {
+                column.Width = (bool)e.NewValue ? double.NaN : 0;
+            }
+        }
+    }
+
 }

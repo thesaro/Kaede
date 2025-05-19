@@ -119,6 +119,16 @@
                     x:Name="AppointmentListPanel"
                     DataContext="{Binding AppointmentListingVM}"
                     Visibility="Visible">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock>
+                            Order by: 
+                        </TextBlock>
+                        <ComboBox
+                            Width="280"
+                            ItemsSource="{Binding AppointmentOrderingOptions}"
+                            SelectedItem="{Binding SelectedAppointmentOrdering}"
+                            DisplayMemberPath="."/>
+                    </StackPanel>
                     <ToggleButton 
                         Style="{StaticResource KToggleButtonStyle}"
                         HorizontalAlignment="Left"
@@ -132,7 +142,7 @@
                             <local:TimeSpanToStringConverter x:Key="TimeSpanConverter" />
                             <local:EnumToStringConverter x:Key="EnumConverter" />
                         </Grid.Resources>
-                        <ListView ItemsSource="{Binding Appointments}" ItemContainerStyle="{StaticResource KListViewItemStyle}">
+                        <ListView ItemsSource="{Binding AppointmentsFinalized}" ItemContainerStyle="{StaticResource KListViewItemStyle}">
                             <ListView.View>
                                 <GridView ColumnHeaderContainerStyle="{StaticResource KGridViewColumnHeaderStyle}">
                                     <GridView.Columns>
@@ -181,7 +191,7 @@
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn>
+                                        <GridViewColumn local:GridViewColumnExtensions.IsVisible="{Binding IsCancelColumnVisible}">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock>
@@ -189,7 +199,7 @@
                                          Foreground="{StaticResource KColor1}"
                                          TextDecorations="Underline"
                                          CommandParameter="{Binding}"
-                                         Command="{Binding DataContext.RemoveBarberCommand, 
+                                         Command="{Binding DataContext.CancelAppointmentCommand, 
                                              RelativeSource={RelativeSource AncestorType=ListView}}"
                                          Style="{StaticResource KHyperLinkStyle}">
                                          Cancel
@@ -198,7 +208,7 @@
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn>
+                                        <GridViewColumn local:GridViewColumnExtensions.IsVisible="{Binding IsMarkDoneColumnVisible}">
                                             <GridViewColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock>
@@ -207,7 +217,7 @@
                                                     Style="{StaticResource KHyperLinkStyle}"
                                                     Foreground="{StaticResource KColor4}"
                                                     CommandParameter="{Binding}"
-                                                    Command="{Binding DataContext.ChangePassCommand, 
+                                                    Command="{Binding DataContext.MarkAppointmentDoneCommand, 
                                                         RelativeSource={RelativeSource AncestorType=ListView}}">
                                                     Mark Done
                                                 </Hyperlink>

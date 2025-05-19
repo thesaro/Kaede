@@ -94,5 +94,26 @@ namespace Kaede.Services.AppointmentsService
                 .ToListAsync();
             return appointments;
         }
+
+        public async Task ChangeAppointmentStatus(AppointmentDTO appointmentDTO, AppointmentStatus newStatus)
+        {
+            var context = await _dbContextFactory.CreateDbContextAsync();
+
+            if (!User.TryEncodeUsername(appointmentDTO.BarberDTO.Username, out string? uHash))
+            {
+                throw new InvalidDTOException("AppointmentDTO does not have valid foreign models defined.");
+            }
+
+            var appointment = await context.Appointments
+                .FirstOrDefaultAsync(a => a.AppointmentId.Equals(appointmentDTO.AppointmentId));
+
+            if (appointment != null)
+            {
+                appointment.Status = newStatus;
+                await context.SaveChangesAsync();
+            }
+            else
+                throw new InvalidDTOException("AppointmentDTO does not match any existent model in database.");
+        }
     }
 }

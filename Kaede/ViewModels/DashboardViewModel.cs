@@ -18,6 +18,7 @@ using System.Linq.Expressions;
 using Expression = System.Linq.Expressions.Expression;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace Kaede.ViewModels
 {
@@ -285,6 +286,7 @@ namespace Kaede.ViewModels
     {
         #region Services & Dependencies
         private readonly ILogger<AppointmentListingViewModel> _logger;
+        private readonly UserSession _userSession;
         private readonly IAppointmentService _appointmentService;
         #endregion
 
@@ -305,7 +307,7 @@ namespace Kaede.ViewModels
             private Dictionary<AppointmentFilter, Expression<Func<AppointmentDTO, bool>>> _filterMap =
                 new()
                 {
-                    {AppointmentFilter.StatusConfirmed, a => a.Status == (AppointmentStatus.Done | AppointmentStatus.Canceled) },
+                    {AppointmentFilter.StatusConfirmed, a => a.Status == AppointmentStatus.Canceled || a.Status == AppointmentStatus.Done },
                     {AppointmentFilter.StatusPending, a => a.Status == AppointmentStatus.Pending },
                 };
 
@@ -321,13 +323,15 @@ namespace Kaede.ViewModels
             {
                 if (!_activeFilters.Contains(filter))
                     _activeFilters.Add(filter);
-                RaiseActiveFiltersChanged();
+                if (raiseUpdates)
+                    RaiseActiveFiltersChanged();
             }
 
             public void RemoveFilter(AppointmentFilter filter, bool raiseUpdates = true)
             {
                 _activeFilters.Remove(filter);
-                RaiseActiveFiltersChanged();
+                if (raiseUpdates)
+                    RaiseActiveFiltersChanged();
             }
 
             public Expression<Func<AppointmentDTO, bool>> GetCombinedFilter()
@@ -350,16 +354,20 @@ namespace Kaede.ViewModels
         #endregion
 
         #region Properties
+
         private readonly AppointmentFilterManager _appointmentFilterManager;
         private ObservableCollection<AppointmentDTO> _appointments;
         public ObservableCollection<AppointmentDTO> Appointments
         {
             get => _appointments;
-            set
-            {
-                SetProperty(ref _appointments, value);
-                _logger.LogDebug("Appointments loaded: {@AppointmentList}", _appointments);
-            }
+            set => SetProperty(ref _appointments, value);
+        }
+
+        private ICollectionView _appointmentsFinalized;
+        public ICollectionView AppointmentsFinalized
+        {
+            get => _appointmentsFinalized;
+            set => SetProperty(ref _appointmentsFinalized, value);
         }
 
 
@@ -375,34 +383,83 @@ namespace Kaede.ViewModels
                 {
                     _appointmentFilterManager.RemoveFilter(AppointmentFilter.StatusPending, raiseUpdates: false);
                     _appointmentFilterManager.ApplyFilter(AppointmentFilter.StatusConfirmed);
+
+                    IsCancelColumnVisible = IsMarkDoneColumnVisible = false;
                 }
                 else
                 {
                     _appointmentFilterManager.RemoveFilter(AppointmentFilter.StatusConfirmed, raiseUpdates: false);
                     _appointmentFilterManager.ApplyFilter(AppointmentFilter.StatusPending);
+
+                    IsCancelColumnVisible = IsMarkDoneColumnVisible = true;
                 }
             }
         }
 
+        private bool _isCancelColumnVisible = true;
+        public bool IsCancelColumnVisible
+        {
+            get => _isCancelColumnVisible;
+            set => SetProperty(ref _isCancelColumnVisible, value);
+        }
+
+        private bool _isMarkDoneColumnVisible = true;
+        public bool IsMarkDoneColumnVisible
+        {
+            get => _isMarkDoneColumnVisible;
+            set => SetProperty(ref _isMarkDoneColumnVisible, value);
+        }
+
+        public enum AppointmentOrdering
+        {
+            StartDateAscending,
+            StartDateDescending,
+            BarberAlphabetic,
+            ShopItemAlphabetic,
+            ShopItemPriceDescending
+        }
+
+        public ObservableCollection<AppointmentOrdering> AppointmentOrderingOptions { get; }
+            = new ObservableCollection<AppointmentOrdering>(
+                Enum.GetValues(typeof(AppointmentOrdering))
+                    .Cast<AppointmentOrdering>()
+                    .ToList());
+
+        private AppointmentOrdering _selectedappointmentOrdering = AppointmentOrdering.StartDateAscending;
+        public AppointmentOrdering SelectedAppointmentOrdering
+        {
+            get => _selectedappointmentOrdering;
+            set
+            {
+                SetProperty(ref _selectedappointmentOrdering, value);
+                ReorderAppointments();
+            }
+        }
         #endregion
 
         #region Constructor
         public AppointmentListingViewModel(
             ILogger<AppointmentListingViewModel> logger,
-            IAppointmentService appointmentService)
+            IAppointmentService appointmentService,
+            UserSession userSession)
         {
             _logger = logger;
+            _userSession = userSession;
             _appointmentService = appointmentService;
 
             _appointmentFilterManager = new AppointmentFilterManager();
             _appointmentFilterManager.ActiveFilterChanged += async (sender, e) => await FetchAppointments();
 
+            // _appointments is initialized here
             _appointmentFilterManager.ApplyFilter(AppointmentFilter.StatusPending);
+
+
+            CancelAppointmentCommand = new RelayCommand<object?>(CancelAppointment);
+            MarkAppointmentDoneCommand = new RelayCommand<object?>(MarkAppointmentDone);
         }
         #endregion
 
         #region Methods
-        // TODO: setup appointment cancellation and mark done logic.
 
         private async Task FetchAppointments()
         {
@@ -410,6 +467,94 @@ namespace Kaede.ViewModels
             var appointments = await _appointmentService.GetAllAppointments();
             var filteredAppointments = appointments.AsQueryable().Where(combinedFilter).ToList();
             Appointments = new ObservableCollection<AppointmentDTO>(filteredAppointments);
+            AppointmentsFinalized = CollectionViewSource.GetDefaultView(_appointments);
+            ReorderAppointments();
+        }
+
+        private void ReorderAppointments()
+        {
+            AppointmentsFinalized.SortDescriptions.Clear();
+            switch (SelectedAppointmentOrdering)
+            {
+                case AppointmentOrdering.StartDateAscending:
+                    AppointmentsFinalized.SortDescriptions.Add(
+                        new SortDescription(nameof(AppointmentDTO.StartDate), ListSortDirection.Ascending));
+                    break;
+                case AppointmentOrdering.StartDateDescending:
+                    AppointmentsFinalized.SortDescriptions.Add(
+                        new SortDescription(nameof(AppointmentDTO.StartDate), ListSortDirection.Descending));
+                    break;
+                case AppointmentOrdering.BarberAlphabetic:
+                    AppointmentsFinalized.SortDescriptions.Add(
+                        new SortDescription(nameof(AppointmentDTO.BarberDTO.Username), ListSortDirection.Ascending));
+                    break;
+                case AppointmentOrdering.ShopItemAlphabetic:
+                    AppointmentsFinalized.SortDescriptions.Add(
+                        new SortDescription(nameof(AppointmentDTO.ShopItemDTO.Name), ListSortDirection.Ascending));
+                    break;
+                case AppointmentOrdering.ShopItemPriceDescending:
+                    AppointmentsFinalized.SortDescriptions.Add(
+                        new SortDescription(nameof(AppointmentDTO.ShopItemDTO.Price), ListSortDirection.Descending));
+                    break;
+                default:
+                    break;
+            }
+            AppointmentsFinalized.Refresh();
+        }
+
+        public void CancelAppointment(object? item)
+        {
+            if (item != null && item is AppointmentDTO appointmentDTO)
+            {
+
+                if (_userSession.CurrentUser!.Role == UserRole.Admin || 
+                    (_userSession.CurrentUser!.Role == UserRole.Barber &&
+                    appointmentDTO.BarberDTO.Username == _userSession.CurrentUser!.Username))
+                {
+                    MessageBox.Show($"This appointment can be either cancelled by admin or {appointmentDTO.BarberDTO.Username}.",
+                        "Info", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+                
+                MessageBoxResult removeRes = MessageBox.Show($"Do you really want to cancel this appointment?",
+                    "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (removeRes != MessageBoxResult.Yes)
+                    return;
+
+                try
+                {
+                    _appointmentService.ChangeAppointmentStatus(appointmentDTO, AppointmentStatus.Canceled);
+                    FetchAppointments().GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error occured while cancelling appointment:\n{ex.Message}",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        public void MarkAppointmentDone(object? item)
+        {
+            if (item != null && item is AppointmentDTO appointmentDTO)
+            {
+                MessageBoxResult markDoneRes = MessageBox.Show($"Do you really want to mark this appointment as done?",
+                    "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (markDoneRes != MessageBoxResult.Yes)
+                    return;
+
+                try
+                {
+                    _appointmentService.ChangeAppointmentStatus(appointmentDTO, AppointmentStatus.Done);
+                    FetchAppointments().GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error occured while marking appointment as done:\n{ex.Message}",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
         #endregion
     }

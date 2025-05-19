@@ -1,4 +1,5 @@
 ﻿using Kaede.DTOs;
+using Kaede.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace Kaede.Services.AppointmentsService
         Task CreateAppointment(AppointmentDTO appointmentDTO);
 
         Task<List<AppointmentDTO>> GetAllAppointments();
+        Task ChangeAppointmentStatus(AppointmentDTO appointmentDTO, AppointmentStatus newStatus);
 
     }
 }

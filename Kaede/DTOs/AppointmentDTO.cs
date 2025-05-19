@@ -9,11 +9,12 @@ namespace Kaede.DTOs
 {
     public class AppointmentDTO
     {
-        public CustomerDTO CustomerDTO { get; set; }
-        public UserDTO BarberDTO { get; set; }  
-        public ShopItemDTO ShopItemDTO { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public AppointmentStatus Status { get; set; }
+        public Guid? AppointmentId { get; init; }
+        public required CustomerDTO CustomerDTO { get; set; }
+        public required UserDTO BarberDTO { get; set; }  
+        public required ShopItemDTO ShopItemDTO { get; set; }
+        public required DateTime StartDate { get; set; }
+        public required DateTime EndDate { get; set; }
+        public required AppointmentStatus Status { get; set; }
     }
 }
