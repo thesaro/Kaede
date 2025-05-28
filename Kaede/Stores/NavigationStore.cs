@@ -34,7 +34,7 @@ namespace Kaede.Stores
         }
 
         /// <summary>
-        /// Occurs when the current view model changes.
+        /// Occurs when the CurrentViewModel changes.
         /// </summary>
         public event Action? CurrentViewModelChanged;
         
