@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using Kaede.Bindables;
 using Kaede.DTOs;
 using Kaede.Models;
 using Kaede.Services;
@@ -112,7 +113,7 @@ namespace Kaede.ViewModels
             {
                 await _userService.CreateUser(barberDTO);
                 // need to resolve the barber immediately because of creation dates
-                OnBarberAdded((await _userService.GetUser(barberDTO.Username))!);
+                BarberAdded.Value = await _userService.GetUser(barberDTO.Username)!;
                 MessageBox.Show($"Barber \"{barberDTO.Username}\" successfully registered", "Info",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -134,14 +135,7 @@ namespace Kaede.ViewModels
         #endregion
 
         #region Events
-        // Other classes can bind to this event so that
-        // they realize when a barber is added
-        public Action<UserDTO>? BarberAdded;
-
-        private void OnBarberAdded(UserDTO barberDTO)
-        {
-            BarberAdded?.Invoke(barberDTO);
-        }
+        public Bindable<UserDTO> BarberAdded = new();
         #endregion
 
         #region Validation Methods
@@ -257,9 +251,9 @@ namespace Kaede.ViewModels
             BarberListingVM = barberListingVM;
             BarberRegistrationVM = barberRegistrationVM;
 
-            // maybe abstract this eventing stuff into a IWhateverService if it proves to 
-            // be recurring in the program structure.
-            BarberRegistrationVM.BarberAdded += BarberListingVM.AddBarber;
+
+            BarberRegistrationVM.BarberAdded
+                .BindValueChanged(e => BarberListingVM.AddBarber(e.NewValue));
         }
         #endregion
 

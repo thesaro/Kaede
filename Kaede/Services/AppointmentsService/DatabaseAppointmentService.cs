@@ -45,7 +45,7 @@ namespace Kaede.Services.AppointmentsService
             await context.SaveChangesAsync();
         }
 
-        public async Task CreateAppointment(AppointmentDTO appointmentDTO)
+        public async Task<Guid?> CreateAppointment(AppointmentDTO appointmentDTO)
         {
             var context = await _dbContextFactory.CreateDbContextAsync();
 
@@ -75,11 +75,14 @@ namespace Kaede.Services.AppointmentsService
 
                     await context.AddAsync(appointment);
                     await context.SaveChangesAsync();
-                  
+                    return appointment.AppointmentId;
                 }
             }
             else
+            {
                 Log.Logger.Error("Unable to encode DTO username hash.");
+                return null;
+            }
         }
 
         public async Task<List<AppointmentDTO>> GetAllAppointments()

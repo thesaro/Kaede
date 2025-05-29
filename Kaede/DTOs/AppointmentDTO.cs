@@ -9,7 +9,7 @@ namespace Kaede.DTOs
 {
     public class AppointmentDTO
     {
-        public Guid? AppointmentId { get; init; }
+        public Guid? AppointmentId { get; set; }
         public required CustomerDTO CustomerDTO { get; set; }
         public required UserDTO BarberDTO { get; set; }  
         public required ShopItemDTO ShopItemDTO { get; set; }

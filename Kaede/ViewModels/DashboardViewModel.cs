@@ -19,6 +19,7 @@ using Expression = System.Linq.Expressions.Expression;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.ComponentModel;
+using Kaede.Bindables;
 
 namespace Kaede.ViewModels
 {
@@ -168,7 +169,6 @@ namespace Kaede.ViewModels
         }
         #endregion
 
-
         #region Methods
 
         private async Task FetchCustomers()
@@ -227,6 +227,7 @@ namespace Kaede.ViewModels
                 _logger.LogInformation("Attempting to register customer : {FullName}", customerDTO.FullName);
 
                 await _appointmentService.CreateCustomer(customerDTO);
+
                 MessageBox.Show($"Customer \"{customerDTO.FullName}\" successfully registered.", "Info",
                     MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -260,9 +261,11 @@ namespace Kaede.ViewModels
             {
                 _logger.LogInformation("Attempting to submit appointment: {AppointmentDTO}", appointmentDTO.ToString());
 
-                await _appointmentService.CreateAppointment(appointmentDTO);
-
+                appointmentDTO.AppointmentId = await _appointmentService.CreateAppointment(appointmentDTO);
+                
                 _logger.LogInformation("Appointment {AppointmentDTO} successfully registered", appointmentDTO.ToString());
+
+                AppointmentSubmitted.Value = appointmentDTO;
 
                 MessageBox.Show($"Appointment successfully registered", "Info",
                     MessageBoxButton.OK, MessageBoxImage.Information);
@@ -279,7 +282,11 @@ namespace Kaede.ViewModels
             // TODO: Actually implement this logic
             return true;
         }
-     
+
+        #endregion
+
+        #region Events
+        public Bindable<AppointmentDTO> AppointmentSubmitted { get; } = new();
         #endregion
     }
     public class AppointmentListingViewModel : ViewModelBase
@@ -467,7 +474,7 @@ namespace Kaede.ViewModels
             var appointments = await _appointmentService.GetAllAppointments();
             var filteredAppointments = appointments.AsQueryable().Where(combinedFilter).ToList();
             Appointments = new ObservableCollection<AppointmentDTO>(filteredAppointments);
-            AppointmentsFinalized = CollectionViewSource.GetDefaultView(_appointments);
+            AppointmentsFinalized = CollectionViewSource.GetDefaultView(Appointments);
             ReorderAppointments();
         }
 
@@ -507,12 +514,13 @@ namespace Kaede.ViewModels
             if (item != null && item is AppointmentDTO appointmentDTO)
             {
 
-                if (_userSession.CurrentUser!.Role == UserRole.Admin || 
+                if (!(_userSession.CurrentUser!.Role == UserRole.Admin || 
                     (_userSession.CurrentUser!.Role == UserRole.Barber &&
-                    appointmentDTO.BarberDTO.Username == _userSession.CurrentUser!.Username))
+                    appointmentDTO.BarberDTO.Username == _userSession.CurrentUser!.Username)))
                 {
                     MessageBox.Show($"This appointment can be either cancelled by admin or {appointmentDTO.BarberDTO.Username}.",
                         "Info", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
                 }
                 
                 MessageBoxResult removeRes = MessageBox.Show($"Do you really want to cancel this appointment?",
@@ -523,7 +531,13 @@ namespace Kaede.ViewModels
 
                 try
                 {
+                    _logger.LogDebug("Attempting to cancel appointment {AppointmentDTO}", appointmentDTO);
+
                     _appointmentService.ChangeAppointmentStatus(appointmentDTO, AppointmentStatus.Canceled);
+                    
+
+                    _logger.LogDebug("Successfully canceled appointment {AppointmentDTO}, Updating appointments...", appointmentDTO);
+
                     FetchAppointments().GetAwaiter().GetResult();
                 }
                 catch (Exception ex)
@@ -556,6 +570,13 @@ namespace Kaede.ViewModels
                 }
             }
         }
+
+        public void AddAppointment(AppointmentDTO appointmentDTO)
+        {
+            Appointments.Add(appointmentDTO);
+            AppointmentsFinalized.Refresh();
+        }
+
         #endregion
     }
 
@@ -694,7 +715,7 @@ namespace Kaede.ViewModels
             try
             {
                 await _shopItemService.CreateShopItem(shopItemDTO);
-                OnShopItemAdded((await _shopItemService.GetShopItemByName(shopItemDTO.Name))!);
+                ShopItemAdded.Value = await _shopItemService.GetShopItemByName(shopItemDTO.Name)!;
                 MessageBox.Show($"Shop Item \"{shopItemDTO.Name}\" successfully registered", "Info",
                     MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -716,13 +737,7 @@ namespace Kaede.ViewModels
         #endregion
 
         #region Events
-
-        public Action<ShopItemDTO>? ShopItemAdded;
-
-        private void OnShopItemAdded(ShopItemDTO item)
-        {
-            ShopItemAdded?.Invoke(item);
-        }
+        public Bindable<ShopItemDTO> ShopItemAdded { get; } = new();
         #endregion
     }
 
@@ -780,7 +795,10 @@ namespace Kaede.ViewModels
             AppointmentSubmitionVM = appointmentSubmitionVM;
             AppointmentListingVM = appointmentListingVM;
 
-            ShopItemSubmitionVM.ShopItemAdded += ShopItemListingVM.AddShopItem;
+            ShopItemSubmitionVM.ShopItemAdded
+                .BindValueChanged(e => ShopItemListingVM.AddShopItem(e.NewValue));
+            AppointmentSubmitionVM.AppointmentSubmitted
+                .BindValueChanged(e => AppointmentListingVM.AddAppointment(e.NewValue));
         }
     }
 }
