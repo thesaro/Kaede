@@ -509,14 +509,17 @@ namespace Kaede.ViewModels
             AppointmentsFinalized.Refresh();
         }
 
+        private bool CanCurrentUserModifyAppointment(AppointmentDTO appointmentDTO) =>
+            _userSession.CurrentUser!.Role == UserRole.Admin ||
+                (_userSession.CurrentUser!.Role == UserRole.Barber &&
+                appointmentDTO.BarberDTO.Username == _userSession.CurrentUser!.Username);
+
         public void CancelAppointment(object? item)
         {
             if (item != null && item is AppointmentDTO appointmentDTO)
             {
 
-                if (!(_userSession.CurrentUser!.Role == UserRole.Admin || 
-                    (_userSession.CurrentUser!.Role == UserRole.Barber &&
-                    appointmentDTO.BarberDTO.Username == _userSession.CurrentUser!.Username)))
+                if (!CanCurrentUserModifyAppointment(appointmentDTO))
                 {
                     MessageBox.Show($"This appointment can be either cancelled by admin or {appointmentDTO.BarberDTO.Username}.",
                         "Info", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -552,6 +555,13 @@ namespace Kaede.ViewModels
         {
             if (item != null && item is AppointmentDTO appointmentDTO)
             {
+                if (!CanCurrentUserModifyAppointment(appointmentDTO))
+                {
+                    MessageBox.Show($"This appointment can be marked as done either by admin or {appointmentDTO.BarberDTO.Username}.",
+                        "Info", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    return;
+                }
+
                 MessageBoxResult markDoneRes = MessageBox.Show($"Do you really want to mark this appointment as done?",
                     "Confirmation", MessageBoxButton.YesNo, MessageBoxImage.Question);
 

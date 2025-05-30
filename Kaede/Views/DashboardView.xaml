@@ -91,6 +91,7 @@
                         <xctk:DateTimePicker 
                         MinWidth="320"
                         MaxWidth="320"
+                        Style="{StaticResource KXCTKDateTimePickerStyle}"
                         Value="{Binding StartTime}" />
                     </StackPanel>
                     <StackPanel Grid.Row="3" Grid.Column="1" Margin="10,0,0,0">
@@ -100,6 +101,7 @@
                         <xctk:DateTimePicker
                         MaxWidth="320"
                         MinWidth="320"
+                        Style="{StaticResource KXCTKDateTimePickerStyle}"
                         Value="{Binding EndTime}" />
                     </StackPanel>
                     <Button Grid.Row="4"
@@ -118,7 +120,7 @@
                 <StackPanel 
                     x:Name="AppointmentListPanel"
                     DataContext="{Binding AppointmentListingVM}"
-                    Visibility="Visible">
+                    Visibility="Collapsed">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock>
                             Order by: 
@@ -127,6 +129,8 @@
                             Width="280"
                             ItemsSource="{Binding AppointmentOrderingOptions}"
                             SelectedItem="{Binding SelectedAppointmentOrdering}"
+                            Style="{StaticResource KComboBoxStyle}"
+                            ItemContainerStyle="{StaticResource KComboBoxItemStyle}" 
                             DisplayMemberPath="."/>
                     </StackPanel>
                     <ToggleButton 
