@@ -14,6 +14,7 @@ using Kaede.DTOs;
 using System.Windows;
 using Kaede.Stores;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel;
 
 namespace Kaede.ViewModels
 {
@@ -39,6 +40,11 @@ namespace Kaede.ViewModels
             {
                 ClearErrors(nameof(Username));
                 _logger.LogTrace("Username property being updated: {OldValue} -> {NewValue}", _username, value);
+                if (!string.IsNullOrEmpty(value) && !System.Text.RegularExpressions.Regex.IsMatch(value, @"^[a-zA-Z0-9_]+$"))
+                {
+                    MessageBox.Show("Username can only contain letters, numbers, or underscores.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                }
                 SetProperty(ref _username, value);
                 LoginCommand.NotifyCanExecuteChanged();
             }
