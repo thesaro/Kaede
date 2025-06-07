@@ -651,10 +651,15 @@ namespace Kaede.ViewModels
             {
                 if (string.IsNullOrEmpty(value))
                     SetProperty(ref _price, null);
-                else if (decimal.TryParse(value, out decimal p))
+                else if (decimal.TryParse(value, out decimal p) && p > 0 && p <= 1000000)
                 {
                     SetProperty(ref _price, p);
                     SubmitItemCommand.NotifyCanExecuteChanged();
+                }
+                else
+                {
+                    MessageBox.Show("Price must be between 0 and 1,000,000.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
