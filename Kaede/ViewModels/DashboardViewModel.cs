@@ -216,6 +216,12 @@ namespace Kaede.ViewModels
             // Avoid quick textfield UI changes to affect this operation 
             var customerName = new string (CustomerSearchText);
 
+            if (!string.IsNullOrEmpty(customerName) && !System.Text.RegularExpressions.Regex.IsMatch(customerName, @"^[a-zA-Z\s]+$"))
+            {
+                MessageBox.Show("Customer name can only contain letters and spaces.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             CustomerDTO customerDTO = new CustomerDTO
             { 
                 FullName = customerName,
