@@ -253,6 +253,7 @@ namespace Kaede.ViewModels
 
         private async Task SubmitAppointment()
         {
+
             AppointmentDTO appointmentDTO = new AppointmentDTO
             {
                 CustomerDTO = SelectedCustomer,
@@ -262,6 +263,12 @@ namespace Kaede.ViewModels
                 EndDate = EndTime,
                 Status = AppointmentStatus.Pending
             };
+
+            if (EndTime <= StartTime)
+            {
+                MessageBox.Show("End time must be after start time.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             try
             {
