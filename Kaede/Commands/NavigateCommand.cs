@@ -15,21 +15,22 @@ namespace Kaede.Commands
     public static class NavigateCommand
     {
         /// <summary>
-        /// Creates a RelayCommand to navigate to the specified ViewModel.
+        /// Creates a new RelayCommand that navigates to the specified view model.
         /// </summary>
-        /// <typeparam name="TViewModel">The ViewModel type to navigate to, inheriting from ViewModelBase.</typeparam>
-        /// <param name="service">The navigation service handling the operation.</param>
-        /// <returns>A RelayCommand for navigation.</returns>
+        /// <typeparam name="TViewModel">The type of ViewModel to navigate to, must inherit from ViewModelBase.</typeparam>
+        /// <param name="service">The navigation service that handles the navigation operation.</param>
+        /// <returns>A new RelayCommand configured to execute the navigation.</returns>
         public static RelayCommand Create<TViewModel>(NavigationService<TViewModel> service)
             where TViewModel : ViewModelBase => new RelayCommand(service.Navigate);
 
         /// <summary>
-        /// Creates a RelayCommand with a predicate to control navigation execution.
+        /// Creates a new RelayCommand that navigates to the specified view model with a predicate
+        /// that determines whether the navigation can execute.
         /// </summary>
-        /// <typeparam name="TViewModel">The ViewModel type to navigate to, inheriting from ViewModelBase.</typeparam>
-        /// <param name="service">The navigation service handling the operation.</param>
-        /// <param name="pred">A function determining if navigation can execute.</param>
-        /// <returns>A RelayCommand with conditional navigation.</returns>
+        /// <typeparam name="TViewModel">The type of ViewModel to navigate to, must inherit from ViewModelBase.</typeparam>
+        /// <param name="service">The navigation service that handles the navigation operation.</param>
+        /// <param name="pred">A function that returns a boolean value indicating whether navigation can execute.</param>
+        /// <returns>A new RelayCommand configured to execute the navigation when the predicate allows it.</returns>
         public static RelayCommand CreateWithPredicate<TViewModel>(
             NavigationService<TViewModel> service,
             Func<bool> pred

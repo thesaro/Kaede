@@ -1,17 +1,9 @@
-﻿using Kaede.DTOs;
-using Kaede.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 
 namespace Kaede.Models
 {
-    public class Appointment
+    public class Appointment : IValidatableObject
     {
         [Key]
         public Guid AppointmentId { get; set; }
@@ -33,12 +25,29 @@ namespace Kaede.Models
 
         [Required]
         public DateTime StartDate { get; set; }
+
         [Required]
         public DateTime EndDate { get; set; }
 
         [Required]
         public AppointmentStatus Status { get; set; }
 
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (StartDate < DateTime.Now)
+            {
+                yield return new ValidationResult(
+                    "Start date cannot be in the past.",
+                    new[] { nameof(StartDate) });
+            }
+
+            if (EndDate <= StartDate)
+            {
+                yield return new ValidationResult(
+                    "End date must be after start date.",
+                    new[] { nameof(EndDate) });
+            }
+        }
     }
 
     public enum AppointmentStatus
@@ -48,5 +57,3 @@ namespace Kaede.Models
         Done
     }
 }
-
-

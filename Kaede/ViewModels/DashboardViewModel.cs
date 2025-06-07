@@ -216,6 +216,12 @@ namespace Kaede.ViewModels
             // Avoid quick textfield UI changes to affect this operation 
             var customerName = new string (CustomerSearchText);
 
+            if (!string.IsNullOrEmpty(customerName) && !System.Text.RegularExpressions.Regex.IsMatch(customerName, @"^[a-zA-Z\s]+$"))
+            {
+                MessageBox.Show("Customer name can only contain letters and spaces.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             CustomerDTO customerDTO = new CustomerDTO
             { 
                 FullName = customerName,
@@ -247,6 +253,7 @@ namespace Kaede.ViewModels
 
         private async Task SubmitAppointment()
         {
+
             AppointmentDTO appointmentDTO = new AppointmentDTO
             {
                 CustomerDTO = SelectedCustomer,
@@ -256,6 +263,17 @@ namespace Kaede.ViewModels
                 EndDate = EndTime,
                 Status = AppointmentStatus.Pending
             };
+            var existingAppointments = await _appointmentService.GetAllAppointments();
+            if (existingAppointments.Any(a => a.BarberDTO.Username == SelectedBarber.Username))
+            {
+                MessageBox.Show("Selected barber is busy during this time.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            if (EndTime <= StartTime)
+            {
+                MessageBox.Show("End time must be after start time.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
 
             try
             {
@@ -638,10 +656,15 @@ namespace Kaede.ViewModels
             {
                 if (string.IsNullOrEmpty(value))
                     SetProperty(ref _price, null);
-                else if (decimal.TryParse(value, out decimal p))
+                else if (decimal.TryParse(value, out decimal p) && p > 0 && p <= 1000000)
                 {
                     SetProperty(ref _price, p);
                     SubmitItemCommand.NotifyCanExecuteChanged();
+                }
+                else
+                {
+                    MessageBox.Show("Price must be between 0 and 1,000,000.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

@@ -83,6 +83,8 @@ public sealed partial class App : Application
 
                 services.AddDbContextFactory<KaedeDbContext>(options =>
                     options.UseLoggerFactory(loggerFactory).UseSqlite(Config.AppUtils.ConnectionString));
+                services.AddScoped<IUserService, DatabaseUserService>();
+                services.AddLogging();
 
                 services.AddSingleton<NavigationStore>();
 
