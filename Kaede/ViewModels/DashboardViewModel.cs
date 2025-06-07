@@ -263,7 +263,12 @@ namespace Kaede.ViewModels
                 EndDate = EndTime,
                 Status = AppointmentStatus.Pending
             };
-
+            var existingAppointments = await _appointmentService.GetAllAppointments();
+            if (existingAppointments.Any(a => a.BarberDTO.Username == SelectedBarber.Username))
+            {
+                MessageBox.Show("Selected barber is busy during this time.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
             if (EndTime <= StartTime)
             {
                 MessageBox.Show("End time must be after start time.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
