@@ -2,35 +2,52 @@
 using Kaede.DTOs;
 using Kaede.Extensions;
 using Kaede.Models;
+using Kaede.Services.UsersService;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Kaede.Services.UsersService
 {
+
+
     public class DatabaseUserService : IUserService
     {
+        private readonly ILogger<DatabaseUserService> _logger;
+
         IDbContextFactory<KaedeDbContext> _dbContextFactory;
 
-        public DatabaseUserService(IDbContextFactory<KaedeDbContext> dbContextFactory)
+        public DatabaseUserService(IDbContextFactory<KaedeDbContext> dbContextFactory,
+                            ILogger<DatabaseUserService> logger)
         {
             _dbContextFactory = dbContextFactory;
+            _logger = logger;
         }
 
         public async Task CreateUser(UserDTO userDTO)
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
-            if (User.TryFromDTO(userDTO, out User? newUser))
+            try
             {
-                await context.Users.AddAsync(newUser!);
-                await context.SaveChangesAsync();
+                if (User.TryFromDTO(userDTO, out User? newUser))
+                {
+                    await context.Users.AddAsync(newUser!);
+                    await context.SaveChangesAsync();
+                }
+                else
+                {
+                    throw new InvalidDTOException("Invalid UserDTO");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                throw new InvalidDTOException("Invalid UserDTO");
+                _logger.LogError(ex, "Failed to create user with username: {Username}", userDTO.Username);
+                throw;
             }
         }
 
