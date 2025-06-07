@@ -1,34 +1,30 @@
-# Kaede
-Kaede is a barbershop management application written with C# WPF.
+# Kaede - Salon Management Application
 
-## Building & Running
-### Prerequisites
+Kaede is a modern salon management application built with **C#** and **WPF**, designed to streamline appointment scheduling, customer management, and salon operations.
 
-Before you begin, ensure you have the following installed on your system:
-- [Visual Studio](https://visualstudio.microsoft.com/) (Community, Professional, or Enterprise edition)
-- .NET 9 SDK
+---
 
+## 📌 Features
 
-### Build Instructions
+- 🔐 User authentication (login and registration)  
+- 📅 Appointment management  
+- 🛍️ Shop item management  
+- 🛠️ Admin panel for advanced controls  
+- 💾 Backup and restore functionality  
 
-1. **Open the Project**:
-   - Launch Visual Studio.
-   - Open the solution file (`.sln`) located in the root directory of the project.
+---
 
-2. **Restore Dependencies**:
-   - Visual Studio will automatically restore all dependencies when you open the solution.
-   - Alternatively, you can run:
-     ```
-     dotnet restore
-     ```
+## ⚙️ Prerequisites
 
-3. **Build the Project**:
-   - In Visual Studio, go to `Build > Build Solution` or press `Ctrl + Shift + B`.
-   - Alternatively using the command line:
-     ```
-     dotnet build
-     ```
-4. **Run the Project**:
-   ```
-   dotnet run
-   ```
+- [Visual Studio 2022](https://visualstudio.microsoft.com/) or higher  
+- [.NET 9.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)  
+- SQL Server or SQLite  
+  - 🔧 Configure connection string in `KaedeDbContext.cs`
+
+---
+
+## 🚀 Setup Instructions
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Kaede-Industries/Kaede.git
