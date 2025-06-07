@@ -37,7 +37,8 @@
             </StackPanel>
 
             <StackPanel Grid.Row="4" HorizontalAlignment="Stretch">
-                <Button Style="{StaticResource KButtonStyleMinimal}" Height="48"
+                <Button Style="{StaticResource KButtonStyle}" Height="48"
+                        IsDefault="True"
                         Command="{Binding RegisterCommand}" Margin="0,16,0,0">
                     <TextBlock FontSize="18" Text="Register" FontWeight="SemiBold"/>
                 </Button>

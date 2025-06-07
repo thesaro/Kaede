@@ -15,7 +15,7 @@ namespace Kaede.Services.UsersService
         Task<bool> ValidatePassword(string username, string password);
         Task RemoveUser(string username);
         Task ChangePassword(string username, string newPassword);
-        Task<List<UserDTO>> GetBarbers();
+        Task<List<UserDTO>> GetAllBarbers();
         Task<bool> HasAdmin();
     }
 }

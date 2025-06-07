@@ -18,6 +18,10 @@ namespace Kaede.HostBuilderExt
             {
                 RegisterVMService<UserLoginViewModel>(services);
                 RegisterVMService<UserRegistrationViewModel>(services);
+                RegisterVMService<ShopItemSubmitionViewModel>(services);
+                RegisterVMService<ShopItemListingViewModel>(services);
+                RegisterVMService<AppointmentSubmitionViewModel>(services);
+                RegisterVMService<AppointmentListingViewModel>(services);
                 RegisterVMService<DashboardViewModel>(services);
                 RegisterVMService<SettingsViewModel>(services);
                 RegisterVMService<AdminPanelViewModel>(services);

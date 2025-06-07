@@ -18,7 +18,7 @@ namespace Kaede.Test.Models
         [Fact]
         public void CreateUser_WhenUsernameIsCorrect_ShouldPass()
         {
-            using var context = new KaedeDbContext(Shared.CreateSqliteOptions<KaedeDbContext>());
+            using var context = new KaedeDbContext(Shared.CreateSqliteInMemOptions<KaedeDbContext>());
             context.Database.EnsureCreated();
 
             UserDTO u1DTO = new UserDTO
@@ -76,7 +76,7 @@ namespace Kaede.Test.Models
         [Fact]
         public void CreateUser_WhenDuplicateUsernameProvided_ShouldFail()
         {
-            using var context = new KaedeDbContext(Shared.CreateSqliteOptions<KaedeDbContext>());
+            using var context = new KaedeDbContext(Shared.CreateSqliteInMemOptions<KaedeDbContext>());
             context.Database.EnsureCreated();
 
             UserDTO u1DTO = new UserDTO

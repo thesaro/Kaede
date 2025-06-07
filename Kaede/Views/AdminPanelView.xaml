@@ -9,45 +9,46 @@
              FontSize="20"
              Background="{StaticResource KBackground}"
              Foreground="{StaticResource KForeground}">
-    <Grid Margin="18,12,18,12">
-        <StackPanel>
-            <TextBlock FontSize="40" Text="Barber Management" />
-            <Separator Height="2" Width="640" HorizontalAlignment="Left"
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="18,12,18,12">
+            <StackPanel>
+                <TextBlock FontSize="40" Text="Barber Management" />
+                <Separator Height="2" Width="640" HorizontalAlignment="Left"
                        Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock FontSize="30" Text="Barber List" Padding="0,0,6,0" />
-                <ToggleButton x:Name="BarberListTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
-            </StackPanel>
-            <Grid x:Name="BarberListGrid"
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="30" Text="Barber List" Padding="0,0,6,0" />
+                    <ToggleButton x:Name="BarberListTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
+                </StackPanel>
+                <Grid x:Name="BarberListGrid"
                   HorizontalAlignment="Left"
                   Margin="0,12,0,8"
                   DataContext="{Binding BarberListingVM}"
                   Visibility="Collapsed">
-                <Grid.Resources>
-                    <local:PwdHashTruncationConverter x:Key="PwdHashTC" />
-                </Grid.Resources>
-                <ListView ItemsSource="{Binding Barbers}" ItemContainerStyle="{StaticResource KListViewItemStyle}">
-                    <ListView.View>
-                        <GridView ColumnHeaderContainerStyle="{StaticResource KGridViewColumnHeaderStyle}">
-                            <GridView.Columns>
-                                <GridViewColumn Header="Username">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock HorizontalAlignment="Center" Text="{Binding Username}" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="Register Date">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock HorizontalAlignment="Center" Text="{Binding CreationDate}" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock>
+                    <Grid.Resources>
+                        <local:PwdHashTruncationConverter x:Key="PwdHashTC" />
+                    </Grid.Resources>
+                    <ListView ItemsSource="{Binding Barbers}" ItemContainerStyle="{StaticResource KListViewItemStyle}">
+                        <ListView.View>
+                            <GridView ColumnHeaderContainerStyle="{StaticResource KGridViewColumnHeaderStyle}">
+                                <GridView.Columns>
+                                    <GridViewColumn Header="Username">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock HorizontalAlignment="Center" Text="{Binding Username}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Register Date">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock HorizontalAlignment="Center" Text="{Binding CreationDate}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
                                                 <Hyperlink 
                                                     Foreground="{StaticResource KColor1}"
                                                     TextDecorations="Underline"
@@ -57,98 +58,100 @@
                                                     Style="{StaticResource KHyperLinkStyle}">
                                                     Remove
                                                 </Hyperlink>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn>
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
                                                 <Hyperlink 
                                                     TextDecorations="Underline"
                                                     Style="{StaticResource KHyperLinkStyle}"
+                                                    Foreground="{StaticResource KColor4}"
                                                     CommandParameter="{Binding}"
                                                     Command="{Binding DataContext.ChangePassCommand, 
                                                         RelativeSource={RelativeSource AncestorType=ListView}}">
                                                     Change PWD
                                                 </Hyperlink>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView.Columns>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </Grid>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock FontSize="30" Text="Recruit Barber" Padding="0,0,6,0"/>
-                <ToggleButton x:Name="RecruitBarberTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
-            </StackPanel>
-            <Grid x:Name="RecruitBarberGrid" 
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="30" Text="Recruit Barber" Padding="0,0,6,0"/>
+                    <ToggleButton x:Name="RecruitBarberTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
+                </StackPanel>
+                <Grid x:Name="RecruitBarberGrid" 
                   HorizontalAlignment="Left" 
                   Margin="0,12,0,8"
                   DataContext="{Binding BarberRegistrationVM}"
                   Visibility="Collapsed">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <StackPanel>
-                    <TextBlock>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock>
                         USERNAME
-                    </TextBlock>
-                    <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                        </TextBlock>
+                        <TextBox Template="{StaticResource KTextBoxControlTemplate}"
                          Width="280"
                          Style="{StaticResource KTextBoxValidationStyle}"
                          Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
                          Validation.ErrorTemplate="{StaticResource KTextBoxErrorTemplate}"/>
-                </StackPanel>
-                <StackPanel Grid.Row="1">
-                    <TextBlock>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1">
+                        <TextBlock>
                         PASSWORD
-                    </TextBlock>
-                    <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                        </TextBlock>
+                        <TextBox Template="{StaticResource KTextBoxControlTemplate}"
                          Width="280"
                          Style="{StaticResource KTextBoxValidationStyle}"
                          Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
                          Validation.ErrorTemplate="{StaticResource KTextBoxErrorTemplate}"/>
-                </StackPanel>
-                <StackPanel Grid.Row="2">
-                    <TextBlock>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2">
+                        <TextBlock>
                         CONFIRM PASSWORD
-                    </TextBlock>
-                    <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                        </TextBlock>
+                        <TextBox Template="{StaticResource KTextBoxControlTemplate}"
                          Width="280"
                          Style="{StaticResource KTextBoxValidationStyle}"
                          Text="{Binding PasswordConfirm, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}" 
                          Validation.ErrorTemplate="{StaticResource KTextBoxErrorTemplate}"/>
-                </StackPanel>
-                <Button Grid.Row="3"
+                    </StackPanel>
+                    <Button Grid.Row="3"
                     Height="32"
                     Margin="0,12,0,0"
                     Style="{StaticResource KButtonStyle}"
                     Command="{Binding SubmitCommand}">
-                    Register Barber
-                </Button>
-            </Grid>
-            <TextBlock FontSize="40" Text="Backup &amp; Restore" Margin="0,24,0,0" />
-            <Separator Height="2" Width="640" HorizontalAlignment="Left"
+                        Register Barber
+                    </Button>
+                </Grid>
+                <TextBlock FontSize="40" Text="Backup &amp; Restore" Margin="0,24,0,0" />
+                <Separator Height="2" Width="640" HorizontalAlignment="Left"
                        Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
-            <StackPanel Orientation="Horizontal">
-                <Button Style="{StaticResource KButtonStyleMinimal}" 
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource KButtonStyleMinimal}" 
                     Command="{Binding BackupCommand}"
                     Content="Backup data" />
-                <TextBlock FontSize="24" VerticalAlignment="Center" Margin="12,0,12,0">OR</TextBlock>
-                <Button Style="{StaticResource KButtonStyleMinimal}"
+                    <TextBlock FontSize="24" VerticalAlignment="Center" Margin="12,0,12,0">OR</TextBlock>
+                    <Button Style="{StaticResource KButtonStyleMinimal}"
                     Command="{Binding RestoreCommand}"
                     Content="Restore a previous backup" />
-            </StackPanel>
+                </StackPanel>
 
-        </StackPanel>
-    </Grid>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

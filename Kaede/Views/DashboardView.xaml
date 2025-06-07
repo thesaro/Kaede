@@ -4,34 +4,381 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Kaede.Views"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
+             FontSize="20"
              Background="{StaticResource KBackground}"
              Foreground="{StaticResource KForeground}">
-    <Grid Margin="18,12,18,12">
-        <StackPanel>
-            <StackPanel Orientation="Horizontal">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="18,12,18,12">
+            <StackPanel>
                 <TextBlock FontSize="32" Text="Appointments" />
-                <Button Style="{StaticResource KButtonStyle}"
-                    FontSize="24"
-                    Height="32"
-                    Content="+"
-                    Margin="20,0,0,0"
-                    Command="{Binding AddAppointmentCommand}"/>
-            </StackPanel>
-            <Separator Height="1" Width="640" HorizontalAlignment="Left"
+                <Separator Height="2" Width="640" HorizontalAlignment="Left"
                        Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
-            <TextBlock FontSize="32" Text="ShopServices" />
-            <Separator Height="1" Width="640" HorizontalAlignment="Left"
-                       Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
-            <Button Width="Auto"
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="30" Text="Add Appointment" Padding="0,0,6,0" />
+                    <ToggleButton x:Name="AddAppointmentTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
+                </StackPanel>
+                <Grid x:Name="AddAppointmentGrid" 
+                    HorizontalAlignment="Left" 
+                    Margin="0,12,0,8"
+                    DataContext="{Binding AppointmentSubmitionVM}"
+                    Visibility="Collapsed">
+                    <Grid.Resources>
+                        <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left">
+                        <TextBlock>
+                        CUSTOMER
+                        </TextBlock>
+                        <ComboBox
+                        Width="280"
+                        ItemsSource="{Binding FilteredCustomers}"
+                        SelectedItem="{Binding SelectedCustomer}"
+                        DisplayMemberPath="FullName"
+                        IsEditable="True"
+                        Text="{Binding CustomerSearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <Button Grid.Row="0" Grid.Column="1"
+                        Margin="10,0,0,0"
+                        Height="40"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource KButtonStyle}"
+                        ContentStringFormat="Add '{0}'..."
+                        Content="{Binding CustomerSearchText}"
+                        Command="{Binding AddCustomerCommand}"
+                        Visibility="{Binding ShowAddCustomerButton, Converter={StaticResource BoolToVisConverter}}"/>
+                    <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,6" HorizontalAlignment="Left">
+                        <TextBlock>
+                        BARBER
+                        </TextBlock>
+                        <ComboBox
+                        Width="280"
+                        ItemsSource="{Binding FilteredBarbers}"
+                        SelectedItem="{Binding SelectedBarber}"
+                        DisplayMemberPath="Username"
+                        IsEditable="True"
+                        Text="{Binding BarberSearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,6" HorizontalAlignment="Left">
+                        <TextBlock>
+                        SHOP SERVICE ITEM
+                        </TextBlock>
+                        <ComboBox
+                        Width="280"
+                        ItemsSource="{Binding FilteredShopItems}"
+                        SelectedItem="{Binding SelectedShopItem}"
+                        DisplayMemberPath="Name"
+                        IsEditable="True"
+                        Text="{Binding ShopItemSearchText, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Grid.Column="0">
+                        <TextBlock>
+                        START TIME
+                        </TextBlock>
+                        <xctk:DateTimePicker 
+                        MinWidth="320"
+                        MaxWidth="320"
+                        Style="{StaticResource KXCTKDateTimePickerStyle}"
+                        Value="{Binding StartTime}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Grid.Column="1" Margin="10,0,0,0">
+                        <TextBlock>
+                        END TIME
+                        </TextBlock>
+                        <xctk:DateTimePicker
+                        MaxWidth="320"
+                        MinWidth="320"
+                        Style="{StaticResource KXCTKDateTimePickerStyle}"
+                        Value="{Binding EndTime}" />
+                    </StackPanel>
+                    <Button Grid.Row="4"
+                        Height="32"
+                        Margin="0,12,0,0"
+                        Style="{StaticResource KButtonStyle}"
+                        Command="{Binding SubmitAppointmentCommand}">
+                        Submit Item
+                    </Button>
+                </Grid>
+                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="30" Text="Appointments List" Padding="0,0,6,0" />
+                    <ToggleButton x:Name="AppointmentListTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
+                </StackPanel>
+                <StackPanel 
+                    x:Name="AppointmentListPanel"
+                    DataContext="{Binding AppointmentListingVM}"
+                    Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock>
+                            Order by: 
+                        </TextBlock>
+                        <ComboBox
+                            Width="280"
+                            ItemsSource="{Binding AppointmentOrderingOptions}"
+                            SelectedItem="{Binding SelectedAppointmentOrdering}"
+                            Style="{StaticResource KComboBoxStyle}"
+                            ItemContainerStyle="{StaticResource KComboBoxItemStyle}" 
+                            DisplayMemberPath="."/>
+                    </StackPanel>
+                    <ToggleButton 
+                        Style="{StaticResource KToggleButtonStyle}"
+                        HorizontalAlignment="Left"
+                        Content="Show Inactive APs" 
+                        IsChecked="{Binding IsInactiveAPsToggled, Mode=TwoWay}" />
+                    <Grid
                     HorizontalAlignment="Left"
+                    Margin="0,12,0,8"
+                    >
+                        <Grid.Resources>
+                            <local:TimeSpanToStringConverter x:Key="TimeSpanConverter" />
+                            <local:EnumToStringConverter x:Key="EnumConverter" />
+                        </Grid.Resources>
+                        <ListView ItemsSource="{Binding AppointmentsFinalized}" ItemContainerStyle="{StaticResource KListViewItemStyle}">
+                            <ListView.View>
+                                <GridView ColumnHeaderContainerStyle="{StaticResource KGridViewColumnHeaderStyle}">
+                                    <GridView.Columns>
+                                        <GridViewColumn Header="Customer">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock HorizontalAlignment="Center" Text="{Binding CustomerDTO.FullName}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Barber">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock HorizontalAlignment="Center" Text="{Binding BarberDTO.Username}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Item">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock HorizontalAlignment="Center" Text="{Binding ShopItemDTO.Name}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Start">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock HorizontalAlignment="Center" 
+                                                       Text="{Binding StartDate, StringFormat='yyyy-MM-dd HH:mm:ss'}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="End">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock HorizontalAlignment="Center"
+                                                       Text="{Binding EndDate, StringFormat='yyyy-MM-dd HH:mm:ss'}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Status">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock HorizontalAlignment="Center"
+                                                        Text="{Binding Status, Converter={StaticResource EnumConverter}}" />
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn local:GridViewColumnExtensions.IsVisible="{Binding IsCancelColumnVisible}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock>
+                                     <Hyperlink 
+                                         Foreground="{StaticResource KColor1}"
+                                         TextDecorations="Underline"
+                                         CommandParameter="{Binding}"
+                                         Command="{Binding DataContext.CancelAppointmentCommand, 
+                                             RelativeSource={RelativeSource AncestorType=ListView}}"
+                                         Style="{StaticResource KHyperLinkStyle}">
+                                         Cancel
+                                     </Hyperlink>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn local:GridViewColumnExtensions.IsVisible="{Binding IsMarkDoneColumnVisible}">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock>
+                                                <Hyperlink 
+                                                    TextDecorations="Underline"
+                                                    Style="{StaticResource KHyperLinkStyle}"
+                                                    Foreground="{StaticResource KColor4}"
+                                                    CommandParameter="{Binding}"
+                                                    Command="{Binding DataContext.MarkAppointmentDoneCommand, 
+                                                        RelativeSource={RelativeSource AncestorType=ListView}}">
+                                                    Mark Done
+                                                </Hyperlink>
+                                                    </TextBlock>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </Grid>
+                </StackPanel>
+                <TextBlock FontSize="32" Text="Shop Items"/>
+                <Separator Height="2" Width="640" HorizontalAlignment="Left"
+                       Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="30" Text="Add Shop Item" Padding="0,0,6,0" />
+                    <ToggleButton x:Name="AddShopItemTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
+                </StackPanel>
+                <Grid x:Name="AddShopItemGrid" 
+                  HorizontalAlignment="Left" 
+                  Margin="0,12,0,8"
+                  DataContext="{Binding ShopItemSubmitionVM}"
+                  Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock>
+                        NAME
+                        </TextBlock>
+                        <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                         Width="280"
+                         Style="{StaticResource KTextBoxGenericStyle}"
+                         Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Margin="0,6">
+                        <TextBlock>
+                        DESCRIPTION
+                        </TextBlock>
+                        <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                         Width="280"
+                         Style="{StaticResource KTextBoxGenericStyle}"
+                         Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Margin="0,6">
+                        <TextBlock>
+                        PRICE
+                        </TextBlock>
+                        <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                         Width="90"
+                         PreviewTextInput="TextBox_NumberPreviewTextInput"
+                         HorizontalAlignment="Left"
+                         Style="{StaticResource KTextBoxGenericStyle}"
+                         Text="{Binding Price, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Grid.Row="3">
+                        <TextBlock>
+                        DURATION
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                            Width="50"
+                            PreviewTextInput="TextBox_NumberPreviewTextInput"
+                            Style="{StaticResource KTextBoxGenericStyle}"
+                            Text="{Binding Hours, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                            <TextBlock Text="h" VerticalAlignment="Center" FontSize="20" Margin="5,0"/>
+                            <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                            Width="50"
+                            Margin="18,0,0,0"
+                            PreviewTextInput="TextBox_NumberPreviewTextInput"
+                            Style="{StaticResource KTextBoxGenericStyle}"
+                            Text="{Binding Minutes, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                            <TextBlock Text="m" VerticalAlignment="Center" FontSize="20" Margin="5,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <Button Grid.Row="4"
                     Height="32"
                     Margin="0,12,0,0"
-                    Style="{StaticResource KButtonStyleMinimal}"
-                    Command="{Binding AddServiceCommand}">
-                Add Service
-            </Button>
-        </StackPanel>
-    </Grid>
+                    Style="{StaticResource KButtonStyle}"
+                    Command="{Binding SubmitItemCommand}">
+                        Submit Item
+                    </Button>
+                </Grid>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="30" Text="Shop Item List" Padding="0,0,6,0" />
+                    <ToggleButton x:Name="ShopItemListTB" Style="{StaticResource KDropdownButtonStyle}" Click="ToggleButton_Click"/>
+                </StackPanel>
+                <Grid x:Name="ShopItemListGrid"
+                HorizontalAlignment="Left"
+                Margin="0,12,0,8"
+                DataContext="{Binding ShopItemListingVM}"
+                Visibility="Collapsed">
+                    <Grid.Resources>
+                        <local:TimeSpanToStringConverter x:Key="TimeSpanConverter" />
+                    </Grid.Resources>
+                    <ListView ItemsSource="{Binding ShopItems}" ItemContainerStyle="{StaticResource KListViewItemStyle}">
+                        <ListView.View>
+                            <GridView ColumnHeaderContainerStyle="{StaticResource KGridViewColumnHeaderStyle}">
+                                <GridView.Columns>
+                                    <GridViewColumn Header="Item Name">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Description">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock HorizontalAlignment="Center" Text="{Binding Description}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Price">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock HorizontalAlignment="Center" Text="{Binding Price}" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Duration">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock HorizontalAlignment="Center" 
+                                                       Text="{Binding Duration, Converter={StaticResource TimeSpanConverter}}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Remove">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock>
+                                     <Hyperlink 
+                                         Foreground="{StaticResource KColor1}"
+                                         TextDecorations="Underline"
+                                         CommandParameter="{Binding}"
+                                         Command="{Binding DataContext.RemoveBarberCommand, 
+                                             RelativeSource={RelativeSource AncestorType=ListView}}"
+                                         Style="{StaticResource KHyperLinkStyle}">
+                                         Remove
+                                     </Hyperlink>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

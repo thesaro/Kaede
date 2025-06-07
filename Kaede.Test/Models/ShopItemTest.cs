@@ -15,7 +15,7 @@ namespace Kaede.Test.Models
         [Fact]
         public void CreateShopItem_ShouldPassUnlessDuplicateName()
         {
-            using var context = new KaedeDbContext(Shared.CreateSqliteOptions<KaedeDbContext>());
+            using var context = new KaedeDbContext(Shared.CreateSqliteInMemOptions<KaedeDbContext>());
             context.Database.EnsureCreated();
 
             ShopItem item1 = new ShopItem

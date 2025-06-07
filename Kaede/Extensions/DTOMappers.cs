@@ -30,5 +30,43 @@ namespace Kaede.Extensions
             };
         }
 
+        public static ShopItemDTO MapToDTO(this ShopItem item)
+            => new ShopItemDTO()
+            {
+                Name = item.Name,
+                Description = item.Description,
+                Price = item.Price,
+                Duration = item.Duration
+            };
+
+        public static AppointmentDTO MapToDTO(this Appointment appointment)
+        {
+            bool isCustomerLoaded = appointment.Customer != null;
+            bool isBarberLoaded = appointment.Barber != null;
+            bool isShopItemLoaded = appointment.ShopItem != null;
+
+            if (isCustomerLoaded && isBarberLoaded && isShopItemLoaded)
+            {
+                return new AppointmentDTO
+                {
+                    AppointmentId = appointment.AppointmentId,
+                    CustomerDTO = appointment.Customer!.MapToDTO(),
+                    BarberDTO = appointment.Barber!.MapToDTO(),
+                    ShopItemDTO = appointment.ShopItem!.MapToDTO(),
+                    StartDate = appointment.StartDate,
+                    EndDate = appointment.EndDate,
+                    Status = appointment.Status,
+                };
+            }
+            else
+                throw new InvalidDTOException("Appointment model should have foreign stuff included.");
+        }
+
+        public static CustomerDTO MapToDTO(this Customer customer)
+            => new CustomerDTO
+            {
+                FullName = customer.FullName,
+                PhoneNumber = customer.PhoneNumber,
+            };
     }
 }

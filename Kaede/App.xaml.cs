@@ -18,6 +18,8 @@ using Kaede.HostBuilderExt;
 using Kaede.Services.RestorePointService;
 using Serilog;
 using Microsoft.Extensions.Logging;
+using Kaede.Services.ShopItemService;
+using Kaede.Services.AppointmentsService;
 
 namespace Kaede;
 
@@ -26,11 +28,28 @@ namespace Kaede;
 /// </summary>
 public sealed partial class App : Application
 {
-
+    /// <summary>
+    /// The host for dependency injection and service configuration.
+    /// </summary>
     private readonly IHost _host;
 
+    /// <summary>
+    /// Gets the currently running instance of the application.
+    /// </summary>
+    /// <returns>The current application instance, or null if not found.</returns>
     public static App? RunningInstance() => Application.Current as App;
+
+    /// <summary>
+    /// Retrieves a service of type S from the service provider.
+    /// </summary>
+    /// <typeparam name="S">The type of service to retrieve.</typeparam>
+    /// <returns>The requested service, or null if not found.</returns>
     public S? FetchProviderService<S>() => _host.Services.GetService<S>();
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="App"/> class.
+    /// Configures logging, application data, and dependency injection services.
+    /// </summary>
     public App()
     {
         #if DEBUG
@@ -52,7 +71,6 @@ public sealed partial class App : Application
 
         Config.AppUtils.LoadAppData();
 
-
         _host = Host.CreateDefaultBuilder()
             .UseSerilog()
             .AddViewModels()
@@ -67,7 +85,10 @@ public sealed partial class App : Application
                     options.UseLoggerFactory(loggerFactory).UseSqlite(Config.AppUtils.ConnectionString));
 
                 services.AddSingleton<NavigationStore>();
+
                 services.AddSingleton<IUserService, DatabaseUserService>();
+                services.AddSingleton<IShopItemService, DatabaseShopItemService>();
+                services.AddSingleton<IAppointmentService, DatabaseAppointmentService>();
                 services.AddSingleton<IRestorePointService, DatabaseRestorePointService>();
 
                 services.AddSingleton<UserSession>();
@@ -84,9 +105,18 @@ public sealed partial class App : Application
             .Build();
     }
 
+    /// <summary>
+    /// Allocates a new console for the process.
+    /// </summary>
+    /// <returns>True if the function succeeds; otherwise, false.</returns>
     [DllImport("kernel32.dll")]
     private static extern bool AllocConsole();
 
+    /// <summary>
+    /// Handles the application startup event.
+    /// Configures initial navigation based on whether an admin user exists.
+    /// </summary>
+    /// <param name="e">The startup event arguments.</param>
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
@@ -107,9 +137,7 @@ public sealed partial class App : Application
             registerNavService.Navigate();
         }
 
-
         MainWindow = _host.Services.GetRequiredService<MainWindow>();
         MainWindow.Show();
     }
 }
-

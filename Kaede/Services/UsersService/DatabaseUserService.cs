@@ -59,7 +59,7 @@ namespace Kaede.Services.UsersService
             return await context.Users.SingleOrDefaultAsync(u => u.Role == UserRole.Admin) != null;
         }
 
-        public async Task<List<UserDTO>> GetBarbers()
+        public async Task<List<UserDTO>> GetAllBarbers()
         {
             using var context = await _dbContextFactory.CreateDbContextAsync();
             return context.Users.Where(u => u.Role == UserRole.Barber)
