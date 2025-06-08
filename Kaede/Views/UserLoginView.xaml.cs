@@ -24,5 +24,17 @@ namespace Kaede.Views
         {
             InitializeComponent();
         }
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                if (sender == UsernameTextBox)
+                    PasswordTextBox.Focus();
+                else if (sender == PasswordTextBox)
+                    LoginButton.Focus();
+            }
+        }
     }
 }
