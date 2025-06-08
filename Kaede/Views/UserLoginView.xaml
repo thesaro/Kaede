@@ -12,7 +12,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Background="{StaticResource KColor4}" Padding="16">
-            <Image Source="/Resources/Logos/scissor.svg" Width="100"/>
+            <Image Source="/Resources/Icons/scissor.png" Width="100"/>
         </Border>
         <Border Grid.Row="1" Style="{StaticResource FormCardStyle}" Width="480" Padding="40" VerticalAlignment="Center">
             <Grid HorizontalAlignment="Stretch">
