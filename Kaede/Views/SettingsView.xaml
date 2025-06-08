@@ -9,11 +9,11 @@
              FontSize="20"
              Background="{StaticResource KBackground}"
              Foreground="{StaticResource KForeground}">
-    <Grid Margin="18,12,18,12">
+    <Border Style="{StaticResource FormCardStyle}" Width="640" Padding="40" VerticalAlignment="Center">
         <StackPanel>
-            <TextBlock FontSize="40" Text="Account" />
-            <Separator Height="1" Width="640" HorizontalAlignment="Left"
-                       Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
+            <TextBlock FontSize="32" Text="Account Settings"/>
+            <Separator Height="2" HorizontalAlignment="Left"
+                       Background="{StaticResource KForeground}" Margin="0,5,0,16"/>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -22,37 +22,35 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Width="480">Username</TextBlock>
+                <StackPanel Orientation="Horizontal" Style="{StaticResource FormSectionStyle}">
+                    <TextBlock Style="{StaticResource InputLabelStyle}" Width="200">Username</TextBlock>
                     <TextBlock Text="{Binding USession.CurrentUser.Username}"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Row="1">
-                    <TextBlock Width="480">Role</TextBlock>
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Style="{StaticResource FormSectionStyle}">
+                    <TextBlock Style="{StaticResource InputLabelStyle}" Width="200">Role</TextBlock>
                     <TextBlock Text="{Binding USession.CurrentUser.Role}"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Row="2">
-                    <TextBlock Width="480">Creation Date</TextBlock>
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Style="{StaticResource FormSectionStyle}">
+                    <TextBlock Style="{StaticResource InputLabelStyle}" Width="200">Creation Date</TextBlock>
                     <TextBlock Text="{Binding USession.CurrentUser.CreationDate}"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Row="3">
-                    <TextBlock Width="480">Last Password Changed</TextBlock>
+                <StackPanel Orientation="Horizontal" Grid.Row="3" Style="{StaticResource FormSectionStyle}">
+                    <TextBlock Style="{StaticResource InputLabelStyle}" Width="200">Last Password Changed</TextBlock>
                     <TextBlock Text="{Binding USession.CurrentUser.LastPasswordChanged}"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Row="4">
-                    <Button Width="Auto" Margin="0,12,0,0"
-                        Height="40"
-                        Command="{Binding NavigateChangePasswordCommand}"
-                        Style="{StaticResource KButtonStyleMinimal}"
-                        Content="Change Password"/>
-                    <Button Width="Auto" Margin="24,12,0,0"
-                        HorizontalAlignment="Left"
-                        Command="{Binding LogoutCommand}"
-                        Style="{StaticResource KButtonStyle}" 
-                        Content="Logout" />
+                <StackPanel Orientation="Horizontal" Grid.Row="4" Margin="0,24,0,0">
+                    <Button Width="Auto" Height="48"
+                            Command="{Binding NavigateChangePasswordCommand}"
+                            Style="{StaticResource KButtonStyleMinimal}"
+                            Content="Change Password"/>
+                    <Button Width="Auto" Margin="24,0,0,0"
+                            Height="48"
+                            Command="{Binding LogoutCommand}"
+                            Style="{StaticResource KButtonStyle}" 
+                            Content="Logout"/>
                 </StackPanel>
-
             </Grid>
         </StackPanel>
+    </Border>
 
-    </Grid>   
 </UserControl>
