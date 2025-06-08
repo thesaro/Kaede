@@ -198,17 +198,31 @@
 
 
     <Style x:Key="FormCardStyle" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource KColor3}"/>
-        <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="Padding" Value="32"/>
-        <Setter Property="Effect">
+        <Setter Property="Background">
             <Setter.Value>
-                <DropShadowEffect BlurRadius="16" 
-                                ShadowDepth="0" 
-                                Color="#000000" 
-                                Opacity="0.3"/>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#1E1E1E" Offset="0"/>
+                    <GradientStop Color="#2A2A2A" Offset="1"/>
+                </LinearGradientBrush>
             </Setter.Value>
         </Setter>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="40"/>
+        <Setter Property="Opacity" Value="0"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="#000000" Opacity="0.4"/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.8"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="FormTitleStyle" TargetType="TextBlock">
