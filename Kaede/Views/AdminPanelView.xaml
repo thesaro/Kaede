@@ -12,7 +12,10 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Margin="18,12,18,12">
             <StackPanel>
-                <TextBlock FontSize="40" Text="Barber Management" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="40" Text="Barber Management"/>
+                    <Image Source="/Resources/Icons/barber.png" Width="32" Height="32" Margin="8,0,0,0"/>
+                </StackPanel>
                 <Separator Height="2" Width="640" HorizontalAlignment="Left"
                        Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
                 <StackPanel Orientation="Horizontal">
@@ -135,22 +138,43 @@
                     Margin="0,12,0,0"
                     Style="{StaticResource KButtonStyle}"
                     Command="{Binding SubmitCommand}">
-                        Register Barber
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="/Resources/Icons/add-user.png" Width="16" Margin="0,0,5,0"/>
+                            <TextBlock Text="Register Barber"/>
+                        </StackPanel>
                     </Button>
                 </Grid>
-                <TextBlock FontSize="40" Text="Backup &amp; Restore" Margin="0,24,0,0" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="40" Text="Backup &amp; Restore" Margin="0,24,0,0"/>
+                    <Image Source="/Resources/Icons/Backup.png" Width="48" Height="32" Margin="8,24,0,0"/>
+                </StackPanel>
                 <Separator Height="2" Width="640" HorizontalAlignment="Left"
                        Background="{StaticResource KForeground}" Margin="0,5,0,10"/>
                 <StackPanel Orientation="Horizontal">
                     <Button Style="{StaticResource KButtonStyleMinimal}" 
-                    Command="{Binding BackupCommand}"
-                    Content="Backup data" />
+                    Command="{Binding BackupCommand}">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="/Resources/Icons/backup.png" Width="16" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Backup data"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                    </Button>
                     <TextBlock FontSize="24" VerticalAlignment="Center" Margin="12,0,12,0">OR</TextBlock>
                     <Button Style="{StaticResource KButtonStyleMinimal}"
-                    Command="{Binding RestoreCommand}"
-                    Content="Restore a previous backup" />
+                    Command="{Binding RestoreCommand}">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="/Resources/Icons/Restore.png" Width="16" Margin="0,0,5,0"/>
+                                    <TextBlock Text="Restore a previous backup"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                    </Button>
                 </StackPanel>
-
             </StackPanel>
         </Grid>
     </ScrollViewer>
