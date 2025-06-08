@@ -171,29 +171,31 @@
     </Style>
 
     <Style TargetType="ListViewItem" x:Key="KListViewItemStyle">
-        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        <Setter Property="Background" Value="{StaticResource KBackground}" />
-        <Setter Property="ItemsControl.Focusable" Value="False" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="Background" Value="{StaticResource KBackground}"/>
+        <Setter Property="ItemsControl.Focusable" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListViewItem}">
                     <Grid Background="{TemplateBinding Background}">
-                        <Border Name="Selection" Visibility="Collapsed" />
+                        <Border Name="Selection" Background="{StaticResource KColor1}" Opacity="0.2" Visibility="Collapsed"/>
                         <GridViewRowPresenter Grid.RowSpan="2"
-                                             Margin="{TemplateBinding Padding}"
-                                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                         Margin="{TemplateBinding Padding}"
+                                         HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                         SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                     </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#2A2A2A"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Selection" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource KBackground}" />
-                <Setter Property="Foreground" Value="{StaticResource KForeground}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
 
