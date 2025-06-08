@@ -6,43 +6,48 @@
              xmlns:local="clr-namespace:Kaede.Views"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Border Style="{StaticResource FormCardStyle}" Width="480" Padding="40">
-        <Grid HorizontalAlignment="Stretch">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <TextBlock Grid.Row="0" Style="{StaticResource FormTitleStyle}" Text="Welcome Back"/>
-            <TextBlock Grid.Row="0" Style="{StaticResource FormSubtitleStyle}" Text="Sign in to continue" Margin="0,32,0,0"/>
-
-            <StackPanel Grid.Row="1" Style="{StaticResource FormSectionStyle}">
-                <TextBlock Style="{StaticResource InputLabelStyle}">Username</TextBlock>
-                <TextBox Style="{StaticResource ModernTextBoxStyle}" Tag="Enter your username"
-                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
-            </StackPanel>
-
-            <StackPanel Grid.Row="2" Style="{StaticResource FormSectionStyle}">
-                <TextBlock Style="{StaticResource InputLabelStyle}">Password</TextBlock>
-                <TextBox Style="{StaticResource ModernTextBoxStyle}" Tag="Enter your password"
-                         Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"/>
-            </StackPanel>
-
-            <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="0,24,0,0">
-                <Button Style="{StaticResource KButtonStyle}" Height="48"
-                        IsDefault="True"
-                        Command="{Binding LoginCommand}">
-                    <TextBlock FontSize="18" Text="Login" FontWeight="SemiBold"/>
-                </Button>
-
-                <TextBlock HorizontalAlignment="Center" Margin="0,24,0,0">
-                    <Hyperlink Style="{StaticResource KHyperLinkStyle}" Command="{Binding RestoreCommand}">
-                        FORGOT PASSWORD?
-                    </Hyperlink>
-                </TextBlock>
-            </StackPanel>
-        </Grid>
-    </Border>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Background="{StaticResource KColor4}" Padding="16">
+            <Image Source="/Resources/Logos/scissor.svg" Width="100"/>
+        </Border>
+        <Border Grid.Row="1" Style="{StaticResource FormCardStyle}" Width="480" Padding="40" VerticalAlignment="Center">
+            <Grid HorizontalAlignment="Stretch">
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Style="{StaticResource FormTitleStyle}" Text="Welcome Back"/>
+                <TextBlock Grid.Row="0" Style="{StaticResource FormSubtitleStyle}" Text="Sign in to continue" Margin="0,32,0,0"/>
+                <StackPanel Grid.Row="1" Style="{StaticResource FormSectionStyle}">
+                    <TextBlock Style="{StaticResource InputLabelStyle}">Username</TextBlock>
+                    <TextBox Style="{StaticResource ModernTextBoxStyle}" Tag="Enter your username"
+                             Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Style="{StaticResource FormSectionStyle}">
+                    <TextBlock Style="{StaticResource InputLabelStyle}">Password</TextBlock>
+                    <TextBox Style="{StaticResource ModernTextBoxStyle}" Tag="Enter your password"
+                             Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" HorizontalAlignment="Stretch" Margin="0,24,0,0">
+                    <Button Style="{StaticResource KButtonStyle}" Height="48"
+                            IsDefault="True"
+                            Command="{Binding LoginCommand}">
+                        <TextBlock FontSize="18" Text="Login" FontWeight="SemiBold"/>
+                    </Button>
+                    <TextBlock HorizontalAlignment="Center" Margin="0,24,0,0">
+                        <Hyperlink Style="{StaticResource KHyperLinkStyle}" Command="{Binding RestoreCommand}">
+                            FORGOT PASSWORD?
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>
