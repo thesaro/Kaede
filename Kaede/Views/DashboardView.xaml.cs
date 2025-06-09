@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Xceed.Wpf.Toolkit;
 using static Kaede.ViewModels.AppointmentListingViewModel;
 
 namespace Kaede.Views
@@ -38,6 +39,24 @@ namespace Kaede.Views
         private static bool IsTextNumeric(string text)
             => Regex.IsMatch(text, "^[0-9]+$");
 
+
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                if (sender == NameTextBox)
+                    DescriptionTextBox.Focus();
+                else if (sender == DescriptionTextBox)
+                    PriceTextBox.Focus();
+                else if (sender == PriceTextBox)
+                    HoursTextBox.Focus();
+                else if (sender == HoursTextBox)
+                    MinutesTextBox.Focus();
+                else if (sender == MinutesTextBox)
+                    SubmitItemButton.Focus();
+            }
+        }
 
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {

@@ -20,24 +20,27 @@
 
             <StackPanel Grid.Row="1" Style="{StaticResource FormSectionStyle}">
                 <TextBlock Style="{StaticResource InputLabelStyle}">Username</TextBlock>
-                <TextBox Style="{StaticResource ModernTextBoxStyle}"
-                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                <TextBox x:Name="UsernameTextBox" Style="{StaticResource ModernTextBoxStyle}"
+                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                         KeyDown="TextBox_KeyDown"/>
             </StackPanel>
 
             <StackPanel Grid.Row="2" Style="{StaticResource FormSectionStyle}">
                 <TextBlock Style="{StaticResource InputLabelStyle}">Password</TextBlock>
-                <TextBox Style="{StaticResource ModernTextBoxStyle}"
-                         Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                <TextBox x:Name="PasswordTextBox" Style="{StaticResource ModernTextBoxStyle}"
+                         Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                         KeyDown="TextBox_KeyDown"/>
             </StackPanel>
 
             <StackPanel Grid.Row="3" Style="{StaticResource FormSectionStyle}">
                 <TextBlock Style="{StaticResource InputLabelStyle}">Confirm Password</TextBlock>
-                <TextBox Style="{StaticResource ModernTextBoxStyle}"
-                         Text="{Binding PasswordConfirm, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                <TextBox x:Name="ConfirmPasswordTextBox" Style="{StaticResource ModernTextBoxStyle}"
+                         Text="{Binding PasswordConfirm, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                         KeyDown="TextBox_KeyDown"/>
             </StackPanel>
 
             <StackPanel Grid.Row="4" HorizontalAlignment="Stretch">
-                <Button Style="{StaticResource KButtonStyle}" Height="48"
+                <Button x:Name="RegisterButton" Style="{StaticResource KButtonStyle}" Height="48"
                         IsDefault="True"
                         Command="{Binding RegisterCommand}" Margin="0,16,0,0">
                     <TextBlock FontSize="18" Text="Register" FontWeight="SemiBold"/>

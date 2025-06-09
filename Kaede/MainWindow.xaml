@@ -12,7 +12,6 @@
         Title="Kaede" Width="1280" Height="720" FontSize="20">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
-
         <DataTemplate DataType="{x:Type vms:UserRegistrationViewModel}">
             <views:UserRegistrationView />
         </DataTemplate>
@@ -33,28 +32,37 @@
         </DataTemplate>
     </Window.Resources>
     <DockPanel>
-        <Grid DockPanel.Dock="Left" 
-              Visibility="{Binding IsHomeView, Converter={StaticResource BoolToVis}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Button Content="Dashboard" 
-                    Style="{StaticResource KButtonStyle}"
-                    Background="Black" 
-                    Command="{Binding NavigateDashboardCommand}"
-                    />
-            <Button Content="Settings" Grid.Row="1"
-                    Style="{StaticResource KButtonStyle}"
-                    Background="Black"
-                    Command="{Binding NavigateSettingsCommand}"/>
-            <Button Content="Admin Panel" Grid.Row="2"
-                    Style="{StaticResource KButtonStyle}"
-                    Background="Black"
-                    Visibility="{Binding IsAdminLogged, Converter={StaticResource BoolToVis}}" 
-                    Command="{Binding NavigateAdminPanelCommand}"/>
-        </Grid>
-        <ContentControl Content="{Binding CurrentViewModel}"/>
+        <Border DockPanel.Dock="Left" Width="200" Margin="8" CornerRadius="8">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#1E1E1E" Offset="0"/>
+                    <GradientStop Color="#2A2A2A" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="2" Color="#000000" Opacity="0.3"/>
+            </Border.Effect>
+            <Grid Visibility="{Binding IsHomeView, Converter={StaticResource BoolToVis}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Button Content="Dashboard" 
+                        Style="{StaticResource SidebarButtonStyle}"
+                        Tag="/Resources/Icons/dashboard.png" 
+                        Command="{Binding NavigateDashboardCommand}"/>
+                <Button Content="Settings" Grid.Row="1"
+                        Style="{StaticResource SidebarButtonStyle}"
+                        Tag="/Resources/Icons/settings.png"
+                        Command="{Binding NavigateSettingsCommand}"/>
+                <Button Content="Admin Panel" Grid.Row="2"
+                        Style="{StaticResource SidebarButtonStyle}"
+                        Tag="/Resources/Icons/admin.png"
+                        Visibility="{Binding IsAdminLogged, Converter={StaticResource BoolToVis}}" 
+                        Command="{Binding NavigateAdminPanelCommand}"/>
+            </Grid>
+        </Border>
+        <ContentControl Content="{Binding CurrentViewModel}" Margin="8"/>
     </DockPanel>
 </Window>

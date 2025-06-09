@@ -258,52 +258,57 @@
                         <TextBlock>
                         NAME
                         </TextBlock>
-                        <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                        <TextBox x:Name="NameTextBox" Template="{StaticResource KTextBoxControlTemplate}"
                          Width="280"
                          Style="{StaticResource KTextBoxGenericStyle}"
-                         Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                         Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                         KeyDown="TextBox_KeyDown"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Margin="0,6">
                         <TextBlock>
                         DESCRIPTION
                         </TextBlock>
-                        <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                        <TextBox x:Name="DescriptionTextBox" Template="{StaticResource KTextBoxControlTemplate}"
                          Width="280"
                          Style="{StaticResource KTextBoxGenericStyle}"
-                         Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                         Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                         KeyDown="TextBox_KeyDown"/>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Margin="0,6">
                         <TextBlock>
                         PRICE
                         </TextBlock>
-                        <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                        <TextBox x:Name="PriceTextBox" Template="{StaticResource KTextBoxControlTemplate}"
                          Width="90"
                          PreviewTextInput="TextBox_NumberPreviewTextInput"
                          HorizontalAlignment="Left"
                          Style="{StaticResource KTextBoxGenericStyle}"
-                         Text="{Binding Price, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                         Text="{Binding Price, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                         KeyDown="TextBox_KeyDown"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Grid.Row="3">
                         <TextBlock>
                         DURATION
                         </TextBlock>
                         <StackPanel Orientation="Horizontal">
-                            <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                            <TextBox x:Name="HoursTextBox" Template="{StaticResource KTextBoxControlTemplate}"
                             Width="50"
                             PreviewTextInput="TextBox_NumberPreviewTextInput"
                             Style="{StaticResource KTextBoxGenericStyle}"
-                            Text="{Binding Hours, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                            Text="{Binding Hours, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                            KeyDown="TextBox_KeyDown"/>
                             <TextBlock Text="h" VerticalAlignment="Center" FontSize="20" Margin="5,0"/>
-                            <TextBox Template="{StaticResource KTextBoxControlTemplate}"
+                            <TextBox x:Name="MinutesTextBox" Template="{StaticResource KTextBoxControlTemplate}"
                             Width="50"
                             Margin="18,0,0,0"
                             PreviewTextInput="TextBox_NumberPreviewTextInput"
                             Style="{StaticResource KTextBoxGenericStyle}"
-                            Text="{Binding Minutes, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                            Text="{Binding Minutes, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                            KeyDown="TextBox_KeyDown"/>
                             <TextBlock Text="m" VerticalAlignment="Center" FontSize="20" Margin="5,0"/>
                         </StackPanel>
                     </StackPanel>
-                    <Button Grid.Row="4"
+                    <Button x:Name="SubmitItemButton" Grid.Row="4"
                     Height="32"
                     Margin="0,12,0,0"
                     Style="{StaticResource KButtonStyle}"
