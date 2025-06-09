@@ -49,16 +49,16 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Button Content="Dashboard" 
-                        Style="{StaticResource KButtonStyle}"
-                        Background="Transparent" 
+                        Style="{StaticResource SidebarButtonStyle}"
+                        Tag="/Resources/Icons/dashboard.png" 
                         Command="{Binding NavigateDashboardCommand}"/>
                 <Button Content="Settings" Grid.Row="1"
-                        Style="{StaticResource KButtonStyle}"
-                        Background="Transparent"
+                        Style="{StaticResource SidebarButtonStyle}"
+                        Tag="/Resources/Icons/settings.png"
                         Command="{Binding NavigateSettingsCommand}"/>
                 <Button Content="Admin Panel" Grid.Row="2"
-                        Style="{StaticResource KButtonStyle}"
-                        Background="Transparent"
+                        Style="{StaticResource SidebarButtonStyle}"
+                        Tag="/Resources/Icons/admin.png"
                         Visibility="{Binding IsAdminLogged, Converter={StaticResource BoolToVis}}" 
                         Command="{Binding NavigateAdminPanelCommand}"/>
             </Grid>
