@@ -21,19 +21,22 @@
             <StackPanel Grid.Row="1" Style="{StaticResource FormSectionStyle}">
                 <TextBlock Style="{StaticResource InputLabelStyle}">Username</TextBlock>
                 <TextBox x:Name="UsernameTextBox" Style="{StaticResource ModernTextBoxStyle}"
-                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                         Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                         KeyDown="TextBox_KeyDown"/>
             </StackPanel>
 
             <StackPanel Grid.Row="2" Style="{StaticResource FormSectionStyle}">
                 <TextBlock Style="{StaticResource InputLabelStyle}">Password</TextBlock>
                 <TextBox x:Name="PasswordTextBox" Style="{StaticResource ModernTextBoxStyle}"
-                         Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                         Text="{Binding Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                         KeyDown="TextBox_KeyDown"/>
             </StackPanel>
 
             <StackPanel Grid.Row="3" Style="{StaticResource FormSectionStyle}">
                 <TextBlock Style="{StaticResource InputLabelStyle}">Confirm Password</TextBlock>
                 <TextBox x:Name="ConfirmPasswordTextBox" Style="{StaticResource ModernTextBoxStyle}"
-                         Text="{Binding PasswordConfirm, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                         Text="{Binding PasswordConfirm, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                         KeyDown="TextBox_KeyDown"/>
             </StackPanel>
 
             <StackPanel Grid.Row="4" HorizontalAlignment="Stretch">
