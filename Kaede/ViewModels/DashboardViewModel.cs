@@ -20,6 +20,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.ComponentModel;
 using Kaede.Bindables;
+using System.Runtime.CompilerServices;
 
 namespace Kaede.ViewModels
 {
@@ -40,13 +41,27 @@ namespace Kaede.ViewModels
         #region Properties
 
         private ObservableCollection<CustomerDTO> _customers;
-        public ListCollectionView FilteredCustomers { get; set; }
+
+        private ListCollectionView _filteredCustomers;
+        public ListCollectionView FilteredCustomers 
+        { 
+            get => _filteredCustomers;
+            set
+            {
+                _filteredCustomers = value;
+                SetProperty(ref _filteredCustomers, value);
+            }
+        }
 
         private CustomerDTO _selectedCustomer;
         public CustomerDTO SelectedCustomer
         {
             get => _selectedCustomer;
-            set => SetProperty(ref _selectedCustomer, value);
+            set
+            {
+                SetProperty(ref _selectedCustomer, value);
+                SubmitAppointmentCommand.NotifyCanExecuteChanged();
+            }
         }
 
         private string _customerSearchText = string.Empty;
@@ -76,7 +91,11 @@ namespace Kaede.ViewModels
         public UserDTO SelectedBarber
         {
             get => _selectedBarber;
-            set => SetProperty(ref _selectedBarber, value);
+            set
+            {
+                SetProperty(ref _selectedBarber, value);
+                SubmitAppointmentCommand.NotifyCanExecuteChanged();
+            }
         }
 
         private string _barberSearchText = string.Empty;
@@ -103,6 +122,7 @@ namespace Kaede.ViewModels
                 // if the start date is not empty, auto set end date
                 // based on the selected shop item
                 EndTime = StartTime + _selectedShopItem.Duration;
+                SubmitAppointmentCommand.NotifyCanExecuteChanged();
             }
         }
 
@@ -128,7 +148,7 @@ namespace Kaede.ViewModels
             }
         }
 
-        private DateTime _endTime;
+        private DateTime _endTime = DateTime.Now;
         public DateTime EndTime
         {
             get => _endTime;
@@ -173,14 +193,28 @@ namespace Kaede.ViewModels
 
         private async Task FetchCustomers()
         {
-            _customers = new ObservableCollection<CustomerDTO>
-                (await _appointmentService.GetAllCustomers());
-            FilteredCustomers = new ListCollectionView(_customers);
-            FilteredCustomers.Filter = item =>
+            if (_customers == null)
             {
-                if (string.IsNullOrEmpty(CustomerSearchText)) return true;
-                return ((CustomerDTO)item).FullName.IndexOf(CustomerSearchText, StringComparison.Ordinal) >= 0;
-            };
+                _customers = new ObservableCollection<CustomerDTO>
+                    (await _appointmentService.GetAllCustomers());
+
+                FilteredCustomers = new ListCollectionView(_customers);
+                FilteredCustomers.Filter = item =>
+                {
+                    if (string.IsNullOrEmpty(CustomerSearchText)) return true;
+                    return ((CustomerDTO)item).FullName.IndexOf(CustomerSearchText, StringComparison.Ordinal) >= 0;
+                };
+            }
+            else
+            {
+                _customers.Clear();
+                foreach (var customer in await _appointmentService.GetAllCustomers())
+                {
+                    _customers.Add(customer);
+                }
+
+                FilteredCustomers.Refresh();
+            }
 
             _logger.LogDebug("Customers collection updated with values: {CustomersList}", _customers);
         }
@@ -263,6 +297,18 @@ namespace Kaede.ViewModels
                 EndDate = EndTime,
                 Status = AppointmentStatus.Pending
             };
+
+            if (EndTime <= StartTime)
+            {
+                MessageBox.Show("End time must be after start time.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (DateTime.Now >= StartTime)
+            {
+                MessageBox.Show("Start time must be after current time.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
             var existingAppointments = await _appointmentService.GetAllAppointments();
             if (existingAppointments
                 .Any(a => a.Status == AppointmentStatus.Pending &&
@@ -273,11 +319,7 @@ namespace Kaede.ViewModels
                 MessageBox.Show("Selected barber is busy during this time.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            if (EndTime <= StartTime)
-            {
-                MessageBox.Show("End time must be after start time.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+
 
             try
             {
@@ -299,11 +341,10 @@ namespace Kaede.ViewModels
             }
         }
 
-        private bool CanSubmitAppointment()
-        {
-            // TODO: Actually implement this logic
-            return true;
-        }
+        private bool CanSubmitAppointment() => 
+            SelectedCustomer != null &&
+            SelectedBarber != null &&
+            SelectedShopItem != null;
 
         #endregion
 

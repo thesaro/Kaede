@@ -49,8 +49,8 @@ namespace Kaede.Test.Models
                 Customer = c1,
                 Barber = b1,
                 ShopItem = i1,
-                StartDate = DateTime.Now - TimeSpan.FromMinutes(5),
-                EndDate = DateTime.Now,
+                StartDate = DateTime.Now + TimeSpan.FromMinutes(5),
+                EndDate = DateTime.Now + TimeSpan.FromMinutes(30),
             };
             context.Appointments.Add(ap);
             context.SaveChanges();

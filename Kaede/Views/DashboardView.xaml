@@ -127,9 +127,10 @@
                         </TextBlock>
                         <ComboBox
                             Width="280"
+                            Margin="20,0"
                             ItemsSource="{Binding AppointmentOrderingOptions}"
                             SelectedItem="{Binding SelectedAppointmentOrdering}"
-                            Style="{StaticResource KComboBoxStyle}"
+                            Style="{StaticResource KComboBoxStyleMinimal}"
                             ItemContainerStyle="{StaticResource KComboBoxItemStyle}" 
                             DisplayMemberPath="."/>
                     </StackPanel>
