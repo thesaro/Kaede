@@ -32,7 +32,8 @@
         </DataTemplate>
     </Window.Resources>
     <DockPanel>
-        <Border DockPanel.Dock="Left" Width="200" Margin="8" CornerRadius="8">
+        <Border DockPanel.Dock="Left" Width="200" Margin="8" CornerRadius="8"
+                Visibility="{Binding IsHomeView, Converter={StaticResource BoolToVis}}">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                     <GradientStop Color="#1E1E1E" Offset="0"/>
