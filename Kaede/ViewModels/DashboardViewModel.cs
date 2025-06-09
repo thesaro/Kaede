@@ -264,7 +264,11 @@ namespace Kaede.ViewModels
                 Status = AppointmentStatus.Pending
             };
             var existingAppointments = await _appointmentService.GetAllAppointments();
-            if (existingAppointments.Any(a => a.BarberDTO.Username == SelectedBarber.Username))
+            if (existingAppointments
+                .Any(a => a.Status == AppointmentStatus.Pending &&
+                    a.BarberDTO.Username == SelectedBarber.Username &&
+                    a.StartDate < appointmentDTO.EndDate &&
+                    appointmentDTO.StartDate < a.EndDate))
             {
                 MessageBox.Show("Selected barber is busy during this time.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
