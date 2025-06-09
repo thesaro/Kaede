@@ -140,39 +140,6 @@
         </Style.Setters>
     </Style>
 
-
-    <Style x:Key="SidebarButtonStyle" TargetType="Button" BasedOn="{StaticResource KButtonStyle}">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource KForeground}"/>
-        <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="Margin" Value="8,4"/>
-        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}" 
-                        Padding="{TemplateBinding Padding}" 
-                        CornerRadius="4">
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" 
-                               Width="20" Height="20" Margin="0,0,8,0"/>
-                            <ContentPresenter VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{StaticResource KColor1}"/>
-                            <Setter Property="Foreground" Value="White"/>
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Background" Value="#1E1E1E"/>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <!-- Form Styles -->
 
     <Style TargetType="TextBox" x:Key="KTextBoxGenericStyle">
